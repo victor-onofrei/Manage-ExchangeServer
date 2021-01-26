@@ -1,19 +1,14 @@
-# param (
-#     [String]$inputPath = "$env:homeshare\VDI-UserData\Download\generic\inputs\",
-#     [String]$fileName = "mailbox_list.csv",
-#     [String]$user = $null
-# )
+param (
+    [String]$inputPath = "$env:homeshare\VDI-UserData\Download\generic\inputs\",
+    [String]$fileName = "mailbox_list.csv",
+    [String]$user = $null
+)
 
-# if ($user) {
-#     $allMailboxes = @($user)
-# } else {
-#     $allMailboxes = Get-Content "$inputPath\$fileName"
-# }
-
-# Write-Host "Script:" $PSCommandPath
-# Write-Host "Path:" $PSScriptRoot
-
-. "$PSScriptRoot\Initialize-Script.ps1" -user $user
+if ($user) {
+    $allMailboxes = @($user)
+} else {
+    $allMailboxes = Get-Content "$inputPath\$fileName"
+}
 
 $sizeFieldName = "TotalItemSizeInGB"
 
