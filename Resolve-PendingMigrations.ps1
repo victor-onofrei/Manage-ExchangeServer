@@ -18,8 +18,8 @@ $routingAddress = (
 ).Split("@")[1]
 
 foreach ($mailbox in $allMailboxes) {
-    $itemCount = Get-MailboxStatistics $mailbox | Select-Object -ExpandProperty ItemCount
-    if ($itemCount -le "300") {
+    $itemCount = Get-MailboxFolderStatistics $mailbox | ? {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
+    if ($itemCount -le "100") {
         $mailboxInfo = Get-Mailbox -Identity $mailbox
         $mailboxInfo.EmailAddresses > $outputPath\$mailbox.txt
         $hasArchive = ($mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000") -and $mailboxInfo.archiveDatabase
