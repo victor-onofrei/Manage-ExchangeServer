@@ -2,7 +2,8 @@ param (
     [String]$inputPath = "$env:homeshare\VDI-UserData\Download\generic\inputs\",
     [String]$fileName = "pending_migrations.csv",
     [String]$outputPath = "$env:homeshare\VDI-UserData\Download\generic\outputs\pending_migrations",
-    [String]$user = $null
+    [String]$user = $null,
+    [Switch]$bypassItemCount
 )
 
 if ($user) {
@@ -19,7 +20,7 @@ $routingAddress = (
 
 foreach ($mailbox in $allMailboxes) {
     $itemCount = Get-MailboxFolderStatistics $mailbox | ? {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
-    if ($itemCount -le "100") {
+    if ($itemCount -le "100" -or $bypassItemCount) {
         $mailboxInfo = Get-Mailbox -Identity $mailbox
         $mailboxInfo.EmailAddresses > $outputPath\$mailbox.txt
         $hasArchive = ($mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000") -and $mailboxInfo.archiveDatabase
