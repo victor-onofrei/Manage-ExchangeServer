@@ -76,7 +76,7 @@ foreach ($mailbox in $allMailboxes) {
     $mailboxSizeGigaBytes =
         Get-MailboxStatistics -Identity $mailbox | `
         Select-Object @{
-            Name = $sizeFieldName;
+            Name = $sizeFieldName
             Expression = {
                 [math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
             }
@@ -108,7 +108,7 @@ foreach ($mailbox in $allMailboxes) {
         $archiveSizeGigaBytes =
             Get-MailboxStatistics -Identity $mailbox -Archive | `
             Select-Object @{
-                Name = $sizeFieldName;
+                Name = $sizeFieldName
                 Expression = {
                     [math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
                 }
