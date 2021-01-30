@@ -124,6 +124,6 @@ function Initialize-DefaultParams {
         outputFileName = $OutputFileName
         outputFilePath = Join-Path -Path $OutputPath -ChildPath $OutputDir -AdditionalChildPath $OutputFileName
 
-        mailboxes = Get-Content $inputFilePath -ErrorAction SilentlyContinue
+        exchangeObjects = Get-Content $inputFilePath -ErrorAction SilentlyContinue
     }
 }

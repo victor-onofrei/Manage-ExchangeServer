@@ -63,9 +63,9 @@ function Get-BytesFromGigaBytes {
     [math]::Round($gigaBytes * [math]::Pow(2, 30))
 }
 
-foreach ($mailbox in $params.mailboxes) {
+foreach ($exchangeObject in $params.exchangeObjects) {
     $mailboxSizeGigaBytes =
-        Get-MailboxStatistics -Identity $mailbox | `
+        Get-MailboxStatistics -Identity $exchangeObject | `
         Select-Object @{
             Name = $sizeFieldName
             Expression = {
@@ -84,7 +84,7 @@ foreach ($mailbox in $params.mailboxes) {
     $movingProhibitSendQuota = $mailboxDesiredQuotaBytes
     $movingIssueWarningQuota = [math]::Round($mailboxDesiredQuotaBytes * 0.9)
 
-    Set-Mailbox $mailbox `
+    Set-Mailbox $exchangeObject `
         -UseDatabaseQuotaDefaults $false `
         -ProhibitSendQuota $movingProhibitSendQuota `
         -ProhibitSendReceiveQuota $defaultProhibitSendReceiveQuota `
@@ -92,12 +92,12 @@ foreach ($mailbox in $params.mailboxes) {
         -RecoverableItemsWarningQuota $defaultRecoverableItemsWarningQuota `
         -IssueWarningQuota $movingIssueWarningQuota
 
-    $mailboxInfo = Get-Mailbox -Identity $mailbox
+    $mailboxInfo = Get-Mailbox -Identity $exchangeObject
     $hasArchive = ($mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000") -and $mailboxInfo.archiveDatabase
 
     if ($hasArchive) {
         $archiveSizeGigaBytes =
-            Get-MailboxStatistics -Identity $mailbox -Archive | `
+            Get-MailboxStatistics -Identity $exchangeObject -Archive | `
             Select-Object @{
                 Name = $sizeFieldName
                 Expression = {
@@ -119,7 +119,7 @@ foreach ($mailbox in $params.mailboxes) {
     $movingArchiveQuota = $archiveDesiredQuotaBytes
     $movingArchiveWarningQuota = [math]::Round($archiveDesiredQuotaBytes * 0.9)
 
-    Set-Mailbox $mailbox `
+    Set-Mailbox $exchangeObject `
         -UseDatabaseQuotaDefaults $false `
         -ArchiveQuota $movingArchiveQuota `
         -ArchiveWarningQuota $movingArchiveWarningQuota
