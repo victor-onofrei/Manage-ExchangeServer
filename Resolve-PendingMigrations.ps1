@@ -1,16 +1,11 @@
-param (
-    [String]$inputPath = "$env:homeshare\VDI-UserData\Download\generic\inputs\",
-    [String]$fileName = "pending_migrations.csv",
-    [String]$outputPath = "$env:homeshare\VDI-UserData\Download\generic\outputs\pending_migrations",
-    [String]$user = $null,
-    [Switch]$bypassItemCount
+param(
+    [Switch]$BypassItemCount
 )
 
-if ($user) {
-    $allMailboxes = @($user)
-} else {
-    $allMailboxes = Get-Content "$inputPath\$fileName"
-}
+. "$PSScriptRoot\Initializer.ps1"
+$params = Invoke-Expression "Initialize-DefaultParams $args"
+
+$outputPath = Join-Path $params.outputPath -ChildPath $params.outputDir
 
 $routingAddress = (
     Get-OrganizationConfig | `
@@ -18,11 +13,11 @@ $routingAddress = (
     Where-Object {$_ -like "*mail.onmicrosoft.com"}
 ).Split("@")[1]
 
-foreach ($mailbox in $allMailboxes) {
+foreach ($mailbox in $params.mailboxes) {
     $itemCount = Get-MailboxFolderStatistics $mailbox | ? {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
-    if ($itemCount -le "100" -or $bypassItemCount) {
+    if ($itemCount -le "100" -or $BypassItemCount) {
         $mailboxInfo = Get-Mailbox -Identity $mailbox
-        $mailboxInfo.EmailAddresses > $outputPath\$mailbox.txt
+        $mailboxInfo.EmailAddresses > (Join-Path $outputPath -ChildPath "$mailbox.txt")
         $hasArchive = ($mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000") -and $mailboxInfo.archiveDatabase
         if (!$hasArchive) {
             Disable-Mailbox -Identity $mailboxInfo.Alias -Confirm:$false

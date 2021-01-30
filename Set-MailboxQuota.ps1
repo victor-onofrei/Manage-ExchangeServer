@@ -1,14 +1,5 @@
-param (
-    [String]$inputPath = "$env:homeshare\VDI-UserData\Download\generic\inputs\",
-    [String]$fileName = "mailbox_list.csv",
-    [String]$user = $null
-)
-
-if ($user) {
-    $allMailboxes = @($user)
-} else {
-    $allMailboxes = Get-Content "$inputPath\$fileName"
-}
+. "$PSScriptRoot\Initializer.ps1"
+$params = Invoke-Expression "Initialize-DefaultParams $args"
 
 $sizeFieldName = "TotalItemSizeInGB"
 
@@ -72,7 +63,7 @@ function Get-BytesFromGigaBytes {
     [math]::Round($gigaBytes * [math]::Pow(2, 30))
 }
 
-foreach ($mailbox in $allMailboxes) {
+foreach ($mailbox in $params.mailboxes) {
     $mailboxSizeGigaBytes =
         Get-MailboxStatistics -Identity $mailbox | `
         Select-Object @{
