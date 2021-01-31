@@ -1,14 +1,5 @@
-param (
-    [String]$inputPath = "$env:homeshare\VDI-UserData\Download\generic\inputs\",
-    [String]$fileName = "mailbox_list.csv",
-    [String]$user = $null
-)
-
-if ($user) {
-    $allMailboxes = @($user)
-} else {
-    $allMailboxes = Get-Content "$inputPath\$fileName"
-}
+. "$PSScriptRoot\Initializer.ps1"
+$params = Invoke-Expression "Initialize-DefaultParams $args"
 
 $sizeFieldName = "TotalItemSizeInGB"
 
@@ -72,11 +63,11 @@ function Get-BytesFromGigaBytes {
     [math]::Round($gigaBytes * [math]::Pow(2, 30))
 }
 
-foreach ($mailbox in $allMailboxes) {
+foreach ($exchangeObject in $params.exchangeObjects) {
     $mailboxSizeGigaBytes =
-        Get-MailboxStatistics -Identity $mailbox | `
+        Get-MailboxStatistics -Identity $exchangeObject | `
         Select-Object @{
-            Name = $sizeFieldName;
+            Name = $sizeFieldName
             Expression = {
                 [math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
             }
@@ -93,7 +84,7 @@ foreach ($mailbox in $allMailboxes) {
     $movingProhibitSendQuota = $mailboxDesiredQuotaBytes
     $movingIssueWarningQuota = [math]::Round($mailboxDesiredQuotaBytes * 0.9)
 
-    Set-Mailbox $mailbox `
+    Set-Mailbox $exchangeObject `
         -UseDatabaseQuotaDefaults $false `
         -ProhibitSendQuota $movingProhibitSendQuota `
         -ProhibitSendReceiveQuota $defaultProhibitSendReceiveQuota `
@@ -101,14 +92,14 @@ foreach ($mailbox in $allMailboxes) {
         -RecoverableItemsWarningQuota $defaultRecoverableItemsWarningQuota `
         -IssueWarningQuota $movingIssueWarningQuota
 
-    $mailboxInfo = Get-Mailbox -Identity $mailbox
+    $mailboxInfo = Get-Mailbox -Identity $exchangeObject
     $hasArchive = ($mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000") -and $mailboxInfo.archiveDatabase
 
     if ($hasArchive) {
         $archiveSizeGigaBytes =
-            Get-MailboxStatistics -Identity $mailbox -Archive | `
+            Get-MailboxStatistics -Identity $exchangeObject -Archive | `
             Select-Object @{
-                Name = $sizeFieldName;
+                Name = $sizeFieldName
                 Expression = {
                     [math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
                 }
@@ -128,7 +119,7 @@ foreach ($mailbox in $allMailboxes) {
     $movingArchiveQuota = $archiveDesiredQuotaBytes
     $movingArchiveWarningQuota = [math]::Round($archiveDesiredQuotaBytes * 0.9)
 
-    Set-Mailbox $mailbox `
+    Set-Mailbox $exchangeObject `
         -UseDatabaseQuotaDefaults $false `
         -ArchiveQuota $movingArchiveQuota `
         -ArchiveWarningQuota $movingArchiveWarningQuota
