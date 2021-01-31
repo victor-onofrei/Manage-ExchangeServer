@@ -94,7 +94,7 @@ function Initialize-DefaultParams {
         [String]$OutputDir,
         [String]$OutputFileName,
 
-        [String[]]$Mailboxes
+        [String[]]$ExchangeObjects
     )
 
     # Load the config.
@@ -109,12 +109,10 @@ function Initialize-DefaultParams {
     $OutputDir = Read-Param "OutputDir" -Value $OutputDir -Config $config -ScriptName $_ScriptName
     $OutputFileName = Read-Param "OutputFileName" -Value $OutputFileName -DefaultValue "output_$_ScriptName.csv" -Config $config -ScriptName $_ScriptName
 
-    # Return the result.
-
     $inputFilePath = Join-Path -Path $InputPath -ChildPath $InputDir -AdditionalChildPath $InputFileName
     $outputFilePath = Join-Path -Path $OutputPath -ChildPath $OutputDir -AdditionalChildPath $OutputFileName
 
-    $exchangeObjects = Get-Content $inputFilePath -ErrorAction SilentlyContinue
+    $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) -Config $config -ScriptName $_ScriptName
 
     return @{
         inputPath = $InputPath
@@ -127,6 +125,6 @@ function Initialize-DefaultParams {
         outputFileName = $OutputFileName
         outputFilePath = $outputFilePath
 
-        exchangeObjects = $exchangeObjects
+        exchangeObjects = $ExchangeObjects
     }
 }
