@@ -14,7 +14,7 @@ $routingAddress = (
 ).Split("@")[1]
 
 foreach ($exchangeObject in $params.exchangeObjects) {
-    $itemCount = Get-MailboxFolderStatistics $exchangeObject | ? {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
+    $itemCount = Get-MailboxFolderStatistics $exchangeObject | Where-Object {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
     if ($itemCount -le "100" -or $BypassItemCount) {
         $mailboxInfo = Get-Mailbox -Identity $exchangeObject
         $mailboxInfo.EmailAddresses > (Join-Path $outputPath -ChildPath "$exchangeObject.txt")
