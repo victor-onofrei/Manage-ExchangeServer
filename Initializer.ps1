@@ -29,6 +29,8 @@ function Get-Config {
         # Read the existing config file.
         $config = Get-IniContent $configPath
     } else {
+        # Create .config folder if it doesn't exist
+        New-Item -Name ".config" -Path $HOME -Type Directory -ErrorAction SilentlyContinue
         # Create a default, empty config data.
         $config = [ordered]@{
             $configGenericCategory = @{}
