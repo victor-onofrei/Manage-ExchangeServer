@@ -21,16 +21,17 @@ function Initialize-IniModule {
 }
 
 function Get-Config {
-    Set-Variable "configPath" -Option Constant -Value "$HOME\.config\manage-exchange_server.ini"
+    Set-Variable "configDirectoryPath" -Option Constant -Value "$HOME\.config"
+    Set-Variable "configFilePath" -Option Constant -Value (Join-Path $configDirectoryPath -ChildPath "manage-exchange_server.ini")
 
     Initialize-IniModule
 
-    if (Test-Path $configPath -PathType Leaf) {
+    if (Test-Path $configFilePath -PathType Leaf) {
         # Read the existing config file.
-        $config = Get-IniContent $configPath
+        $config = Get-IniContent $configFilePath
     } else {
         # Create the `.config` folder if it doesn't exist.
-        New-Item -Name ".config" -Path $HOME -Type Directory -ErrorAction SilentlyContinue
+        New-Item $configDirectoryPath -Type Directory -ErrorAction SilentlyContinue
 
         # Create a default, empty config data.
         $config = [ordered]@{
@@ -39,7 +40,7 @@ function Get-Config {
         }
 
         # Save the created config data in the file.
-        Out-IniFile $configPath -InputObject $config
+        Out-IniFile $configFilePath -InputObject $config
     }
 
     $config
