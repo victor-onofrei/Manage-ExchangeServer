@@ -115,8 +115,8 @@ function Initialize-DefaultParams {
 
     $ChildPathInputCombo = "$InputDir\$InputFileName"
     $ChildPathOutputCombo = "$OutputDir\$OutputFileName"
-    $inputFilePath = Join-Path -Path $InputPath -ChildPath $ChildPathInputCombo
-    $outputFilePath = Join-Path -Path $OutputPath -ChildPath $ChildPathOutputCombo
+    $inputFilePath = Join-Path $InputPath -ChildPath $ChildPathInputCombo
+    $outputFilePath = Join-Path $OutputPath -ChildPath $ChildPathOutputCombo
 
     $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) -Config $config -ScriptName $_ScriptName
 
