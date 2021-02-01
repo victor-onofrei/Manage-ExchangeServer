@@ -5,8 +5,6 @@ param(
 . "$PSScriptRoot\Initializer.ps1"
 $params = Invoke-Expression "Initialize-DefaultParams $args"
 
-$outputPath = Join-Path $params.outputPath -ChildPath $params.outputDir
-
 $routingAddress = (
     Get-OrganizationConfig | `
     Select-Object -ExpandProperty MicrosoftExchangeRecipientEmailAddresses | `
@@ -17,7 +15,11 @@ foreach ($exchangeObject in $params.exchangeObjects) {
     $itemCount = Get-MailboxFolderStatistics $exchangeObject | Where-Object {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
     if ($itemCount -le "100" -or $BypassItemCount) {
         $mailboxInfo = Get-Mailbox -Identity $exchangeObject
-        $mailboxInfo.EmailAddresses > (Join-Path $outputPath -ChildPath "$exchangeObject.txt")
+
+        foreach ($emailAddress in $mailboxInfo.EmailAddresses) {
+            "$exchangeObject,$emailAddress" >> $params.outputFilePath
+        }
+
         $hasArchive = ($mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000") -and $mailboxInfo.archiveDatabase
         if (!$hasArchive) {
             Disable-Mailbox -Identity $mailboxInfo.Alias -Confirm:$false
