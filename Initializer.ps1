@@ -105,6 +105,7 @@ function Initialize-DefaultParams {
     $config = Get-Config
 
     # Read the params.
+
     $InputPath = Read-Param "InputPath" -Value $InputPath -DefaultValue "$HOME" -Config $config -ScriptName $_ScriptName
     $InputDir = Read-Param "InputDir" -Value $InputDir -Config $config -ScriptName $_ScriptName
     $InputFileName = Read-Param "InputFileName" -Value $InputFileName -DefaultValue "input_$_ScriptName.csv" -Config $config -ScriptName $_ScriptName
@@ -113,10 +114,10 @@ function Initialize-DefaultParams {
     $OutputDir = Read-Param "OutputDir" -Value $OutputDir -Config $config -ScriptName $_ScriptName
     $OutputFileName = Read-Param "OutputFileName" -Value $OutputFileName -DefaultValue "output_$_ScriptName.csv" -Config $config -ScriptName $_ScriptName
 
-    $ChildPathInputCombo = "$InputDir\$InputFileName"
-    $ChildPathOutputCombo = "$OutputDir\$OutputFileName"
-    $inputFilePath = Join-Path $InputPath -ChildPath $ChildPathInputCombo
-    $outputFilePath = Join-Path $OutputPath -ChildPath $ChildPathOutputCombo
+    $intermediateInputFilePath = Join-Path $InputPath -ChildPath $InputDir
+    $intermediateOutputFilePath = Join-Path $OutputPath -ChildPath $OutputDir
+    $inputFilePath = Join-Path $intermediateInputFilePath -ChildPath $InputFileName
+    $outputFilePath = Join-Path $intermediateOutputFilePath -ChildPath $OutputFileName
 
     $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) -Config $config -ScriptName $_ScriptName
 
