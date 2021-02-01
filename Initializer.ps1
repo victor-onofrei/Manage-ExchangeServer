@@ -31,7 +31,7 @@ function Get-Config {
         $config = Get-IniContent $configFilePath
     } else {
         # Create the `.config` folder if it doesn't exist.
-        New-Item $configDirectoryPath -Type Directory
+        New-Item $configDirectoryPath -Type Directory > $null
 
         # Create a default, empty config data.
         $config = [ordered]@{
