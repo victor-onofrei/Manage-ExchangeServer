@@ -112,8 +112,8 @@ function Initialize-DefaultParams {
     $OutputDir = Read-Param "OutputDir" -Value $OutputDir -Config $config -ScriptName $_ScriptName
     $OutputFileName = Read-Param "OutputFileName" -Value $OutputFileName -DefaultValue "output_$_ScriptName.csv" -Config $config -ScriptName $_ScriptName
 
-    $ChildPathInputCombo = $InputDir\$InputFileName
-    $ChildPathOutputCombo = $OutputDir\$OutputFileName
+    $ChildPathInputCombo = "$InputDir\$InputFileName"
+    $ChildPathOutputCombo = "$OutputDir\$OutputFileName"
     $inputFilePath = Join-Path -Path $InputPath -ChildPath $ChildPathInputCombo
     $outputFilePath = Join-Path -Path $OutputPath -ChildPath $ChildPathOutputCombo
 
