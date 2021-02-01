@@ -5,7 +5,7 @@ function Get-ScriptName {
     $callStack = Get-PSCallStack
     $scriptFileName = $callStack[1].Command
 
-    [io.path]::GetFileNameWithoutExtension($scriptFileName)
+    return [io.path]::GetFileNameWithoutExtension($scriptFileName)
 }
 
 function Initialize-IniModule {
@@ -43,7 +43,7 @@ function Get-Config {
         Out-IniFile $configFilePath -InputObject $config
     }
 
-    $config
+    return $config
 }
 
 function Read-Param {
@@ -83,7 +83,7 @@ function Read-Param {
     }
 
     # Return null otherwise.
-    $null
+    return $null
 }
 
 function Initialize-DefaultParams {
