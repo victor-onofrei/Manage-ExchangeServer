@@ -102,7 +102,6 @@ function Initialize-DefaultParams {
     )
 
     # Load the config.
-    $config = @()
     $config = Get-Config
 
     # Read the params.
