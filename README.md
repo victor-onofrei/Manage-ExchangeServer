@@ -23,7 +23,7 @@ So the value used for a parameter will be:
    the respective script if available,
 3. Else, the value specified in the `Generic` section of the config file if
    available,
-4. Else, a sensible default defined by this project.
+4. Else, a sensible default value defined by this project.
 
 The syntax for a generic value is:
 
@@ -34,7 +34,7 @@ ParamName=value
 The syntax for a specific value is:
 
 ```ini
-ParamName_Exact-ScriptName=value
+ParamName_My-ScriptName=value
 ```
 
 As a reference, here is a sample config file specifying generic values for all
