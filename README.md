@@ -11,37 +11,31 @@ created for you. You can also manually create it beforehand at the path
 sections are also included.
 
 The config file is used to define default values for the common parameters.
-These can be generic, which apply to all the scripts, or specific, which apply
-to a specific script.
+These can be global, which apply to all the scripts, or specific, which apply to
+a specific script.
 
 These are used as a list of fall-backs, meaning, a valid value will be searched
 in a specific order until one is found.
 
 So the value used for a parameter will be:
 1. The value specified on the command line if available,
-2. Else, the value specified in the `Specific` section of the config file for
-   the respective script if available,
-3. Else, the value specified in the `Generic` section of the config file if
+2. Else, the value specified in the specific section of the config file for the
+   respective script if available,
+3. Else, the value specified in the `Global` section of the config file if
    available,
 4. Else, a sensible default value defined by this project.
 
-The syntax for a generic value is:
+The syntax for a parameter value is:
 
 ```ini
 ParamName=value
 ```
 
-The syntax for a specific value is:
-
-```ini
-ParamName_My-ScriptName=value
-```
-
-As a reference, here is a sample config file specifying generic values for all
+As a reference, here is a sample config file specifying global values for all
 the parameters and specific values for the `Set-MailboxQuota` script:
 
 ```ini
-[Generic]
+[Global]
 InputPath=C:\exchange
 InputDir=inputs
 InputFileName=input.csv
@@ -53,17 +47,17 @@ OutputFileName=output.csv
 ExchangeObjects=first.user@example.com
 ExchangeObjects=second.user@example.com
 
-[Specific]
-InputPath_Set-MailboxQuota=C:\quotas
-InputDir_Set-MailboxQuota=inputs
-InputFileName_Set-MailboxQuota=users_list.csv
+[Set-MailboxQuota]
+InputPath=C:\quotas
+InputDir=inputs
+InputFileName=users_list.csv
 
-OutputPath_Set-MailboxQuota=C:\quotas
-OutputDir_Set-MailboxQuota=outputs
-OutputFileName_Set-MailboxQuota=result.csv
+OutputPath=C:\quotas
+OutputDir=outputs
+OutputFileName=result.csv
 
-ExchangeObjects_Set-MailboxQuota=first.quota.user@example.com
-ExchangeObjects_Set-MailboxQuota=second.quota.user@example.com
+ExchangeObjects=first.quota.user@example.com
+ExchangeObjects=second.quota.user@example.com
 ```
 
 ## Parameters
