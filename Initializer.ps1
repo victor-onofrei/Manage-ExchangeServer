@@ -9,15 +9,15 @@ function Initialize-DefaultParams {
     param(
         [String]$_ScriptName = (Get-ScriptName),
 
-        [String]$InputPath,
-        [String]$InputDir,
-        [String]$InputFileName,
+        [Alias("IP")][String]$InputPath,
+        [Alias("ID")][String]$InputDir,
+        [Alias("IFN")][String]$InputFileName,
 
-        [String]$OutputPath,
-        [String]$OutputDir,
-        [String]$OutputFileName,
+        [Alias("OP")][String]$OutputPath,
+        [Alias("OD")][String]$OutputDir,
+        [Alias("OFN")][String]$OutputFileName,
 
-        [String[]]$ExchangeObjects
+        [Alias("EO")][String[]]$ExchangeObjects
     )
 
     begin {

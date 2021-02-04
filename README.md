@@ -65,3 +65,25 @@ OutputFileName_Set-MailboxQuota=result.csv
 ExchangeObjects_Set-MailboxQuota=first.quota.user@example.com
 ExchangeObjects_Set-MailboxQuota=second.quota.user@example.com
 ```
+
+## Parameters
+
+There are some parameters that are available to all the scripts, for which you
+can also configure default values in the config file as described in the
+[`Config` section](#config).
+
+Here is the list of these generally available parameters, along with their
+respective aliases:
+
+Name | Alias
+--- | ---
+`-InputPath` | IP
+`-InputDir` | ID
+`-InputFileName` | IFN
+`-OutputPath` | OP
+`-OutputDir` | OD
+`-OutputFileName` | OFN
+`-ExchangeObjects` | EO
+
+_Note: It's not guaranteed that all of the scripts are using all of these
+parameters. Some scripts might even decide not to use any of them._
