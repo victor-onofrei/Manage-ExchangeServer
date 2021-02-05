@@ -1,7 +1,7 @@
 . "$PSScriptRoot\Initializer.ps1"
 $params = Invoke-Expression "Initialize-DefaultParams $args"
 
-Add-Content -Path $params.outputFilePath exchangeObject','mailboxLocation
+"exchangeObject,mailboxLocation" >> $params.outputFilePath
 foreach ($exchangeObject in $params.exchangeObjects) {
     $exchangeObjectTypeDetails = (Get-Recipient -Identity $exchangeObject -ErrorAction SilentlyContinue).RecipientTypeDetails
     $mailboxLocation = $null
@@ -12,5 +12,5 @@ foreach ($exchangeObject in $params.exchangeObjects) {
     } else {
         $mailboxLocation = "N/A"
     }
-    Add-Content -Path $params.outputFilePath $exchangeObject','$mailboxLocation
+    "$exchangeObject,$mailboxLocation" >> $params.outputFilePath
 }
