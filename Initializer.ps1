@@ -21,8 +21,7 @@ function Initialize-DefaultParams {
     )
 
     begin {
-        Set-Variable "configGenericCategory" -Option Constant -Value "Generic"
-        Set-Variable "configSpecificCategory" -Option Constant -Value "Specific"
+        Set-Variable "configGlobalCategory" -Option Constant -Value "Global"
 
         function Initialize-IniModule {
             Set-Variable "iniModule" -Option Constant -Value "PsIni"
@@ -51,8 +50,7 @@ function Initialize-DefaultParams {
 
                 # Create a default, empty config data.
                 $config = [ordered]@{
-                    $configGenericCategory = @{}
-                    $configSpecificCategory = @{}
+                    $configGlobalCategory = @{}
                 }
 
                 # Save the created config data in the file.
@@ -77,20 +75,25 @@ function Initialize-DefaultParams {
                 return $Value
             }
 
-            $specificKey = "$($Name)_$ScriptName"
-            $specificValue = $config[$configSpecificCategory][$specificKey]
+            $key = $Name
 
-            if ($specificValue) {
-                # Return the specific value from the config file if it exists.
-                return $specificValue
+            $specificCategory = $ScriptName
+
+            if ($config[$specificCategory]) {
+                $specificValue = $config[$specificCategory][$key]
+
+                if ($specificValue) {
+                    # Return the specific value from the config file if it
+                    # exists.
+                    return $specificValue
+                }
             }
 
-            $genericKey = $Name
-            $genericValue = $config[$configGenericCategory][$genericKey]
+            $globalValue = $config[$configGlobalCategory][$key]
 
-            if ($genericValue) {
-                # Return the generic value from the config file if it exists.
-                return $genericValue
+            if ($globalValue) {
+                # Return the global value from the config file if it exists.
+                return $globalValue
             }
 
             if ($DefaultValue) {
