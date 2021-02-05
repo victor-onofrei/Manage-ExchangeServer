@@ -127,6 +127,9 @@ function Initialize-DefaultParams {
         $intermediateOutputFilePath = Join-Path $OutputPath -ChildPath $OutputDir
         $inputFilePath = Join-Path $intermediateInputFilePath -ChildPath $InputFileName
         $outputFilePath = Join-Path $intermediateOutputFilePath -ChildPath $OutputFileName
+        if (-not (Test-Path $outputFilePath -PathType Leaf)) {
+            New-Item -Name $OutputFileName -Path $intermediateOutputFilePath -ItemType File -ErrorAction SilentlyContinue > $null
+        }
 
         $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) -Config $config -ScriptName $_ScriptName
     }
