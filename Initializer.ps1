@@ -66,7 +66,7 @@ function Initialize-DefaultParams {
         function Read-Param {
             param (
                 [String]$Name,
-                [String]$Value,
+                [String[]]$Value,
                 [String[]]$DefaultValue,
 
                 [Hashtable]$Config,
