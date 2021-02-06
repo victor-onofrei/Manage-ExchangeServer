@@ -46,7 +46,7 @@ function Initialize-DefaultParams {
                 $config = Get-IniContent $configFilePath
             } else {
                 # Create the `.config` folder if it doesn't exist.
-                New-Item $configDirectoryPath -Type Directory -ErrorAction SilentlyContinue > $null
+                New-Item $configDirectoryPath -ItemType Directory -ErrorAction SilentlyContinue > $null
 
                 # Create a default, empty config data.
                 $config = [Ordered]@{
@@ -127,6 +127,10 @@ function Initialize-DefaultParams {
         $intermediateOutputFilePath = Join-Path $OutputPath -ChildPath $OutputDir
         $inputFilePath = Join-Path $intermediateInputFilePath -ChildPath $InputFileName
         $outputFilePath = Join-Path $intermediateOutputFilePath -ChildPath $OutputFileName
+
+        if (-not (Test-Path $intermediateOutputFilePath -PathType Container)) {
+            New-Item $intermediateOutputFilePath -ItemType Directory -ErrorAction SilentlyContinue > $null
+        }
 
         $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) -Config $config -ScriptName $_ScriptName
     }
