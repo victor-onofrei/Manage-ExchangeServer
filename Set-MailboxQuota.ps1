@@ -23,26 +23,26 @@ function Get-QuotaForSize {
 
         .EXAMPLE
             Get-QuotaForSize
-                -size 1.2
-                -minimumDifference 1
-                -minimumQuota 2
-                -step 0.5
+                -Size 1.2
+                -MinimumDifference 1
+                -MinimumQuota 2
+                -Step 0.5
 
             This returns 2.5.
     #>
-    param(
-        [Double]$size,
-        [Double]$minimumDifference,
-        [Double]$minimumQuota,
-        [Double]$step
+    param (
+        [Double]$Size,
+        [Double]$MinimumDifference,
+        [Double]$MinimumQuota,
+        [Double]$Step
     )
 
-    $upscaledQuotaStep = [math]::Ceiling($step) / $step
+    $upscaledQuotaStep = [Math]::Ceiling($Step) / $Step
 
-    $upscaledSize = ($size + $minimumDifference) * $upscaledQuotaStep
-    $downscaledQuota = [math]::Ceiling($upscaledSize) / $upscaledQuotaStep
+    $upscaledSize = ($Size + $MinimumDifference) * $upscaledQuotaStep
+    $downscaledQuota = [Math]::Ceiling($upscaledSize) / $upscaledQuotaStep
 
-    [math]::Max($downscaledQuota, $minimumQuota)
+    [Math]::Max($downscaledQuota, $MinimumQuota)
 }
 
 function Get-BytesFromGigaBytes {
@@ -52,15 +52,15 @@ function Get-BytesFromGigaBytes {
             step, minimum quota and minimum difference between size and quota.
 
         .EXAMPLE
-            Get-QuotaFromSize -gigaBytes 1.2
+            Get-QuotaFromSize -GigaBytes 1.2
 
             This returns 2.5.
     #>
-    param(
-        [Double]$gigaBytes
+    param (
+        [Double]$GigaBytes
     )
 
-    [math]::Round($gigaBytes * [math]::Pow(2, 30))
+    [Math]::Round($GigaBytes * [Math]::Pow(2, 30))
 }
 
 foreach ($exchangeObject in $params.exchangeObjects) {
@@ -69,20 +69,20 @@ foreach ($exchangeObject in $params.exchangeObjects) {
         Select-Object @{
             Name = $sizeFieldName
             Expression = {
-                [math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
+                [Math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
             }
         } | `
         Select-Object $sizeFieldName -ExpandProperty $sizeFieldName
 
     $mailboxDesiredQuotaGigaBytes = Get-QuotaForSize `
-        -size $mailboxSizeGigaBytes `
-        -minimumDifference $mailboxMinimumQuotaDifference `
-        -minimumQuota $mailboxMinimumQuota `
-        -step $mailboxQuotaStep
-    $mailboxDesiredQuotaBytes = Get-BytesFromGigaBytes -gigaBytes $mailboxDesiredQuotaGigaBytes
+        -Size $mailboxSizeGigaBytes `
+        -MinimumDifference $mailboxMinimumQuotaDifference `
+        -MinimumQuota $mailboxMinimumQuota `
+        -Step $mailboxQuotaStep
+    $mailboxDesiredQuotaBytes = Get-BytesFromGigaBytes -GigaBytes $mailboxDesiredQuotaGigaBytes
 
     $movingProhibitSendQuota = $mailboxDesiredQuotaBytes
-    $movingIssueWarningQuota = [math]::Round($mailboxDesiredQuotaBytes * 0.9)
+    $movingIssueWarningQuota = [Math]::Round($mailboxDesiredQuotaBytes * 0.9)
 
     Set-Mailbox $exchangeObject `
         -UseDatabaseQuotaDefaults $false `
@@ -101,7 +101,7 @@ foreach ($exchangeObject in $params.exchangeObjects) {
             Select-Object @{
                 Name = $sizeFieldName
                 Expression = {
-                    [math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
+                    [Math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
                 }
             } | `
             Select-Object $sizeFieldName -ExpandProperty $sizeFieldName
@@ -110,14 +110,14 @@ foreach ($exchangeObject in $params.exchangeObjects) {
     }
 
     $archiveDesiredQuotaGigaBytes = Get-QuotaForSize `
-        -size $archiveSizeGigaBytes `
-        -minimumDifference $archiveMinimumQuotaDifference `
-        -minimumQuota $archiveMinimumQuota `
-        -step $archiveQuotaStep
-    $archiveDesiredQuotaBytes = Get-BytesFromGigaBytes -gigaBytes $archiveDesiredQuotaGigaBytes
+        -Size $archiveSizeGigaBytes `
+        -MinimumDifference $archiveMinimumQuotaDifference `
+        -MinimumQuota $archiveMinimumQuota `
+        -Step $archiveQuotaStep
+    $archiveDesiredQuotaBytes = Get-BytesFromGigaBytes -GigaBytes $archiveDesiredQuotaGigaBytes
 
     $movingArchiveQuota = $archiveDesiredQuotaBytes
-    $movingArchiveWarningQuota = [math]::Round($archiveDesiredQuotaBytes * 0.9)
+    $movingArchiveWarningQuota = [Math]::Round($archiveDesiredQuotaBytes * 0.9)
 
     Set-Mailbox $exchangeObject `
         -UseDatabaseQuotaDefaults $false `
