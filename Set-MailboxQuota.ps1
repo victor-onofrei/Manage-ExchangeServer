@@ -71,7 +71,17 @@ foreach ($exchangeObject in $params.exchangeObjects) {
         Select-Object @{
             Name = $SizeFieldName
             Expression = {
-                [Math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
+                [Math]::Round(
+                    (
+                        $_.
+                            TotalItemSize.
+                            ToString().
+                            Split("(")[1].
+                            Split(" ")[0].
+                            Replace(",", "") / 1GB
+                    ),
+                    2
+                )
             }
         } | `
         Select-Object $SizeFieldName -ExpandProperty $SizeFieldName
@@ -95,7 +105,8 @@ foreach ($exchangeObject in $params.exchangeObjects) {
         -IssueWarningQuota $movingIssueWarningQuota
 
     $mailboxInfo = Get-Mailbox -Identity $exchangeObject
-    $hasArchive = ($mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000") -and $mailboxInfo.archiveDatabase
+    $hasArchiveGuid = $mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000"
+    $hasArchive = $hasArchiveGuid -and $mailboxInfo.archiveDatabase
 
     if ($hasArchive) {
         $archiveSizeGigaBytes =
@@ -103,7 +114,17 @@ foreach ($exchangeObject in $params.exchangeObjects) {
             Select-Object @{
                 Name = $SizeFieldName
                 Expression = {
-                    [Math]::Round(($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1GB), 2)
+                    [Math]::Round(
+                        (
+                            $_.
+                                TotalItemSize.
+                                ToString().
+                                Split("(")[1].
+                                Split(" ")[0].
+                                Replace(",", "") / 1GB
+                        ),
+                        2
+                    )
                 }
             } | `
             Select-Object $SizeFieldName -ExpandProperty $SizeFieldName
