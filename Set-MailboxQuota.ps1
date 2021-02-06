@@ -1,16 +1,16 @@
 param (
-    [String]$SizeFieldName = "TotalItemSizeInGB"
+    [String]$SizeFieldName = "TotalItemSizeInGB",
 
-    [String]$DefaultProhibitSendReceiveQuota = "100GB"
-    [String]$DefaultRecoverableItemsQuota = "30GB"
-    [String]$DefaultRecoverableItemsWarningQuota = "20GB"
+    [String]$DefaultProhibitSendReceiveQuota = "100GB",
+    [String]$DefaultRecoverableItemsQuota = "30GB",
+    [String]$DefaultRecoverableItemsWarningQuota = "20GB",
 
-    [Int]$MailboxMinimumQuotaDifference = 1
-    [Int]$MailboxMinimumQuota = 2
-    [Float]$MailboxQuotaStep = 0.5
+    [Int]$MailboxMinimumQuotaDifference = 1,
+    [Int]$MailboxMinimumQuota = 2,
+    [Float]$MailboxQuotaStep = 0.5,
 
-    [Int]$ArchiveMinimumQuotaDifference = 1
-    [Int]$ArchiveMinimumQuota = 5
+    [Int]$ArchiveMinimumQuotaDifference = 1,
+    [Int]$ArchiveMinimumQuota = 5,
     [Float]$ArchiveQuotaStep = 5.0
 )
 
