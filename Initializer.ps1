@@ -8,6 +8,7 @@ function Get-ScriptName {
 }
 
 function Initialize-DefaultParams {
+    [CmdletBinding()]
     param (
         [String]$_ScriptName = (Get-ScriptName),
 
