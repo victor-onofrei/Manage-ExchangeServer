@@ -46,7 +46,7 @@ function Initialize-DefaultParams {
                 $config = Get-IniContent $configFilePath
             } else {
                 # Create the `.config` folder if it doesn't exist.
-                New-Item $configDirectoryPath -Type Directory -ErrorAction SilentlyContinue > $null
+                New-Item $configDirectoryPath -ItemType Directory -ErrorAction SilentlyContinue > $null
 
                 # Create a default, empty config data.
                 $config = [ordered]@{
