@@ -139,6 +139,10 @@ function Initialize-DefaultParams {
     }
 
     end {
+        Write-Verbose "inputFilePath: $inputFilePath"
+        Write-Verbose "outputFilePath: $outputFilePath"
+        Write-Verbose "exchangeObjects: $exchangeObjects"
+
         return @{
             inputPath = $InputPath
             inputDir = $InputDir
