@@ -1,19 +1,21 @@
+param (
+    [String]$SizeFieldName = "TotalItemSizeInGB"
+
+    [String]$DefaultProhibitSendReceiveQuota = "100GB"
+    [String]$DefaultRecoverableItemsQuota = "30GB"
+    [String]$DefaultRecoverableItemsWarningQuota = "20GB"
+
+    [Int]$MailboxMinimumQuotaDifference = 1
+    [Int]$MailboxMinimumQuota = 2
+    [Float]$MailboxQuotaStep = 0.5
+
+    [Int]$ArchiveMinimumQuotaDifference = 1
+    [Int]$ArchiveMinimumQuota = 5
+    [Float]$ArchiveQuotaStep = 5.0
+)
+
 . "$PSScriptRoot\Initializer.ps1"
 $params = Invoke-Expression "Initialize-DefaultParams $args"
-
-$sizeFieldName = "TotalItemSizeInGB"
-
-$defaultProhibitSendReceiveQuota = "100GB"
-$defaultRecoverableItemsQuota = "30GB"
-$defaultRecoverableItemsWarningQuota = "20GB"
-
-$mailboxMinimumQuotaDifference = 1
-$mailboxMinimumQuota = 2
-$mailboxQuotaStep = 0.5
-
-$archiveMinimumQuotaDifference = 1
-$archiveMinimumQuota = 5
-$archiveQuotaStep = 5.0
 
 function Get-QuotaForSize {
     <#
@@ -76,9 +78,9 @@ foreach ($exchangeObject in $params.exchangeObjects) {
 
     $mailboxDesiredQuotaGigaBytes = Get-QuotaForSize `
         -Size $mailboxSizeGigaBytes `
-        -MinimumDifference $mailboxMinimumQuotaDifference `
-        -MinimumQuota $mailboxMinimumQuota `
-        -Step $mailboxQuotaStep
+        -MinimumDifference $MailboxMinimumQuotaDifference `
+        -MinimumQuota $MailboxMinimumQuota `
+        -Step $MailboxQuotaStep
     $mailboxDesiredQuotaBytes = Get-BytesFromGigaBytes -GigaBytes $mailboxDesiredQuotaGigaBytes
 
     $movingProhibitSendQuota = $mailboxDesiredQuotaBytes
@@ -87,9 +89,9 @@ foreach ($exchangeObject in $params.exchangeObjects) {
     Set-Mailbox $exchangeObject `
         -UseDatabaseQuotaDefaults $false `
         -ProhibitSendQuota $movingProhibitSendQuota `
-        -ProhibitSendReceiveQuota $defaultProhibitSendReceiveQuota `
-        -RecoverableItemsQuota $defaultRecoverableItemsQuota `
-        -RecoverableItemsWarningQuota $defaultRecoverableItemsWarningQuota `
+        -ProhibitSendReceiveQuota $DefaultProhibitSendReceiveQuota `
+        -RecoverableItemsQuota $DefaultRecoverableItemsQuota `
+        -RecoverableItemsWarningQuota $DefaultRecoverableItemsWarningQuota `
         -IssueWarningQuota $movingIssueWarningQuota
 
     $mailboxInfo = Get-Mailbox -Identity $exchangeObject
@@ -111,9 +113,9 @@ foreach ($exchangeObject in $params.exchangeObjects) {
 
     $archiveDesiredQuotaGigaBytes = Get-QuotaForSize `
         -Size $archiveSizeGigaBytes `
-        -MinimumDifference $archiveMinimumQuotaDifference `
-        -MinimumQuota $archiveMinimumQuota `
-        -Step $archiveQuotaStep
+        -MinimumDifference $ArchiveMinimumQuotaDifference `
+        -MinimumQuota $ArchiveMinimumQuota `
+        -Step $ArchiveQuotaStep
     $archiveDesiredQuotaBytes = Get-BytesFromGigaBytes -GigaBytes $archiveDesiredQuotaGigaBytes
 
     $movingArchiveQuota = $archiveDesiredQuotaBytes
