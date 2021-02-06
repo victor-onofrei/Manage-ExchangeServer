@@ -2,11 +2,11 @@ function Get-ScriptName {
     $callStack = Get-PSCallStack
     $scriptFileName = $callStack[1].Command
 
-    return [io.path]::GetFileNameWithoutExtension($scriptFileName)
+    return [IO.Path]::GetFileNameWithoutExtension($scriptFileName)
 }
 
 function Initialize-DefaultParams {
-    param(
+    param (
         [String]$_ScriptName = (Get-ScriptName),
 
         [Alias("IP")][String]$InputPath,
@@ -49,7 +49,7 @@ function Initialize-DefaultParams {
                 New-Item $configDirectoryPath -Type Directory -ErrorAction SilentlyContinue > $null
 
                 # Create a default, empty config data.
-                $config = [ordered]@{
+                $config = [Ordered]@{
                     $configGlobalCategory = @{}
                 }
 
@@ -61,12 +61,12 @@ function Initialize-DefaultParams {
         }
 
         function Read-Param {
-            param(
+            param (
                 [String]$Name,
                 [String]$Value,
                 [String[]]$DefaultValue,
 
-                [hashtable]$Config,
+                [Hashtable]$Config,
                 [String]$ScriptName
             )
 
