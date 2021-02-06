@@ -110,6 +110,9 @@ function Initialize-DefaultParams {
         # Load the config.
         $config = Get-Config
 
+        # Set timestamp variable.
+        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+
         # Read the params.
 
         $InputPath = Read-Param "InputPath" -Value $InputPath -DefaultValue "$HOME" -Config $config -ScriptName $_ScriptName
@@ -118,7 +121,7 @@ function Initialize-DefaultParams {
 
         $OutputPath = Read-Param "OutputPath" -Value $OutputPath -DefaultValue "$HOME" -Config $config -ScriptName $_ScriptName
         $OutputDir = Read-Param "OutputDir" -Value $OutputDir -Config $config -ScriptName $_ScriptName
-        $OutputFileName = Read-Param "OutputFileName" -Value $OutputFileName -DefaultValue "output_$_ScriptName.csv" -Config $config -ScriptName $_ScriptName
+        $OutputFileName = Read-Param "OutputFileName" -Value $OutputFileName -DefaultValue "output_$_ScriptName.$timestamp.csv" -Config $config -ScriptName $_ScriptName
 
         $intermediateInputFilePath = Join-Path $InputPath -ChildPath $InputDir
         $intermediateOutputFilePath = Join-Path $OutputPath -ChildPath $OutputDir
