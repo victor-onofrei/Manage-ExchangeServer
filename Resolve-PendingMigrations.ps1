@@ -1,9 +1,12 @@
 param (
-    [Switch]$BypassItemCount
+    [Alias("BIC")][Switch]$BypassItemCount,
+    [Alias("ICT")][Int]$ItemCountThreshold
 )
 
 . "$PSScriptRoot\Initializer.ps1"
 $params = Invoke-Expression "Initialize-DefaultParams $args"
+
+$ItemCountThreshold = Read-Param "ItemCountThreshold" -Value $ItemCountThreshold -DefaultValue 50 -Config $params.config -ScriptName $params.scriptName
 
 $routingAddress = (
     Get-OrganizationConfig | `
@@ -13,7 +16,7 @@ $routingAddress = (
 
 foreach ($exchangeObject in $params.exchangeObjects) {
     $itemCount = Get-MailboxFolderStatistics $exchangeObject | Where-Object {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
-    if ($itemCount -le $params.itemCountThreshold -or $BypassItemCount) {
+    if ($itemCount -le $ItemCountThreshold -or $BypassItemCount) {
         $mailboxInfo = Get-Mailbox -Identity $exchangeObject
 
         foreach ($emailAddress in $mailboxInfo.EmailAddresses) {

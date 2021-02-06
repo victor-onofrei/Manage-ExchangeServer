@@ -22,9 +22,7 @@ function Initialize-DefaultParams {
         [Alias("OD")][String]$OutputDir,
         [Alias("OFN")][String]$OutputFileName,
 
-        [Alias("EO")][String[]]$ExchangeObjects,
-
-        [Alias("ICT")][Int]$ItemCountThreshold
+        [Alias("EO")][String[]]$ExchangeObjects
     )
 
     begin {
@@ -93,15 +91,19 @@ function Initialize-DefaultParams {
         }
 
         $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
-        $ItemCountThreshold = Read-Param "ItemCountThreshold" -Value $ItemCountThreshold -DefaultValue 50 -Config $config -ScriptName $_ScriptName
     }
 
     end {
+        Write-Verbose "scriptName: $_ScriptName"
+        Write-Verbose "config: $($config | ConvertTo-Json)"
         Write-Verbose "inputFilePath: $inputFilePath"
         Write-Verbose "outputFilePath: $outputFilePath"
-        Write-Verbose "exchangeObjects: $exchangeObjects"
+        Write-Verbose "exchangeObjects: $($exchangeObjects | ConvertTo-Json)"
 
         return @{
+            scriptName = $_ScriptName
+            config = $config
+
             inputPath = $InputPath
             inputDir = $InputDir
             inputFileName = $InputFileName
@@ -113,7 +115,6 @@ function Initialize-DefaultParams {
             outputFilePath = $outputFilePath
 
             exchangeObjects = $ExchangeObjects
-            itemCountThreshold = $ItemCountThreshold
         }
     }
 }
