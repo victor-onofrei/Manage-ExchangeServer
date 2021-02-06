@@ -11,6 +11,7 @@ function Get-ScriptName {
 
 function Initialize-DefaultParams {
     [CmdletBinding()]
+    [OutputType([Hashtable])]
     param (
         [String]$_ScriptName = (Get-ScriptName),
 
