@@ -68,8 +68,8 @@ function Initialize-DefaultParams {
         function Read-Param {
             param (
                 [String]$Name,
-                [String[]]$Value,
-                [String[]]$DefaultValue,
+                [Object[]]$Value,
+                [Object[]]$DefaultValue,
 
                 [Hashtable]$Config,
                 [String]$ScriptName
@@ -142,7 +142,7 @@ function Initialize-DefaultParams {
         }
 
         $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
-        $ItemCountThreshold = Read-Param "ItemCountThreshold" -Value $ItemCountThreshold -DefaultValue "50" -Config $config -ScriptName $_ScriptName
+        $ItemCountThreshold = Read-Param "ItemCountThreshold" -Value $ItemCountThreshold -DefaultValue 50 -Config $config -ScriptName $_ScriptName
     }
 
     end {
