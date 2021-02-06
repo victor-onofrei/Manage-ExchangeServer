@@ -44,9 +44,6 @@ OutputPath=C:\exchange
 OutputDir=outputs
 OutputFileName=output.csv
 
-ExchangeObjects=first.user@example.com
-ExchangeObjects=second.user@example.com
-
 [Set-MailboxQuota]
 InputPath=C:\quotas
 InputDir=inputs
@@ -55,9 +52,6 @@ InputFileName=users_list.csv
 OutputPath=C:\quotas
 OutputDir=outputs
 OutputFileName=result.csv
-
-ExchangeObjects=first.quota.user@example.com
-ExchangeObjects=second.quota.user@example.com
 ```
 
 ## Parameters
@@ -78,6 +72,10 @@ Name | Alias
 `-OutputDir` | OD
 `-OutputFileName` | OFN
 `-ExchangeObjects` | EO
+
+_Note: When you need to specify multiple value for the `-ExchangeObjects` param,
+you have to enclose them in single quotes like: `-ExchangeObjects
+'first.user@example.com,second.user@example.com'`._
 
 _Note: It's not guaranteed that all of the scripts are using all of these
 parameters. Some scripts might even decide not to use any of them._

@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Get-ScriptName {
     $callStack = Get-PSCallStack
     $scriptFileName = $callStack[1].Command
@@ -6,6 +8,7 @@ function Get-ScriptName {
 }
 
 function Initialize-DefaultParams {
+    [CmdletBinding()]
     param (
         [String]$_ScriptName = (Get-ScriptName),
 
@@ -32,7 +35,7 @@ function Initialize-DefaultParams {
                 Install-Module $iniModule -AcceptLicense
             }
 
-            Import-Module $iniModule
+            Import-Module $iniModule -Verbose:$false
         }
 
         function Get-Config {
@@ -63,7 +66,7 @@ function Initialize-DefaultParams {
         function Read-Param {
             param (
                 [String]$Name,
-                [String]$Value,
+                [String[]]$Value,
                 [String[]]$DefaultValue,
 
                 [Hashtable]$Config,
@@ -75,25 +78,29 @@ function Initialize-DefaultParams {
                 return $Value
             }
 
-            $key = $Name
+            if ($Config) {
+                # Return a value from the config file if it exists.
 
-            $specificCategory = $ScriptName
+                $key = $Name
 
-            if ($config[$specificCategory]) {
-                $specificValue = $config[$specificCategory][$key]
+                $specificCategory = $ScriptName
 
-                if ($specificValue) {
-                    # Return the specific value from the config file if it
-                    # exists.
-                    return $specificValue
+                if ($Config[$specificCategory]) {
+                    $specificValue = $Config[$specificCategory][$key]
+
+                    if ($specificValue) {
+                        # Return the specific value from the config file if it
+                        # exists.
+                        return $specificValue
+                    }
                 }
-            }
 
-            $globalValue = $config[$configGlobalCategory][$key]
+                $globalValue = $Config[$configGlobalCategory][$key]
 
-            if ($globalValue) {
-                # Return the global value from the config file if it exists.
-                return $globalValue
+                if ($globalValue) {
+                    # Return the global value from the config file if it exists.
+                    return $globalValue
+                }
             }
 
             if ($DefaultValue) {
@@ -132,10 +139,14 @@ function Initialize-DefaultParams {
             New-Item $intermediateOutputFilePath -ItemType Directory -ErrorAction SilentlyContinue > $null
         }
 
-        $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) -Config $config -ScriptName $_ScriptName
+        $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
     }
 
     end {
+        Write-Verbose "inputFilePath: $inputFilePath"
+        Write-Verbose "outputFilePath: $outputFilePath"
+        Write-Verbose "exchangeObjects: $exchangeObjects"
+
         return @{
             inputPath = $InputPath
             inputDir = $InputDir
