@@ -35,7 +35,7 @@ function Initialize-DefaultParams {
                 Install-Module $iniModule -AcceptLicense
             }
 
-            Import-Module $iniModule
+            Import-Module $iniModule -Verbose:$false
         }
 
         function Get-Config {
