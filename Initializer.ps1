@@ -64,7 +64,7 @@ function Initialize-DefaultParams {
             param(
                 [String]$Name,
                 [String]$Value,
-                [string]$DefaultValue,
+                [String[]]$DefaultValue,
 
                 [hashtable]$Config,
                 [String]$ScriptName
