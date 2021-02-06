@@ -111,7 +111,7 @@ function Initialize-DefaultParams {
         $config = Get-Config
 
         # Set timestamp variable.
-        $timestamp = Get-Date -Format yyyyMMdd_HHmmss
+        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 
         # Read the params.
 
