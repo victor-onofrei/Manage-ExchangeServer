@@ -13,7 +13,7 @@ $routingAddress = (
 
 foreach ($exchangeObject in $params.exchangeObjects) {
     $itemCount = Get-MailboxFolderStatistics $exchangeObject | Where-Object {$_.FolderType -eq "Root"} | Select-Object -ExpandProperty ItemsInFolderAndSubfolders
-    if ($itemCount -le "100" -or $BypassItemCount) {
+    if ($itemCount -le $params.itemCountThreshold -or $BypassItemCount) {
         $mailboxInfo = Get-Mailbox -Identity $exchangeObject
 
         foreach ($emailAddress in $mailboxInfo.EmailAddresses) {
