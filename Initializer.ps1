@@ -79,8 +79,8 @@ function Initialize-DefaultParams {
 
             $specificCategory = $ScriptName
 
-            if ($config[$specificCategory]) {
-                $specificValue = $config[$specificCategory][$key]
+            if ($Config[$specificCategory]) {
+                $specificValue = $Config[$specificCategory][$key]
 
                 if ($specificValue) {
                     # Return the specific value from the config file if it
@@ -89,7 +89,7 @@ function Initialize-DefaultParams {
                 }
             }
 
-            $globalValue = $config[$configGlobalCategory][$key]
+            $globalValue = $Config[$configGlobalCategory][$key]
 
             if ($globalValue) {
                 # Return the global value from the config file if it exists.
