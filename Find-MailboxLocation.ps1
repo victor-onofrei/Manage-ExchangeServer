@@ -3,11 +3,17 @@ $params = Invoke-Expression "Initialize-DefaultParams $args"
 
 "exchangeObject,mailboxLocation" >> $params.outputFilePath
 foreach ($exchangeObject in $params.exchangeObjects) {
-    $exchangeObjectTypeDetails = (Get-Recipient -Identity $exchangeObject -ErrorAction SilentlyContinue).RecipientTypeDetails
+    $exchangeObjectTypeDetails = (
+        Get-Recipient `
+            -Identity $exchangeObject `
+            -ErrorAction SilentlyContinue
+    ).RecipientTypeDetails
+
     $mailboxLocation = $null
+    $isLocal = $exchangeObjectTypeDetails -like "*Mailbox"
     $isRemote = $exchangeObjectTypeDetails -like "Remote*"
 
-    if ($exchangeObjectTypeDetails -like "*Mailbox" -and (-not $isRemote)) {
+    if ($isLocal -and (-not $isRemote)) {
         $mailboxLocation = "EXP"
     } elseif ($isRemote) {
         $mailboxLocation = "EXO"
