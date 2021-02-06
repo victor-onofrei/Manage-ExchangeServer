@@ -20,7 +20,7 @@ function Initialize-DefaultParams {
         [Alias("OD")][String]$OutputDir,
         [Alias("OFN")][String]$OutputFileName,
 
-        [Alias("EO")][String[]]$ExchangeObjects
+        [Alias("EO")][String[]]$ExchangeObjects,
 
         [Alias("ICT")][Int]$ItemCountThreshold
     )
