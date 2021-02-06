@@ -1,3 +1,5 @@
+Set-StrictMode -Version Latest
+
 function Get-ScriptName {
     $callStack = Get-PSCallStack
     $scriptFileName = $callStack[1].Command
