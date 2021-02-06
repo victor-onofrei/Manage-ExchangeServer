@@ -73,24 +73,24 @@ function Initialize-DefaultParams {
 
         # Read the params.
 
-        $InputPath = Read-Param "InputPath" -Value $InputPath -DefaultValue "$HOME" -Config $config -ScriptName $_ScriptName
-        $InputDir = Read-Param "InputDir" -Value $InputDir -Config $config -ScriptName $_ScriptName
-        $InputFileName = Read-Param "InputFileName" -Value $InputFileName -DefaultValue "input_$_ScriptName.csv" -Config $config -ScriptName $_ScriptName
+        $inputPath = Read-Param "InputPath" -Value $InputPath -DefaultValue "$HOME" -Config $config -ScriptName $_ScriptName
+        $inputDir = Read-Param "InputDir" -Value $InputDir -Config $config -ScriptName $_ScriptName
+        $inputFileName = Read-Param "InputFileName" -Value $InputFileName -DefaultValue "input_$_ScriptName.csv" -Config $config -ScriptName $_ScriptName
 
-        $OutputPath = Read-Param "OutputPath" -Value $OutputPath -DefaultValue "$HOME" -Config $config -ScriptName $_ScriptName
-        $OutputDir = Read-Param "OutputDir" -Value $OutputDir -Config $config -ScriptName $_ScriptName
-        $OutputFileName = Read-Param "OutputFileName" -Value $OutputFileName -DefaultValue "output_$_ScriptName.$timestamp.csv" -Config $config -ScriptName $_ScriptName
+        $outputPath = Read-Param "OutputPath" -Value $OutputPath -DefaultValue "$HOME" -Config $config -ScriptName $_ScriptName
+        $outputDir = Read-Param "OutputDir" -Value $OutputDir -Config $config -ScriptName $_ScriptName
+        $outputFileName = Read-Param "OutputFileName" -Value $OutputFileName -DefaultValue "output_$_ScriptName.$timestamp.csv" -Config $config -ScriptName $_ScriptName
 
-        $intermediateInputFilePath = Join-Path $InputPath -ChildPath $InputDir
-        $intermediateOutputFilePath = Join-Path $OutputPath -ChildPath $OutputDir
-        $inputFilePath = Join-Path $intermediateInputFilePath -ChildPath $InputFileName
-        $outputFilePath = Join-Path $intermediateOutputFilePath -ChildPath $OutputFileName
+        $intermediateInputFilePath = Join-Path $inputPath -ChildPath $inputDir
+        $intermediateOutputFilePath = Join-Path $outputPath -ChildPath $outputDir
+        $inputFilePath = Join-Path $intermediateInputFilePath -ChildPath $inputFileName
+        $outputFilePath = Join-Path $intermediateOutputFilePath -ChildPath $outputFileName
 
         if (-not (Test-Path $intermediateOutputFilePath -PathType Container)) {
             New-Item $intermediateOutputFilePath -ItemType Directory -ErrorAction SilentlyContinue > $null
         }
 
-        $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
+        $exchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
     }
 
     end {
@@ -104,17 +104,17 @@ function Initialize-DefaultParams {
             scriptName = $_ScriptName
             config = $config
 
-            inputPath = $InputPath
-            inputDir = $InputDir
-            inputFileName = $InputFileName
+            inputPath = $inputPath
+            inputDir = $inputDir
+            inputFileName = $inputFileName
             inputFilePath = $inputFilePath
 
-            outputPath = $OutputPath
-            outputDir = $OutputDir
-            outputFileName = $OutputFileName
+            outputPath = $outputPath
+            outputDir = $outputDir
+            outputFileName = $outputFileName
             outputFilePath = $outputFilePath
 
-            exchangeObjects = $ExchangeObjects
+            exchangeObjects = $exchangeObjects
         }
     }
 }
