@@ -44,9 +44,6 @@ OutputPath=C:\exchange
 OutputDir=outputs
 OutputFileName=output.csv
 
-ExchangeObjects=first.user@example.com
-ExchangeObjects=second.user@example.com
-
 [Set-MailboxQuota]
 InputPath=C:\quotas
 InputDir=inputs
@@ -55,9 +52,6 @@ InputFileName=users_list.csv
 OutputPath=C:\quotas
 OutputDir=outputs
 OutputFileName=result.csv
-
-ExchangeObjects=first.quota.user@example.com
-ExchangeObjects=second.quota.user@example.com
 ```
 
 ## Parameters
