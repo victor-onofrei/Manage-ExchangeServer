@@ -21,6 +21,8 @@ function Initialize-DefaultParams {
         [Alias("OFN")][String]$OutputFileName,
 
         [Alias("EO")][String[]]$ExchangeObjects
+
+        [Alias("ICT")][Int]$ItemCountThreshold
     )
 
     begin {
@@ -140,6 +142,7 @@ function Initialize-DefaultParams {
         }
 
         $ExchangeObjects = Read-Param "ExchangeObjects" -Value $ExchangeObjects -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
+        $ItemCountThreshold = Read-Param "ItemCountThreshold" -Value $ItemCountThreshold -DefaultValue "50" -Config $config -ScriptName $_ScriptName
     }
 
     end {
@@ -159,6 +162,7 @@ function Initialize-DefaultParams {
             outputFilePath = $outputFilePath
 
             exchangeObjects = $ExchangeObjects
+            itemCountThreshold = $ItemCountThreshold
         }
     }
 }
