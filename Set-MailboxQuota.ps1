@@ -69,19 +69,18 @@ process {
     }
 
     foreach ($exchangeObject in $params.exchangeObjects) {
-        $mailboxSizeGigaBytes =
-            Get-MailboxStatistics -Identity $exchangeObject |
+        $mailboxSizeGigaBytes = Get-MailboxStatistics -Identity $exchangeObject |
             Select-Object @{
                 Name = $SizeFieldName
                 Expression = {
                     [Math]::Round(
                         (
                             $_.
-                                TotalItemSize.
-                                ToString().
-                                Split("(")[1].
-                                Split(" ")[0].
-                                Replace(",", "") / 1GB
+                            TotalItemSize.
+                            ToString().
+                            Split("(")[1].
+                            Split(" ")[0].
+                            Replace(",", "") / 1GB
                         ),
                         2
                     )
@@ -112,19 +111,18 @@ process {
         $hasArchive = $hasArchiveGuid -and $mailboxInfo.archiveDatabase
 
         if ($hasArchive) {
-            $archiveSizeGigaBytes =
-                Get-MailboxStatistics -Identity $exchangeObject -Archive |
+            $archiveSizeGigaBytes = Get-MailboxStatistics -Identity $exchangeObject -Archive |
                 Select-Object @{
                     Name = $SizeFieldName
                     Expression = {
                         [Math]::Round(
                             (
                                 $_.
-                                    TotalItemSize.
-                                    ToString().
-                                    Split("(")[1].
-                                    Split(" ")[0].
-                                    Replace(",", "") / 1GB
+                                TotalItemSize.
+                                ToString().
+                                Split("(")[1].
+                                Split(" ")[0].
+                                Replace(",", "") / 1GB
                             ),
                             2
                         )
