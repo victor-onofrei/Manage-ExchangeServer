@@ -70,7 +70,7 @@ process {
 
     foreach ($exchangeObject in $params.exchangeObjects) {
         $mailboxSizeGigaBytes =
-            Get-MailboxStatistics -Identity $exchangeObject | `
+            Get-MailboxStatistics -Identity $exchangeObject |
             Select-Object @{
                 Name = $SizeFieldName
                 Expression = {
@@ -86,7 +86,7 @@ process {
                         2
                     )
                 }
-            } | `
+            } |
             Select-Object $SizeFieldName -ExpandProperty $SizeFieldName
 
         $mailboxDesiredQuotaGigaBytes = Get-QuotaForSize `
@@ -113,7 +113,7 @@ process {
 
         if ($hasArchive) {
             $archiveSizeGigaBytes =
-                Get-MailboxStatistics -Identity $exchangeObject -Archive | `
+                Get-MailboxStatistics -Identity $exchangeObject -Archive |
                 Select-Object @{
                     Name = $SizeFieldName
                     Expression = {
@@ -129,7 +129,7 @@ process {
                             2
                         )
                     }
-                } | `
+                } |
                 Select-Object $SizeFieldName -ExpandProperty $SizeFieldName
         } else {
             $archiveSizeGigaBytes = 0

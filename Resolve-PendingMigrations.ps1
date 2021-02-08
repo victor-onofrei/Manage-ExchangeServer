@@ -14,16 +14,16 @@ begin {
         -ScriptName $params.scriptName
 
     $routingAddress = (
-        Get-OrganizationConfig | `
-        Select-Object -ExpandProperty MicrosoftExchangeRecipientEmailAddresses | `
+        Get-OrganizationConfig |
+        Select-Object -ExpandProperty MicrosoftExchangeRecipientEmailAddresses |
         Where-Object {$_ -like "*mail.onmicrosoft.com"}
     ).Split("@")[1]
 }
 
 process {
     foreach ($exchangeObject in $params.exchangeObjects) {
-        $itemCount = Get-MailboxFolderStatistics $exchangeObject | `
-            Where-Object {$_.FolderType -eq "Root"} | `
+        $itemCount = Get-MailboxFolderStatistics $exchangeObject |
+            Where-Object {$_.FolderType -eq "Root"} |
             Select-Object -ExpandProperty ItemsInFolderAndSubfolders
 
         if ($itemCount -le $itemCountThreshold -or $BypassItemCount) {
