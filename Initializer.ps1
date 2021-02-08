@@ -129,7 +129,7 @@ function Initialize-DefaultParams {
         Write-Verbose "config: $($config | ConvertTo-Json)"
         Write-Verbose "inputFilePath: $inputFilePath"
         Write-Verbose "outputFilePath: $outputFilePath"
-        Write-Verbose "exchangeObjects: $($exchangeObjects | ConvertTo-Json)"
+        Write-Verbose "exchangeObjects.Count: $($exchangeObjects.Count)"
 
         return @{
             scriptName = $_ScriptName
