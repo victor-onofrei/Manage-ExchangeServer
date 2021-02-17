@@ -1,5 +1,5 @@
 process {
-    $ts = Get-Date -Format yyyyMMdd_hhmmss
+    $ts = Get-Date -Format "yyyyMMdd_hhmmss"
     $Path="\\\Download\generic\outputs"
     $ProjName = "migration"
     $FileName = "O365_groups.$ts.xls"
