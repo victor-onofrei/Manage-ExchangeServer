@@ -31,9 +31,7 @@
         }
         PSUseConsistentWhitespace = @{
             Enable = $true
-            # CheckParameter = $true
             CheckPipeForRedundantWhitespace = $true
-            # IgnoreAssignmentOperatorInsideHashTable = $true
         }
     }
 }
