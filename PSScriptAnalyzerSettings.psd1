@@ -21,9 +21,9 @@
         PSUseCompatibleSyntax = @{
             Enable = $true
             TargetVersions = @(
-                "5",
-                "6",
-                "7"
+                "5.0",
+                "6.0",
+                "7.0"
             )
         }
         PSUseConsistentIndentation = @{
