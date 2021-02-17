@@ -1,10 +1,19 @@
+using namespace System.Management.Automation
+
 process {
     $timestamp = Get-Date -Format "yyyyMMdd_hhmmss"
     $outputDir = "\\\Download\generic\outputs"
     $projectName = "migration"
     $outputFileName = "O365_groups.$timestamp.xls"
 
-    New-Item -Path $outputDir -Name $projectName -ItemType Directory -ErrorAction SilentlyContinue
+    $newOutputDirectoryParams = @{
+        Path = $outputDir
+        Name = $projectName
+        ItemType = "directory"
+        ErrorAction = [ActionPreference]::SilentlyContinue
+    }
+
+    New-Item @newOutputDirectoryParams
     New-Item -Name $outputFileName -Path $outputDir\$projectName -Type File -ErrorAction SilentlyContinue
     $PathtoAddressesOutfile = "$outputDir\$projectName\$outputFileName"
 
