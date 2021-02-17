@@ -14,7 +14,7 @@ process {
     }
 
     New-Item @newOutputDirectoryParams
-    New-Item -Name $outputFileName -Path $outputDir\$projectName -Type File -ErrorAction SilentlyContinue
+
     $PathtoAddressesOutfile = "$outputDir\$projectName\$outputFileName"
 
     Start-Transcript "$outputDir\$projectName\$outputFileName.txt"
