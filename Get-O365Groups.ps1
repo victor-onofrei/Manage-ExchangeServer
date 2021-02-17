@@ -15,7 +15,7 @@ process {
 
     New-Item @newOutputDirectoryParams
 
-    $PathtoAddressesOutfile = "$outputDir\$projectName\$outputFileName"
+    $outputFilePath = "$outputDir\$projectName\$outputFileName"
 
     Start-Transcript "$outputDir\$projectName\$outputFileName.txt"
 
@@ -23,7 +23,7 @@ process {
     $GroupsCount = @($Groups).Count
     Write-Host "To process:" $GroupsCount "groups"
 
-    Add-Content $PathtoAddressesOutfile Group">"Groupname">"GroupGUID">"Group_SMTP">"Groupcategory">"Group_company">"Group_Members_CA8">"DLcountORDLManagerscount">"compBcountORcompBManagerscount">"compAcountORcompAManagerscount">"Group_ManagedBy_SMTP">"Group_ManagedBy_Company">"Group_ManagedBy_CA8">"GroupMembersEmai
+    Add-Content $outputFilePath Group">"Groupname">"GroupGUID">"Group_SMTP">"Groupcategory">"Group_company">"Group_Members_CA8">"DLcountORDLManagerscount">"compBcountORcompBManagerscount">"compAcountORcompAManagerscount">"Group_ManagedBy_SMTP">"Group_ManagedBy_Company">"Group_ManagedBy_CA8">"GroupMembersEmai
 
 
     for ($index = 0; $index -lt $GroupsCount; $index++) {
@@ -96,7 +96,7 @@ process {
             $GroupMembersEmail = $GroupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $PathtoAddressesOutfile $Group">"$Groupname">"$GroupGUID">"$Group_SMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
+            Add-Content $outputFilePath $Group">"$Groupname">"$GroupGUID">"$Group_SMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
         }
         $compAcount = $null
         $compBcount = $null
@@ -106,7 +106,7 @@ process {
     }
 
     $SmtpServer = "smtp.compB.com"
-    $att = new-object Net.Mail.Attachment($PathtoAddressesOutfile)
+    $att = new-object Net.Mail.Attachment($outputFilePath)
     $msg = new-object Net.Mail.MailMessage
     $smtp = new-object Net.Mail.SmtpClient($SmtpServer)
     $msg.From = "noreply_group_details@compA.com"
