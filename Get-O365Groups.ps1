@@ -3,7 +3,8 @@ process {
     $outputDir = "\\\Download\generic\outputs"
     $projectName = "migration"
     $outputFileName = "O365_groups.$timestamp.xls"
-    New-Item -Name $projectName -Path $outputDir -Type Directory -ErrorAction SilentlyContinue
+
+    New-Item -Path $outputDir -Name $projectName -Type Directory -ErrorAction SilentlyContinue
     New-Item -Name $outputFileName -Path $outputDir\$projectName -Type File -ErrorAction SilentlyContinue
     $PathtoAddressesOutfile = "$outputDir\$projectName\$outputFileName"
 
