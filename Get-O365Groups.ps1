@@ -1,13 +1,13 @@
 process {
     $timestamp = Get-Date -Format "yyyyMMdd_hhmmss"
     $outputDir = "\\\Download\generic\outputs"
-    $ProjName = "migration"
+    $projectName = "migration"
     $FileName = "O365_groups.$timestamp.xls"
-    New-Item -Name $ProjName -Path $outputDir -Type Directory -ErrorAction SilentlyContinue
-    New-Item -Name $FileName -Path $outputDir\$ProjName -Type File -ErrorAction SilentlyContinue
-    $PathtoAddressesOutfile = "$outputDir\$ProjName\$FileName"
+    New-Item -Name $projectName -Path $outputDir -Type Directory -ErrorAction SilentlyContinue
+    New-Item -Name $FileName -Path $outputDir\$projectName -Type File -ErrorAction SilentlyContinue
+    $PathtoAddressesOutfile = "$outputDir\$projectName\$FileName"
 
-    Start-Transcript "$outputDir\$ProjName\$FileName.txt"
+    Start-Transcript "$outputDir\$projectName\$FileName.txt"
 
     $Groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" | Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID # | ? {$_.RecipientTypeDetails -eq "GroupMailbox"}
     $GroupsCount = @($Groups).Count
