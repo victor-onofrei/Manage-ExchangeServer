@@ -1,8 +1,8 @@
 process {
-    $ts = Get-Date -Format "yyyyMMdd_hhmmss"
+    $timestamp = Get-Date -Format "yyyyMMdd_hhmmss"
     $Path="\\\Download\generic\outputs"
     $ProjName = "migration"
-    $FileName = "O365_groups.$ts.xls"
+    $FileName = "O365_groups.$timestamp.xls"
     New-Item -Name $ProjName -Path $Path -Type Directory -ErrorAction SilentlyContinue
     New-Item -Name $FileName -Path $Path\$ProjName -Type File -ErrorAction SilentlyContinue
     $PathtoAddressesOutfile = "$Path\$ProjName\$FileName"
