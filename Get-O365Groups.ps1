@@ -23,7 +23,7 @@ process {
 
     $outputFilePath = Join-Path @outputFilePathParams
 
-    Start-Transcript "$outputDir\$projectName\$outputFileName.txt"
+    Start-Transcript "$outputFilePath.txt"
 
     $Groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" | Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID # | ? {$_.RecipientTypeDetails -eq "GroupMailbox"}
     $GroupsCount = @($Groups).Count
