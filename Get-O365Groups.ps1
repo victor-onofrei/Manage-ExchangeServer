@@ -25,7 +25,8 @@ process {
 
     Start-Transcript "$outputFilePath.txt"
 
-    $groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" | Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
+    $groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" |
+        Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
     $GroupsCount = @($groups).Count
     Write-Host "To process:" $GroupsCount "groups"
 
