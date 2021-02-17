@@ -15,7 +15,7 @@ process {
 
     New-Item @newOutputDirectoryParams
 
-    $outputFilePath = "$outputDir\$projectName\$outputFileName"
+    $outputFilePath = Join-Path -Path $outputDir -ChildPath $projectName -AdditionalChildPath $outputFileName
 
     Start-Transcript "$outputDir\$projectName\$outputFileName.txt"
 
