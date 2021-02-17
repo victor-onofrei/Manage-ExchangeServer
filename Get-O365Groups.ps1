@@ -2,12 +2,12 @@ process {
     $timestamp = Get-Date -Format "yyyyMMdd_hhmmss"
     $outputDir = "\\\Download\generic\outputs"
     $projectName = "migration"
-    $FileName = "O365_groups.$timestamp.xls"
+    $outputFileName = "O365_groups.$timestamp.xls"
     New-Item -Name $projectName -Path $outputDir -Type Directory -ErrorAction SilentlyContinue
-    New-Item -Name $FileName -Path $outputDir\$projectName -Type File -ErrorAction SilentlyContinue
-    $PathtoAddressesOutfile = "$outputDir\$projectName\$FileName"
+    New-Item -Name $outputFileName -Path $outputDir\$projectName -Type File -ErrorAction SilentlyContinue
+    $PathtoAddressesOutfile = "$outputDir\$projectName\$outputFileName"
 
-    Start-Transcript "$outputDir\$projectName\$FileName.txt"
+    Start-Transcript "$outputDir\$projectName\$outputFileName.txt"
 
     $Groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" | Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID # | ? {$_.RecipientTypeDetails -eq "GroupMailbox"}
     $GroupsCount = @($Groups).Count
@@ -102,8 +102,8 @@ process {
     $msg.From = "noreply_group_details@compA.com"
     $msg.Cc.Add("user1@compA.com")
     $msg.To.Add("user2@compA.com")
-    $msg.Subject = "$($FileName) report is ready"
-    $msg.Body = "Attached is the $($FileName) report"
+    $msg.Subject = "$($outputFileName) report is ready"
+    $msg.Body = "Attached is the $($outputFileName) report"
     $msg.Attachments.Add($att)
     $smtp.Send($msg)
     Stop-Transcript
