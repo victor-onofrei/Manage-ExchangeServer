@@ -25,8 +25,8 @@ process {
 
     Start-Transcript "$outputFilePath.txt"
 
-    $Groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" | Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID # | ? {$_.RecipientTypeDetails -eq "GroupMailbox"}
-    $GroupsCount = @($Groups).Count
+    $groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" | Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID # | ? {$_.RecipientTypeDetails -eq "GroupMailbox"}
+    $GroupsCount = @($groups).Count
     Write-Host "To process:" $GroupsCount "groups"
 
     Add-Content $outputFilePath Group">"Groupname">"GroupGUID">"Group_SMTP">"Groupcategory">"Group_company">"Group_Members_CA8">"DLcountORDLManagerscount">"compBcountORcompBManagerscount">"compAcountORcompAManagerscount">"Group_ManagedBy_SMTP">"Group_ManagedBy_Company">"Group_ManagedBy_CA8">"GroupMembersEmai
@@ -40,7 +40,7 @@ process {
             exo
         }
 
-        $Group = $Groups[$index]
+        $Group = $groups[$index]
         $Group_SMTP = $Group.WindowsEmailAddress
 
         $DLManagers = $Group.ManagedBy | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
