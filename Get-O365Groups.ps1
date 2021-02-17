@@ -4,7 +4,7 @@ process {
     $projectName = "migration"
     $outputFileName = "O365_groups.$timestamp.xls"
 
-    New-Item -Path $outputDir -Name $projectName -Type Directory -ErrorAction SilentlyContinue
+    New-Item -Path $outputDir -Name $projectName -ItemType Directory -ErrorAction SilentlyContinue
     New-Item -Name $outputFileName -Path $outputDir\$projectName -Type File -ErrorAction SilentlyContinue
     $PathtoAddressesOutfile = "$outputDir\$projectName\$outputFileName"
 
