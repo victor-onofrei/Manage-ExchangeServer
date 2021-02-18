@@ -64,11 +64,11 @@ process {
 
         if ($groupManagers) {
             $groupManagersCount = ($groupManagers | Measure-Object).count
-            $RecipientUserProperties = $groupManagers.CustomAttribute8
-            $compBManagerscount = ($RecipientUserProperties | ? {$_ -like "CAB*"} | Measure-Object).count
-            $compAManagerscount = ($RecipientUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
-            $RecipientUserProperties = $RecipientUserProperties -join ";"
-            $Group_ManagedBy_CA8 = $RecipientUserProperties
+            $recipientUserProperties = $groupManagers.CustomAttribute8
+            $compBManagerscount = ($recipientUserProperties | ? {$_ -like "CAB*"} | Measure-Object).count
+            $compAManagerscount = ($recipientUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
+            $recipientUserProperties = $recipientUserProperties -join ";"
+            $Group_ManagedBy_CA8 = $recipientUserProperties
             $DLcountORDLManagerscount = $groupManagersCount
             $compBcountORcompBManagerscount = $compBManagerscount
             $compAcountORcompAManagerscount = $compAManagerscount
