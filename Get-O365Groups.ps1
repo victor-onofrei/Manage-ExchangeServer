@@ -51,7 +51,7 @@ process {
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySMTPAddress, Company
 
-        $GroupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
+        $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
 
         if ($groupManagers) {
             $DLManagerscount = ($groupManagers | Measure-Object).count
@@ -77,8 +77,8 @@ process {
             $Group_ManagedBy_SMTP = $Group_ManagedBy_SMTP -join ";"
             $Group_ManagedBy_Company = $Group_ManagedBy_Company -join ";"
         } else {
-            $DLcount = ($GroupMembers | Measure-Object).count
-            $ADUserProperties = $GroupMembers.CustomAttribute8
+            $DLcount = ($groupMembers | Measure-Object).count
+            $ADUserProperties = $groupMembers.CustomAttribute8
             $compBcount = ($ADUserProperties | ? {$_ -like "CAB*"} | Measure-Object).count
             $compAcount = ($ADUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
             $ADUserProperties = $ADUserProperties -join ";"
@@ -105,7 +105,7 @@ process {
             $Groupcategory = $group.RecipientType
             $GroupGUID = $group.GUID
 
-            $GroupMembersEmail = $GroupMembers.PrimarySMTPAddress
+            $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
             Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
@@ -114,7 +114,7 @@ process {
         $compBcount = $null
         $compAManagerscount = $null
         $compBManagerscount = $null
-        $GroupMembers = $null
+        $groupMembers = $null
     }
 
     $SmtpServer = "smtp.compB.com"
