@@ -47,7 +47,9 @@ process {
         $group = $groups[$index]
         $groupSMTP = $group.WindowsEmailAddress
 
-        $groupManagers = $group.ManagedBy | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
+        $groupManagers = $group.ManagedBy |
+            Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
+            Select-Object CustomAttribute8, PrimarySMTPAddress, Company
 
         $GroupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
 
