@@ -44,11 +44,6 @@ process {
 
         Start-Sleep -Milliseconds 500
 
-        $connectionstatus = Get-PSSession | Where-Object {$_.ConfigurationName -like "Microsoft.Exchange"}
-        if ($connectionstatus.State -ne "Opened") {
-            exo
-        }
-
         $Group = $groups[$index]
         $Group_SMTP = $Group.WindowsEmailAddress
 
