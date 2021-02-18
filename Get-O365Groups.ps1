@@ -61,12 +61,13 @@ process {
             $groupManagerProperties = $groupManagers.CustomAttribute8
 
             $secondCompanyManagersCount = ($groupManagerProperties | ? {$_ -like "CAB*"} | Measure-Object).count
-            $compAManagerscount = ($groupManagerProperties | ? {$_ -like "CAA*"} | Measure-Object).count
+            $firstCompanyManagersCount = ($groupManagerProperties | ? {$_ -like "CAA*"} | Measure-Object).count
+
             $groupManagerProperties = $groupManagerProperties -join ";"
             $Group_ManagedBy_CA8 = $groupManagerProperties
             $DLcountORDLManagerscount = $groupManagersCount
             $compBcountORcompBManagerscount = $secondCompanyManagersCount
-            $compAcountORcompAManagerscount = $compAManagerscount
+            $compAcountORcompAManagerscount = $firstCompanyManagersCount
 
             $Group_ManagedBy_SMTP = @()
             $Group_ManagedBy_Company = @()
@@ -94,7 +95,7 @@ process {
 
         if ($compBcountORcompBManagerscount -eq 0 -and $DLcountORDLManagerscount -eq 0 -and $compAcountORcompAManagerscount -eq 0) {
             $Group_company = "None"
-        } elseif ($secondCompanyManagersCount -and $compAManagerscount) {
+        } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
             $Group_company = "Mixed Owners"
         } elseif ($compBcount -and $compAcount) {
             $Group_company = "Mixed Users"
@@ -116,7 +117,7 @@ process {
         }
         $compAcount = $null
         $compBcount = $null
-        $compAManagerscount = $null
+        $firstCompanyManagersCount = $null
         $secondCompanyManagersCount = $null
         $groupMembers = $null
     }
