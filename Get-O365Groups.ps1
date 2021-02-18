@@ -47,13 +47,13 @@ process {
         $group = $groups[$index]
         $groupSMTP = $group.WindowsEmailAddress
 
-        $DLManagers = $group.ManagedBy | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
+        $groupManagers = $group.ManagedBy | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
 
         $GroupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
 
-        if ($DLManagers) {
-            $DLManagerscount = ($DLManagers | Measure-Object).count
-            $RecipientUserProperties = $DLManagers.CustomAttribute8
+        if ($groupManagers) {
+            $DLManagerscount = ($groupManagers | Measure-Object).count
+            $RecipientUserProperties = $groupManagers.CustomAttribute8
             $compBManagerscount = ($RecipientUserProperties | ? {$_ -like "CAB*"} | Measure-Object).count
             $compAManagerscount = ($RecipientUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
             $RecipientUserProperties = $RecipientUserProperties -join ";"
@@ -64,7 +64,7 @@ process {
 
             $Group_ManagedBy_SMTP = @()
             $Group_ManagedBy_Company = @()
-            Foreach ($Manager in $DLManagers) {
+            Foreach ($Manager in $groupManagers) {
                 $Group_ManagedBy_SMTP += $Manager | select PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
                 # | % { $_.PrimarySMTPAddress.ToString() }
                 $Group_ManagedBy_Company += $Manager | select Company -ExpandProperty Company
