@@ -28,10 +28,10 @@ process {
     $groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" |
         Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
     $groupsCount = @($groups).Count
-    Write-Host "To process:" $groupsCount "groups"
 
     Add-Content $outputFilePath Group">"Groupname">"GroupGUID">"Group_SMTP">"Groupcategory">"Group_company">"Group_Members_CA8">"DLcountORDLManagerscount">"compBcountORcompBManagerscount">"compAcountORcompAManagerscount">"Group_ManagedBy_SMTP">"Group_ManagedBy_Company">"Group_ManagedBy_CA8">"GroupMembersEmai
 
+    Write-Output "To process: $groupsCount groups"
 
     for ($index = 0; $index -lt $groupsCount; $index++) {
         Write-Host "`tProcessing group: " ($index + 1) "/ $groupsCount"
