@@ -54,7 +54,13 @@ process {
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySMTPAddress, Company
 
-        $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
+        $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue |
+            Select-Object -ExpandProperty Members |
+            Where-Object {
+                $_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"
+            } |
+            Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
+            Select-Object CustomAttribute8, PrimarySMTPAddress
 
         if ($groupManagers) {
             $DLManagerscount = ($groupManagers | Measure-Object).count
