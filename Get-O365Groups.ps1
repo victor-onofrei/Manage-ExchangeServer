@@ -40,7 +40,8 @@ process {
     Write-Output "To process: $groupsCount groups"
 
     for ($index = 0; $index -lt $groupsCount; $index++) {
-        Write-Host "`tProcessing group: " ($index + 1) "/ $groupsCount"
+        Write-Output "`tProcessing group: $($index + 1) / $groupsCount"
+
         Start-Sleep -milliseconds 500
         $connectionstatus = Get-PSSession | Where-Object {$_.ConfigurationName -like "Microsoft.Exchange"}
         if ($connectionstatus.State -ne "Opened") {
