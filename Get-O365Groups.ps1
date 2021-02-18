@@ -47,7 +47,12 @@ process {
         $group = $groups[$index]
         $groupSMTP = $group.WindowsEmailAddress
 
-        $groupManagers = $group.ManagedBy | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
+        $groupManagers = $group.ManagedBy |
+            Where-Object {
+                $_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"
+            } |
+            Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
+            Select-Object CustomAttribute8, PrimarySMTPAddress, Company
 
         $GroupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
 
