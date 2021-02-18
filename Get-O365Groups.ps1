@@ -27,14 +27,14 @@ process {
 
     $groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" |
         Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
-    $GroupsCount = @($groups).Count
-    Write-Host "To process:" $GroupsCount "groups"
+    $groupsCount = @($groups).Count
+    Write-Host "To process:" $groupsCount "groups"
 
     Add-Content $outputFilePath Group">"Groupname">"GroupGUID">"Group_SMTP">"Groupcategory">"Group_company">"Group_Members_CA8">"DLcountORDLManagerscount">"compBcountORcompBManagerscount">"compAcountORcompAManagerscount">"Group_ManagedBy_SMTP">"Group_ManagedBy_Company">"Group_ManagedBy_CA8">"GroupMembersEmai
 
 
-    for ($index = 0; $index -lt $GroupsCount; $index++) {
-        Write-Host "`tProcessing group: " ($index + 1) "/ $GroupsCount"
+    for ($index = 0; $index -lt $groupsCount; $index++) {
+        Write-Host "`tProcessing group: " ($index + 1) "/ $groupsCount"
         Start-Sleep -milliseconds 500
         $connectionstatus = Get-PSSession | Where-Object {$_.ConfigurationName -like "Microsoft.Exchange"}
         if ($connectionstatus.State -ne "Opened") {
