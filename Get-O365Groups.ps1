@@ -29,7 +29,13 @@ process {
         Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
     $groupsCount = @($groups).Count
 
-    Add-Content $outputFilePath Group">"Groupname">"GroupGUID">"Group_SMTP">"Groupcategory">"Group_company">"Group_Members_CA8">"DLcountORDLManagerscount">"compBcountORcompBManagerscount">"compAcountORcompAManagerscount">"Group_ManagedBy_SMTP">"Group_ManagedBy_Company">"Group_ManagedBy_CA8">"GroupMembersEmai
+    $header = -join (
+        "Group>Groupname>GroupGUID>Group_SMTP>Groupcategory>Group_company>Group_Members_CA8>",
+        "DLcountORDLManagerscount>compBcountORcompBManagerscount>compAcountORcompAManagerscount>",
+        "Group_ManagedBy_SMTP>Group_ManagedBy_Company>Group_ManagedBy_CA8>GroupMembersEmail"
+    )
+
+    $header >> $outputFilePath
 
     Write-Output "To process: $groupsCount groups"
 
