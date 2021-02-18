@@ -45,11 +45,11 @@ process {
         Start-Sleep -Milliseconds 500
 
         $group = $groups[$index]
-        $Group_SMTP = $group.WindowsEmailAddress
+        $groupSMTP = $group.WindowsEmailAddress
 
         $DLManagers = $group.ManagedBy | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
 
-        $GroupMembers = Get-Group -Identity $Group_SMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
+        $GroupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
 
         if ($DLManagers) {
             $DLManagerscount = ($DLManagers | Measure-Object).count
@@ -106,7 +106,7 @@ process {
             $GroupMembersEmail = $GroupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$Group_SMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
         }
         $compAcount = $null
         $compBcount = $null
