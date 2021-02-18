@@ -44,10 +44,10 @@ process {
 
         Start-Sleep -Milliseconds 500
 
-        $Group = $groups[$index]
-        $Group_SMTP = $Group.WindowsEmailAddress
+        $group = $groups[$index]
+        $Group_SMTP = $group.WindowsEmailAddress
 
-        $DLManagers = $Group.ManagedBy | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
+        $DLManagers = $group.ManagedBy | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress, Company
 
         $GroupMembers = Get-Group -Identity $Group_SMTP -ErrorAction SilentlyContinue | Select -ExpandProperty Members | ? {$_ -notlike "*SRV_M365SPMGRATION0*" -and $_ -notlike "*SRV_M365SPMGRATIONQ*"} | Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue | Select-Object CustomAttribute8, PrimarySMTPAddress
 
@@ -99,14 +99,14 @@ process {
         }
 
         if ($Group_company -eq "compA" -or $Group_company -like "Mixed*") {
-            $Groupname = $Group.Name
-            $Groupcategory = $Group.RecipientType
-            $GroupGUID = $Group.GUID
+            $Groupname = $group.Name
+            $Groupcategory = $group.RecipientType
+            $GroupGUID = $group.GUID
 
             $GroupMembersEmail = $GroupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $Group">"$Groupname">"$GroupGUID">"$Group_SMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$Group_SMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
         }
         $compAcount = $null
         $compBcount = $null
