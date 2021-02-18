@@ -57,13 +57,13 @@ process {
             Select-Object CustomAttribute8, PrimarySMTPAddress
 
         if ($groupManagers) {
-            $DLManagerscount = ($groupManagers | Measure-Object).count
+            $groupManagersCount = ($groupManagers | Measure-Object).count
             $RecipientUserProperties = $groupManagers.CustomAttribute8
             $compBManagerscount = ($RecipientUserProperties | ? {$_ -like "CAB*"} | Measure-Object).count
             $compAManagerscount = ($RecipientUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
             $RecipientUserProperties = $RecipientUserProperties -join ";"
             $Group_ManagedBy_CA8 = $RecipientUserProperties
-            $DLcountORDLManagerscount = $DLManagerscount
+            $DLcountORDLManagerscount = $groupManagersCount
             $compBcountORcompBManagerscount = $compBManagerscount
             $compAcountORcompAManagerscount = $compAManagerscount
 
