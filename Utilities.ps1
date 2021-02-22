@@ -74,16 +74,3 @@ function Get-ExchangeObjectLocation {
         return [ExchangeObjectLocation]::notAvailable
     }
 }
-
-function Get-ExchangeObjectLocationDescription {
-    param (
-        [ExchangeObjectLocation]$Location
-    )
-
-    switch ($Location) {
-        ([ExchangeObjectLocation]::notAvailable) { return "N/A" }
-        ([ExchangeObjectLocation]::exchangeOnPremises) { return "EXP" }
-        ([ExchangeObjectLocation]::exchangeOnline) { return "EXO" }
-        Default { return "N/A" }
-    }
-}

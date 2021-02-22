@@ -8,8 +8,7 @@ process {
 
     foreach ($exchangeObject in $params.exchangeObjects) {
         $location = Get-ExchangeObjectLocation -ExchangeObject $exchangeObject
-        $locationDescription = Get-ExchangeObjectLocationDescription -Location $location
 
-        "$exchangeObject,$locationDescription" >> $params.outputFilePath
+        "$exchangeObject,$location" >> $params.outputFilePath
     }
 }
