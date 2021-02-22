@@ -61,7 +61,7 @@ function Get-ExchangeObjectLocation {
 
     $exchangeObjectTypeDetails = (
         Get-Recipient -Identity $ExchangeObject -ErrorAction SilentlyContinue
-    ).RecipientTypeDetails
+    ) | Select-Object -ExpandProperty RecipientTypeDetails -ErrorAction SilentlyContinue
 
     $isLocal = $exchangeObjectTypeDetails -like "*Mailbox"
     $isRemote = $exchangeObjectTypeDetails -like "Remote*"
