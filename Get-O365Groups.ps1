@@ -90,12 +90,13 @@ process {
         } else {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
-            $compBcount = ($groupMemberProperties | ? {$_ -like "CAB*"} | Measure-Object).Count
+
+            $secondCompanyMembersCount = ($groupMemberProperties | ? {$_ -like "CAB*"} | Measure-Object).Count
             $compAcount = ($groupMemberProperties | ? {$_ -like "CAA*"} | Measure-Object).Count
             $groupMemberProperties = $groupMemberProperties -join ";"
             # $UserProperties = $groupMemberProperties
             $groupMembersOrManagersCount = $groupMembersCount
-            $secondCompanyMembersOrManagersCount = $compBcount
+            $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
             $firstCompanyMembersOrManagersCount = $compAcount
         }
 
@@ -103,7 +104,7 @@ process {
             $Group_company = "None"
         } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
             $Group_company = "Mixed Owners"
-        } elseif ($compBcount -and $compAcount) {
+        } elseif ($secondCompanyMembersCount -and $compAcount) {
             $Group_company = "Mixed Users"
         } elseif (($secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount) -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $groupsManagedByCompany -match "compB" -and $groupsManagedByCompany -notmatch "compA") -or (($secondCompanyMembersOrManagersCount) -and $firstCompanyMembersOrManagersCount -eq 0)) {
             $Group_company = "compB"
@@ -122,7 +123,7 @@ process {
             Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
         }
         $compAcount = $null
-        $compBcount = $null
+        $secondCompanyMembersCount = $null
         $firstCompanyManagersCount = $null
         $secondCompanyManagersCount = $null
         $groupMembers = $null
