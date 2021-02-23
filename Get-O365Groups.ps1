@@ -83,10 +83,8 @@ process {
                     Select-Object PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
 
                 $groupsManagedByCompany += $manager | Select-Object Company -ExpandProperty Company
-                # | % { $_.Company.ToString() }
-                # $managerCustomAttribute8 += $Manager | select customattribute8 -ExpandProperty customattribute8
-                # | % { $_.customattribute8.ToString() }
             }
+
             $groupsManagedBySMTP = $groupsManagedBySMTP -join ";"
             $groupsManagedByCompany = $groupsManagedByCompany -join ";"
         } else {
