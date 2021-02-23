@@ -34,7 +34,7 @@ process {
         "Group Member Properties>Group Members Or Managers Count>",
         "First Company Members Or Managers Count>Second Company Members Or Managers Count>",
         "Groups Managed By SMTP>Groups Managed By Company>Manager Custom Attribute 8>",
-        "GroupMembersEmail"
+        "Group Members Emails"
     )
 
     $header >> $outputFilePath
@@ -147,10 +147,10 @@ process {
             $groupCategory = $group.RecipientType
             $groupGUID = $group.GUID
 
-            $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
-            $GroupMembersEmail = $GroupMembersEmail -join ";"
+            $groupMembersEmails = $groupMembers.PrimarySMTPAddress
+            $groupMembersEmails = $groupMembersEmails -join ";"
 
-            Add-Content $outputFilePath $group">"$groupName">"$groupGUID">"$groupSMTP">"$groupCategory">"$groupCompany">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$groupName">"$groupGUID">"$groupSMTP">"$groupCategory">"$groupCompany">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$groupMembersEmails
         }
         $firstCompanyMembersCount = $null
         $secondCompanyMembersCount = $null
