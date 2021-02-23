@@ -30,7 +30,7 @@ process {
     $groupsCount = @($groups).Count
 
     $header = -join (
-        "Group>Groupname>GroupGUID>Group SMTP>Groupcategory>Group_company>Group Member Properties>",
+        "Group>Groupname>GroupGUID>Group SMTP>Groupcategory>Group Company>Group Member Properties>",
         "Group Members Or Managers Count>First Company Members Or Managers Count>",
         "Second Company Members Or Managers Count>Groups Managed By SMTP>",
         "Groups Managed By Company>Manager Custom Attribute 8>GroupMembersEmail"
@@ -110,11 +110,11 @@ process {
             $groupMembersOrManagersCount -eq 0 -and
             $firstCompanyMembersOrManagersCount -eq 0
         ) {
-            $Group_company = "None"
+            $groupCompany = "None"
         } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
-            $Group_company = "Mixed Owners"
+            $groupCompany = "Mixed Owners"
         } elseif ($secondCompanyMembersCount -and $firstCompanyMembersCount) {
-            $Group_company = "Mixed Users"
+            $groupCompany = "Mixed Users"
         } elseif (
             $secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
                 $secondCompanyMembersOrManagersCount -eq 0 -and
@@ -126,7 +126,7 @@ process {
                 $firstCompanyMembersOrManagersCount -eq 0
             )
         ) {
-            $Group_company = "compB"
+            $groupCompany = "compB"
         } elseif (
             $firstCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
                 $secondCompanyMembersOrManagersCount -eq 0 -and
@@ -138,10 +138,10 @@ process {
                 $secondCompanyMembersOrManagersCount -eq 0
             )
         ) {
-            $Group_company = "compA"
+            $groupCompany = "compA"
         }
 
-        if ($Group_company -eq "compA" -or $Group_company -like "Mixed*") {
+        if ($groupCompany -eq "compA" -or $groupCompany -like "Mixed*") {
             $Groupname = $group.Name
             $Groupcategory = $group.RecipientType
             $GroupGUID = $group.GUID
@@ -149,7 +149,7 @@ process {
             $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$groupCompany">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
         }
         $firstCompanyMembersCount = $null
         $secondCompanyMembersCount = $null
