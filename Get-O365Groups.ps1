@@ -30,10 +30,11 @@ process {
     $groupsCount = @($groups).Count
 
     $header = -join (
-        "Group>Groupname>GroupGUID>Group SMTP>Groupcategory>Group Company>Group Member Properties>",
-        "Group Members Or Managers Count>First Company Members Or Managers Count>",
-        "Second Company Members Or Managers Count>Groups Managed By SMTP>",
-        "Groups Managed By Company>Manager Custom Attribute 8>GroupMembersEmail"
+        "Group>Group Name>GroupGUID>Group SMTP>Groupcategory>Group Company>",
+        "Group Member Properties>Group Members Or Managers Count>",
+        "First Company Members Or Managers Count>Second Company Members Or Managers Count>",
+        "Groups Managed By SMTP>Groups Managed By Company>Manager Custom Attribute 8>",
+        "GroupMembersEmail"
     )
 
     $header >> $outputFilePath
@@ -142,14 +143,14 @@ process {
         }
 
         if ($groupCompany -eq "compA" -or $groupCompany -like "Mixed*") {
-            $Groupname = $group.Name
+            $groupName = $group.Name
             $Groupcategory = $group.RecipientType
             $GroupGUID = $group.GUID
 
             $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$groupCompany">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$groupName">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$groupCompany">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
         }
         $firstCompanyMembersCount = $null
         $secondCompanyMembersCount = $null
