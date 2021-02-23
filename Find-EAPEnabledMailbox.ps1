@@ -21,13 +21,17 @@ process {
             Select-Object -ExpandProperty SamAccountName
     )
 
+    if ($null -eq $recipients) {
+        $recipients = @()
+    }
+
     if ($Output) {
         $recipients |
             Select-Object SamAccountName, PrimarySmtpAddress, Company > $params.outputFilePath
     }
 
     if ($DisableEAP) {
-        $recipientsCount = @($recipients).Count
+        $recipientsCount = $recipients.Count
 
         Write-Output "To process $recipientsCount recipients"
 
