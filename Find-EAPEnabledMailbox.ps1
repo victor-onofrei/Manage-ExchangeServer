@@ -13,8 +13,7 @@ process {
         Get-Recipient -ResultSize Unlimited |
             Where-Object {
                 $_.RecipientTypeDetails -like "*Mailbox" -and
-                $_.EmailAddressPolicyEnabled -eq $true -and
-                (
+                $_.EmailAddressPolicyEnabled -eq $true -and (
                     $_.CustomAttribute8 -like "world=H*" -or
                     $_.CustomAttribute8 -like "world=N*"
                 )
@@ -28,21 +27,32 @@ process {
     }
 
     if ($DisableEAP) {
-        $recipientsCount = @($recipients).count
+        $recipientsCount = @($recipients).Count
+
         Write-Output "To process $recipientsCount recipients"
+
         for ($index = 0; $index -lt $recipientsCount; $index++) {
             $recipient = $recipients[$index]
+
             Write-Output "Processing recipient $($index + 1) / $recipientsCount | $recipient"
+
             $location = Get-ExchangeObjectLocation -ExchangeObject $recipient
+
             switch ($location) {
                 ([ExchangeObjectLocation]::notAvailable) {
-                    Write-Output "`tMailbox does not exist anymore. Skipping mailbox..."; Break
+                    Write-Output "`tMailbox does not exist anymore. Skipping mailbox..."
+
+                    break
                 }
                 ([ExchangeObjectLocation]::exchangeOnPremises) {
-                    Set-Mailbox $recipient -EmailAddressPolicyEnabled $false; Break
+                    Set-Mailbox $recipient -EmailAddressPolicyEnabled $false
+
+                    break
                 }
                 ([ExchangeObjectLocation]::exchangeOnline) {
-                    Set-RemoteMailbox $recipient -EmailAddressPolicyEnabled $false; Break
+                    Set-RemoteMailbox $recipient -EmailAddressPolicyEnabled $false
+
+                    break
                 }
             }
         }
