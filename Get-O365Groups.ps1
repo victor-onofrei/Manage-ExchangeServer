@@ -81,7 +81,7 @@ process {
             foreach ($manager in $groupManagers) {
                 $groupsManagedBySMTP += $manager |
                     Select-Object PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
-                # | % { $_.PrimarySMTPAddress.ToString() }
+
                 $groupsManagedByCompany += $manager | select Company -ExpandProperty Company
                 # | % { $_.Company.ToString() }
                 # $managerCustomAttribute8 += $Manager | select customattribute8 -ExpandProperty customattribute8
