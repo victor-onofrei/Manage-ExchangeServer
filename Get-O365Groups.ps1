@@ -150,7 +150,15 @@ process {
             $groupMembersEmails = $groupMembers.PrimarySMTPAddress
             $groupMembersEmails = $groupMembersEmails -join ";"
 
-            Add-Content $outputFilePath $group">"$groupName">"$groupGUID">"$groupSMTP">"$groupCategory">"$groupCompany">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$groupMembersEmails
+            $row = -join (
+                "$group>$groupName>$groupGUID>$groupSMTP>$groupCategory>$groupCompany>",
+                "$groupMemberProperties>$groupMembersOrManagersCount>",
+                "$firstCompanyMembersOrManagersCount>$secondCompanyMembersOrManagersCount>",
+                "$groupsManagedBySMTP>$groupsManagedByCompany>$managerCustomAttribute8>",
+                "$groupMembersEmails"
+            )
+
+            $row >> $outputFilePath
         }
         $firstCompanyMembersCount = $null
         $secondCompanyMembersCount = $null
