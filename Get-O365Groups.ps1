@@ -60,8 +60,8 @@ process {
             $groupManagersCount = ($groupManagers | Measure-Object).count
             $groupManagerProperties = $groupManagers.CustomAttribute8
 
-            $secondCompanyManagersCount = ($groupManagerProperties | ? {$_ -like "CAB*"} | Measure-Object).count
             $firstCompanyManagersCount = ($groupManagerProperties | ? {$_ -like "CAA*"} | Measure-Object).count
+            $secondCompanyManagersCount = ($groupManagerProperties | ? {$_ -like "CAB*"} | Measure-Object).count
 
             $groupManagerProperties = $groupManagerProperties -join ";"
             $Group_ManagedBy_CA8 = $groupManagerProperties
