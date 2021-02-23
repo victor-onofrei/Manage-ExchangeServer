@@ -171,7 +171,7 @@ process {
     }
 
     $smtpServer = "smtp.compB.com"
-    $att = New-Object Net.Mail.Attachment($outputFilePath)
+    $attachment = New-Object Net.Mail.Attachment($outputFilePath)
     $msg = New-Object Net.Mail.MailMessage
     $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
     $msg.From = "noreply_group_details@compA.com"
@@ -179,7 +179,7 @@ process {
     $msg.To.Add("user2@compA.com")
     $msg.Subject = "$($outputFileName) report is ready"
     $msg.Body = "Attached is the $($outputFileName) report"
-    $msg.Attachments.Add($att)
+    $msg.Attachments.Add($attachment)
     $smtp.Send($msg)
     Stop-Transcript
 }
