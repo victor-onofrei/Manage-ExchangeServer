@@ -32,7 +32,7 @@ process {
     $header = -join (
         "Group>Groupname>GroupGUID>Group SMTP>Groupcategory>Group_company>Group_Members_CA8>",
         "Group Members Or Managers Count>First Company Members Or Managers Count>",
-        "Second Company Members Or Managers Count>Group_ManagedBy_SMTP>Group_ManagedBy_Company>",
+        "Second Company Members Or Managers Count>Groups Managed By SMTP>Group_ManagedBy_Company>",
         "Manager Custom Attribute 8>GroupMembersEmail"
     )
 
@@ -75,17 +75,17 @@ process {
             $firstCompanyMembersOrManagersCount = $firstCompanyManagersCount
             $secondCompanyMembersOrManagersCount = $secondCompanyManagersCount
 
-            $Group_ManagedBy_SMTP = @()
+            $groupsManagedBySMTP = @()
             $Group_ManagedBy_Company = @()
             Foreach ($Manager in $groupManagers) {
-                $Group_ManagedBy_SMTP += $Manager | select PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
+                $groupsManagedBySMTP += $Manager | select PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
                 # | % { $_.PrimarySMTPAddress.ToString() }
                 $Group_ManagedBy_Company += $Manager | select Company -ExpandProperty Company
                 # | % { $_.Company.ToString() }
                 # $managerCustomAttribute8 += $Manager | select customattribute8 -ExpandProperty customattribute8
                 # | % { $_.customattribute8.ToString() }
             }
-            $Group_ManagedBy_SMTP = $Group_ManagedBy_SMTP -join ";"
+            $groupsManagedBySMTP = $groupsManagedBySMTP -join ";"
             $Group_ManagedBy_Company = $Group_ManagedBy_Company -join ";"
         } else {
             $DLcount = ($groupMembers | Measure-Object).count
@@ -119,7 +119,7 @@ process {
             $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$managerCustomAttribute8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$Group_ManagedBy_Company">"$managerCustomAttribute8">"$GroupMembersEmail
         }
         $compAcount = $null
         $compBcount = $null
