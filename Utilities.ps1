@@ -47,3 +47,30 @@ function Read-Param {
     # Return null otherwise.
     return $null
 }
+
+enum ExchangeObjectLocation {
+    notAvailable
+    exchangeOnPremises
+    exchangeOnline
+}
+
+function Get-ExchangeObjectLocation {
+    param (
+        [String]$ExchangeObject
+    )
+
+    $exchangeObjectTypeDetails = (
+        Get-Recipient -Identity $ExchangeObject -ErrorAction SilentlyContinue
+    ) | Select-Object -ExpandProperty RecipientTypeDetails -ErrorAction SilentlyContinue
+
+    $isLocal = $exchangeObjectTypeDetails -like "*Mailbox"
+    $isRemote = $exchangeObjectTypeDetails -like "Remote*"
+
+    if ($isLocal -and (-not $isRemote)) {
+        return [ExchangeObjectLocation]::exchangeOnPremises
+    } elseif ($isRemote) {
+        return [ExchangeObjectLocation]::exchangeOnline
+    } else {
+        return [ExchangeObjectLocation]::notAvailable
+    }
+}
