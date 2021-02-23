@@ -99,7 +99,6 @@ process {
             ).Count
 
             $groupMemberProperties = $groupMemberProperties -join ";"
-            # $UserProperties = $groupMemberProperties
             $groupMembersOrManagersCount = $groupMembersCount
             $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
             $firstCompanyMembersOrManagersCount = $firstCompanyMembersCount
