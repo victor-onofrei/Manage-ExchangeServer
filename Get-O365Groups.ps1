@@ -170,17 +170,19 @@ process {
         $secondCompanyMembersCount = $null
     }
 
-    $smtpServer = "smtp.compB.com"
     $attachment = New-Object Net.Mail.Attachment($outputFilePath)
 
     $message = New-Object Net.Mail.MailMessage
-    $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
     $message.From = "noreply_group_details@compA.com"
     $message.Cc.Add("user1@compA.com")
     $message.To.Add("user2@compA.com")
     $message.Subject = "$($outputFileName) report is ready"
     $message.Body = "Attached is the $($outputFileName) report"
     $message.Attachments.Add($attachment)
+
+    $smtpServer = "smtp.compB.com"
+    $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
     $smtp.Send($message)
+
     Stop-Transcript
 }
