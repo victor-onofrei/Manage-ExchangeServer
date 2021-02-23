@@ -32,7 +32,7 @@ process {
     $header = -join (
         "Group>Groupname>GroupGUID>Group SMTP>Groupcategory>Group_company>Group_Members_CA8>",
         "DLcountORDLManagerscount>compBcountORcompBManagerscount>compAcountORcompAManagerscount>",
-        "Group_ManagedBy_SMTP>Group_ManagedBy_Company>Group_ManagedBy_CA8>GroupMembersEmail"
+        "Group_ManagedBy_SMTP>Group_ManagedBy_Company>Manager Custom Attribute 8>GroupMembersEmail"
     )
 
     $header >> $outputFilePath
@@ -68,7 +68,7 @@ process {
             ).count
 
             $groupManagerProperties = $groupManagerProperties -join ";"
-            $Group_ManagedBy_CA8 = $groupManagerProperties
+            $managerCustomAttribute8 = $groupManagerProperties
             $DLcountORDLManagerscount = $groupManagersCount
             $compBcountORcompBManagerscount = $secondCompanyManagersCount
             $compAcountORcompAManagerscount = $firstCompanyManagersCount
@@ -80,7 +80,7 @@ process {
                 # | % { $_.PrimarySMTPAddress.ToString() }
                 $Group_ManagedBy_Company += $Manager | select Company -ExpandProperty Company
                 # | % { $_.Company.ToString() }
-                # $Group_ManagedBy_CA8 += $Manager | select customattribute8 -ExpandProperty customattribute8
+                # $managerCustomAttribute8 += $Manager | select customattribute8 -ExpandProperty customattribute8
                 # | % { $_.customattribute8.ToString() }
             }
             $Group_ManagedBy_SMTP = $Group_ManagedBy_SMTP -join ";"
@@ -117,7 +117,7 @@ process {
             $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$Group_ManagedBy_CA8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$managerCustomAttribute8">"$GroupMembersEmail
         }
         $compAcount = $null
         $compBcount = $null
