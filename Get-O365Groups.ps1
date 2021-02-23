@@ -160,11 +160,14 @@ process {
 
             $row >> $outputFilePath
         }
-        $firstCompanyMembersCount = $null
-        $secondCompanyMembersCount = $null
+
+        $groupMembers = $null
+
         $firstCompanyManagersCount = $null
         $secondCompanyManagersCount = $null
-        $groupMembers = $null
+
+        $firstCompanyMembersCount = $null
+        $secondCompanyMembersCount = $null
     }
 
     $SmtpServer = "smtp.compB.com"
