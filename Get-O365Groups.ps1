@@ -92,19 +92,20 @@ process {
             $groupMemberProperties = $groupMembers.CustomAttribute8
 
             $secondCompanyMembersCount = ($groupMemberProperties | ? {$_ -like "CAB*"} | Measure-Object).Count
-            $compAcount = ($groupMemberProperties | ? {$_ -like "CAA*"} | Measure-Object).Count
+            $firstCompanyMembersCount = ($groupMemberProperties | ? {$_ -like "CAA*"} | Measure-Object).Count
+
             $groupMemberProperties = $groupMemberProperties -join ";"
             # $UserProperties = $groupMemberProperties
             $groupMembersOrManagersCount = $groupMembersCount
             $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
-            $firstCompanyMembersOrManagersCount = $compAcount
+            $firstCompanyMembersOrManagersCount = $firstCompanyMembersCount
         }
 
         if ($secondCompanyMembersOrManagersCount -eq 0 -and $groupMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0) {
             $Group_company = "None"
         } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
             $Group_company = "Mixed Owners"
-        } elseif ($secondCompanyMembersCount -and $compAcount) {
+        } elseif ($secondCompanyMembersCount -and $firstCompanyMembersCount) {
             $Group_company = "Mixed Users"
         } elseif (($secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount) -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $groupsManagedByCompany -match "compB" -and $groupsManagedByCompany -notmatch "compA") -or (($secondCompanyMembersOrManagersCount) -and $firstCompanyMembersOrManagersCount -eq 0)) {
             $Group_company = "compB"
@@ -122,7 +123,7 @@ process {
 
             Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$groupMemberProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
         }
-        $compAcount = $null
+        $firstCompanyMembersCount = $null
         $secondCompanyMembersCount = $null
         $firstCompanyManagersCount = $null
         $secondCompanyManagersCount = $null
