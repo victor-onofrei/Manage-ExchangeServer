@@ -1,29 +1,12 @@
 using namespace System.Management.Automation
 
+begin {
+    . "$PSScriptRoot\Initializer.ps1"
+    $params = Invoke-Expression "Initialize-DefaultParams $args"
+}
+
 process {
-    $timestamp = Get-Date -Format "yyyyMMdd_hhmmss"
-    $outputDir = "\\\Download\generic\outputs"
-    $projectName = "migration"
-    $outputFileName = "O365_groups.$timestamp.xls"
-
-    $newOutputDirectoryParams = @{
-        Path = $outputDir
-        Name = $projectName
-        ItemType = "directory"
-        ErrorAction = [ActionPreference]::SilentlyContinue
-    }
-
-    New-Item @newOutputDirectoryParams
-
-    $outputFilePathParams = @{
-        Path = $outputDir
-        ChildPath = $projectName
-        AdditionalChildPath = $outputFileName
-    }
-
-    $outputFilePath = Join-Path @outputFilePathParams
-
-    Start-Transcript "$outputFilePath.txt"
+    Start-Transcript "$($params.outputFilePath).txt"
 
     $groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" |
         Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
@@ -37,7 +20,7 @@ process {
         "Group Members Emails"
     )
 
-    $header >> $outputFilePath
+    $header >> $params.outputFilePath
 
     Write-Output "To process: $groupsCount groups"
 
@@ -158,7 +141,7 @@ process {
                 "$groupMembersEmails"
             )
 
-            $row >> $outputFilePath
+            $row >> $params.outputFilePath
         }
 
         $groupMembers = $null
@@ -170,7 +153,7 @@ process {
         $secondCompanyMembersCount = $null
     }
 
-    $attachment = New-Object Net.Mail.Attachment($outputFilePath)
+    $attachment = New-Object Net.Mail.Attachment($params.outputFilePath)
 
     $message = New-Object Net.Mail.MailMessage
     $message.From = "noreply_group_details@compA.com"
