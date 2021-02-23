@@ -122,6 +122,10 @@ function Initialize-DefaultParams {
         $exchangeObjects = Read-Param "ExchangeObjects" `
             -Value $ExchangeObjects `
             -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
+
+        if ($null -eq $exchangeObjects) {
+            $exchangeObjects = @()
+        }
     }
 
     end {
