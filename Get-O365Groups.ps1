@@ -31,8 +31,9 @@ process {
 
     $header = -join (
         "Group>Groupname>GroupGUID>Group SMTP>Groupcategory>Group_company>Group_Members_CA8>",
-        "DLcountORDLManagerscount>compBcountORcompBManagerscount>compAcountORcompAManagerscount>",
-        "Group_ManagedBy_SMTP>Group_ManagedBy_Company>Manager Custom Attribute 8>GroupMembersEmail"
+        "Group Members Or Managers Count>compBcountORcompBManagerscount>",
+        "compAcountORcompAManagerscount>Group_ManagedBy_SMTP>Group_ManagedBy_Company>",
+        "Manager Custom Attribute 8>GroupMembersEmail"
     )
 
     $header >> $outputFilePath
@@ -69,7 +70,7 @@ process {
 
             $groupManagerProperties = $groupManagerProperties -join ";"
             $managerCustomAttribute8 = $groupManagerProperties
-            $DLcountORDLManagerscount = $groupManagersCount
+            $groupMembersOrManagersCount = $groupManagersCount
             $compBcountORcompBManagerscount = $secondCompanyManagersCount
             $compAcountORcompAManagerscount = $firstCompanyManagersCount
 
@@ -92,20 +93,20 @@ process {
             $compAcount = ($ADUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
             $ADUserProperties = $ADUserProperties -join ";"
             # $UserProperties = $ADUserProperties
-            $DLcountORDLManagerscount = $DLcount
+            $groupMembersOrManagersCount = $DLcount
             $compBcountORcompBManagerscount = $compBcount
             $compAcountORcompAManagerscount = $compAcount
         }
 
-        if ($compBcountORcompBManagerscount -eq 0 -and $DLcountORDLManagerscount -eq 0 -and $compAcountORcompAManagerscount -eq 0) {
+        if ($compBcountORcompBManagerscount -eq 0 -and $groupMembersOrManagersCount -eq 0 -and $compAcountORcompAManagerscount -eq 0) {
             $Group_company = "None"
         } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
             $Group_company = "Mixed Owners"
         } elseif ($compBcount -and $compAcount) {
             $Group_company = "Mixed Users"
-        } elseif (($compBcountORcompBManagerscount -eq $DLcountORDLManagerscount) -or ($compBcountORcompBManagerscount -eq 0 -and $compAcountORcompAManagerscount -eq 0 -and $Group_ManagedBy_Company -match "compB" -and $Group_ManagedBy_Company -notmatch "compA") -or (($compBcountORcompBManagerscount) -and $compAcountORcompAManagerscount -eq 0)) {
+        } elseif (($compBcountORcompBManagerscount -eq $groupMembersOrManagersCount) -or ($compBcountORcompBManagerscount -eq 0 -and $compAcountORcompAManagerscount -eq 0 -and $Group_ManagedBy_Company -match "compB" -and $Group_ManagedBy_Company -notmatch "compA") -or (($compBcountORcompBManagerscount) -and $compAcountORcompAManagerscount -eq 0)) {
             $Group_company = "compB"
-        } elseif ($compAcountORcompAManagerscount -eq $DLcountORDLManagerscount -or ($compBcountORcompBManagerscount -eq 0 -and $compAcountORcompAManagerscount -eq 0 -and $Group_ManagedBy_Company -match "compA" -and $Group_ManagedBy_Company -notmatch "compB") -or (($compAcountORcompAManagerscount) -and $compBcountORcompBManagerscount -eq 0)) {
+        } elseif ($compAcountORcompAManagerscount -eq $groupMembersOrManagersCount -or ($compBcountORcompBManagerscount -eq 0 -and $compAcountORcompAManagerscount -eq 0 -and $Group_ManagedBy_Company -match "compA" -and $Group_ManagedBy_Company -notmatch "compB") -or (($compAcountORcompAManagerscount) -and $compBcountORcompBManagerscount -eq 0)) {
             $Group_company = "compA"
         }
 
@@ -117,7 +118,7 @@ process {
             $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$DLcountORDLManagerscount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$managerCustomAttribute8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$groupMembersOrManagersCount">"$compBcountORcompBManagerscount">"$compAcountORcompAManagerscount">"$Group_ManagedBy_SMTP">"$Group_ManagedBy_Company">"$managerCustomAttribute8">"$GroupMembersEmail
         }
         $compAcount = $null
         $compBcount = $null
