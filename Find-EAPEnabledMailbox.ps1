@@ -9,7 +9,6 @@ begin {
 }
 
 process {
-    $FormatEnumerationLimit = -1
     $recipients = (
         Get-Recipient -ResultSize Unlimited |
             Where-Object {
