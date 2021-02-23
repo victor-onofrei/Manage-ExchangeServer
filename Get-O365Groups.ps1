@@ -88,13 +88,13 @@ process {
             $groupsManagedBySMTP = $groupsManagedBySMTP -join ";"
             $groupsManagedByCompany = $groupsManagedByCompany -join ";"
         } else {
-            $DLcount = ($groupMembers | Measure-Object).count
+            $groupMembersCount = ($groupMembers | Measure-Object).count
             $ADUserProperties = $groupMembers.CustomAttribute8
             $compBcount = ($ADUserProperties | ? {$_ -like "CAB*"} | Measure-Object).count
             $compAcount = ($ADUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
             $ADUserProperties = $ADUserProperties -join ";"
             # $UserProperties = $ADUserProperties
-            $groupMembersOrManagersCount = $DLcount
+            $groupMembersOrManagersCount = $groupMembersCount
             $secondCompanyMembersOrManagersCount = $compBcount
             $firstCompanyMembersOrManagersCount = $compAcount
         }
