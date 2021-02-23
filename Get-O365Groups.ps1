@@ -32,8 +32,8 @@ process {
     $header = -join (
         "Group>Groupname>GroupGUID>Group SMTP>Groupcategory>Group_company>Group_Members_CA8>",
         "Group Members Or Managers Count>First Company Members Or Managers Count>",
-        "Second Company Members Or Managers Count>Groups Managed By SMTP>Group_ManagedBy_Company>",
-        "Manager Custom Attribute 8>GroupMembersEmail"
+        "Second Company Members Or Managers Count>Groups Managed By SMTP>",
+        "Groups Managed By Company>Manager Custom Attribute 8>GroupMembersEmail"
     )
 
     $header >> $outputFilePath
@@ -76,17 +76,18 @@ process {
             $secondCompanyMembersOrManagersCount = $secondCompanyManagersCount
 
             $groupsManagedBySMTP = @()
-            $Group_ManagedBy_Company = @()
+            $groupsManagedByCompany = @()
+
             Foreach ($Manager in $groupManagers) {
                 $groupsManagedBySMTP += $Manager | select PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
                 # | % { $_.PrimarySMTPAddress.ToString() }
-                $Group_ManagedBy_Company += $Manager | select Company -ExpandProperty Company
+                $groupsManagedByCompany += $Manager | select Company -ExpandProperty Company
                 # | % { $_.Company.ToString() }
                 # $managerCustomAttribute8 += $Manager | select customattribute8 -ExpandProperty customattribute8
                 # | % { $_.customattribute8.ToString() }
             }
             $groupsManagedBySMTP = $groupsManagedBySMTP -join ";"
-            $Group_ManagedBy_Company = $Group_ManagedBy_Company -join ";"
+            $groupsManagedByCompany = $groupsManagedByCompany -join ";"
         } else {
             $DLcount = ($groupMembers | Measure-Object).count
             $ADUserProperties = $groupMembers.CustomAttribute8
@@ -105,9 +106,9 @@ process {
             $Group_company = "Mixed Owners"
         } elseif ($compBcount -and $compAcount) {
             $Group_company = "Mixed Users"
-        } elseif (($secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount) -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $Group_ManagedBy_Company -match "compB" -and $Group_ManagedBy_Company -notmatch "compA") -or (($secondCompanyMembersOrManagersCount) -and $firstCompanyMembersOrManagersCount -eq 0)) {
+        } elseif (($secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount) -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $groupsManagedByCompany -match "compB" -and $groupsManagedByCompany -notmatch "compA") -or (($secondCompanyMembersOrManagersCount) -and $firstCompanyMembersOrManagersCount -eq 0)) {
             $Group_company = "compB"
-        } elseif ($firstCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $Group_ManagedBy_Company -match "compA" -and $Group_ManagedBy_Company -notmatch "compB") -or (($firstCompanyMembersOrManagersCount) -and $secondCompanyMembersOrManagersCount -eq 0)) {
+        } elseif ($firstCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $groupsManagedByCompany -match "compA" -and $groupsManagedByCompany -notmatch "compB") -or (($firstCompanyMembersOrManagersCount) -and $secondCompanyMembersOrManagersCount -eq 0)) {
             $Group_company = "compA"
         }
 
@@ -119,7 +120,7 @@ process {
             $GroupMembersEmail = $groupMembers.PrimarySMTPAddress
             $GroupMembersEmail = $GroupMembersEmail -join ";"
 
-            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$Group_ManagedBy_Company">"$managerCustomAttribute8">"$GroupMembersEmail
+            Add-Content $outputFilePath $group">"$Groupname">"$GroupGUID">"$groupSMTP">"$Groupcategory">"$Group_company">"$ADUserProperties">"$groupMembersOrManagersCount">"$firstCompanyMembersOrManagersCount">"$secondCompanyMembersOrManagersCount">"$groupsManagedBySMTP">"$groupsManagedByCompany">"$managerCustomAttribute8">"$GroupMembersEmail
         }
         $compAcount = $null
         $compBcount = $null
