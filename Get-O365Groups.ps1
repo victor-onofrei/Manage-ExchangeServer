@@ -100,8 +100,9 @@ process {
 
             $groupMemberProperties = $groupMemberProperties -join ";"
             $groupMembersOrManagersCount = $groupMembersCount
-            $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
+
             $firstCompanyMembersOrManagersCount = $firstCompanyMembersCount
+            $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
         }
 
         if ($secondCompanyMembersOrManagersCount -eq 0 -and $groupMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0) {
