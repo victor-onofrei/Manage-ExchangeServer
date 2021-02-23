@@ -172,14 +172,15 @@ process {
 
     $smtpServer = "smtp.compB.com"
     $attachment = New-Object Net.Mail.Attachment($outputFilePath)
-    $msg = New-Object Net.Mail.MailMessage
+
+    $message = New-Object Net.Mail.MailMessage
     $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
-    $msg.From = "noreply_group_details@compA.com"
-    $msg.Cc.Add("user1@compA.com")
-    $msg.To.Add("user2@compA.com")
-    $msg.Subject = "$($outputFileName) report is ready"
-    $msg.Body = "Attached is the $($outputFileName) report"
-    $msg.Attachments.Add($attachment)
-    $smtp.Send($msg)
+    $message.From = "noreply_group_details@compA.com"
+    $message.Cc.Add("user1@compA.com")
+    $message.To.Add("user2@compA.com")
+    $message.Subject = "$($outputFileName) report is ready"
+    $message.Body = "Attached is the $($outputFileName) report"
+    $message.Attachments.Add($attachment)
+    $smtp.Send($message)
     Stop-Transcript
 }
