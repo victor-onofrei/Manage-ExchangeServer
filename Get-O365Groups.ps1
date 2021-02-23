@@ -91,8 +91,8 @@ process {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
 
-            $secondCompanyMembersCount = ($groupMemberProperties | ? {$_ -like "CAB*"} | Measure-Object).Count
             $firstCompanyMembersCount = ($groupMemberProperties | ? {$_ -like "CAA*"} | Measure-Object).Count
+            $secondCompanyMembersCount = ($groupMemberProperties | ? {$_ -like "CAB*"} | Measure-Object).Count
 
             $groupMemberProperties = $groupMemberProperties -join ";"
             # $UserProperties = $groupMemberProperties
