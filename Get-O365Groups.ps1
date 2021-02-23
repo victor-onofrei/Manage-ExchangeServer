@@ -171,9 +171,9 @@ process {
     }
 
     $smtpServer = "smtp.compB.com"
-    $att = new-object Net.Mail.Attachment($outputFilePath)
-    $msg = new-object Net.Mail.MailMessage
-    $smtp = new-object Net.Mail.SmtpClient($smtpServer)
+    $att = New-Object Net.Mail.Attachment($outputFilePath)
+    $msg = New-Object Net.Mail.MailMessage
+    $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
     $msg.From = "noreply_group_details@compA.com"
     $msg.Cc.Add("user1@compA.com")
     $msg.To.Add("user2@compA.com")
