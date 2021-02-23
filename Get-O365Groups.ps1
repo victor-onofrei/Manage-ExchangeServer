@@ -105,15 +105,39 @@ process {
             $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
         }
 
-        if ($secondCompanyMembersOrManagersCount -eq 0 -and $groupMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0) {
+        if (
+            $secondCompanyMembersOrManagersCount -eq 0 -and
+            $groupMembersOrManagersCount -eq 0 -and
+            $firstCompanyMembersOrManagersCount -eq 0
+        ) {
             $Group_company = "None"
         } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
             $Group_company = "Mixed Owners"
         } elseif ($secondCompanyMembersCount -and $firstCompanyMembersCount) {
             $Group_company = "Mixed Users"
-        } elseif (($secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount) -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $groupsManagedByCompany -match "compB" -and $groupsManagedByCompany -notmatch "compA") -or (($secondCompanyMembersOrManagersCount) -and $firstCompanyMembersOrManagersCount -eq 0)) {
+        } elseif (
+            $secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
+                $secondCompanyMembersOrManagersCount -eq 0 -and
+                $firstCompanyMembersOrManagersCount -eq 0 -and
+                $groupsManagedByCompany -match "compB" -and
+                $groupsManagedByCompany -notmatch "compA"
+            ) -or (
+                $secondCompanyMembersOrManagersCount -and
+                $firstCompanyMembersOrManagersCount -eq 0
+            )
+        ) {
             $Group_company = "compB"
-        } elseif ($firstCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or ($secondCompanyMembersOrManagersCount -eq 0 -and $firstCompanyMembersOrManagersCount -eq 0 -and $groupsManagedByCompany -match "compA" -and $groupsManagedByCompany -notmatch "compB") -or (($firstCompanyMembersOrManagersCount) -and $secondCompanyMembersOrManagersCount -eq 0)) {
+        } elseif (
+            $firstCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
+                $secondCompanyMembersOrManagersCount -eq 0 -and
+                $firstCompanyMembersOrManagersCount -eq 0 -and
+                $groupsManagedByCompany -match "compA" -and
+                $groupsManagedByCompany -notmatch "compB"
+            ) -or (
+                $firstCompanyMembersOrManagersCount -and
+                $secondCompanyMembersOrManagersCount -eq 0
+            )
+        ) {
             $Group_company = "compA"
         }
 
