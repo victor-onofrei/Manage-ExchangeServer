@@ -7,6 +7,8 @@ process {
     "exchangeObject,mailboxLocation" >> $params.outputFilePath
 
     foreach ($exchangeObject in $params.exchangeObjects) {
+        Write-Output "Processing object: $exchangeObject"
+
         $location = Get-ExchangeObjectLocation -ExchangeObject $exchangeObject
 
         "$exchangeObject,$location" >> $params.outputFilePath
