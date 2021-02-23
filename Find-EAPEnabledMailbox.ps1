@@ -1,5 +1,6 @@
 param (
-    [Alias("DEAP")][Switch]$DisableEAP
+    [Alias("DEAP")][Switch]$DisableEAP,
+    [Alias("OUT")][Switch]$Output
 )
 
 begin {
@@ -8,41 +9,43 @@ begin {
 }
 
 process {
-    if ($DisableEAP) {
-        $recipients = (
-            Get-Recipient -ResultSize 100) |
+    $FormatEnumerationLimit = -1
+    $recipients = (
+        Get-Recipient -ResultSize Unlimited |
             Where-Object {
+                $_.RecipientTypeDetails -like "*Mailbox" -and
                 $_.EmailAddressPolicyEnabled -eq $true -and
-                $_.CustomAttribute8 -like "world=H*" -or
-                $_.CustomAttribute8 -like "world=N*"
-            }
+                (
+                    $_.CustomAttribute8 -like "world=H*" -or
+                    $_.CustomAttribute8 -like "world=N*"
+                )
+            } |
+            Select-Object -ExpandProperty SamAccountName
+    )
+
+    if ($Output) {
+        $recipients |
+            Select-Object SamAccountName, PrimarySmtpAddress, Company > $params.outputFilePath
+    }
+
+    if ($DisableEAP) {
         $recipientsCount = @($recipients).count
         Write-Output "To process $recipientsCount recipients"
         for ($index = 0; $index -lt $recipientsCount; $index++) {
-            Write-Output -InputObject `
-                "`tProcessing recipient " ($index + 1) " / $recipientsCount | $recipient"
             $recipient = $recipients[$index]
+            Write-Output "Processing recipient $($index + 1) / $recipientsCount | $recipient"
             $location = Get-ExchangeObjectLocation -ExchangeObject $recipient
             switch ($location) {
                 ([ExchangeObjectLocation]::notAvailable) {
-                    Write-Output "Mailbox does not exist anymore. Skipping mailbox..."
+                    Write-Output "`tMailbox does not exist anymore. Skipping mailbox..."; Break
                 }
                 ([ExchangeObjectLocation]::exchangeOnPremises) {
-                    # Set-Mailbox $recipient -EmailAddressPolicyEnabled $false -WhatIf
-                    Write-Output "$recipient is on prem"
+                    Set-Mailbox $recipient -EmailAddressPolicyEnabled $false; Break
                 }
                 ([ExchangeObjectLocation]::exchangeOnline) {
-                    # Set-RemoteMailbox $recipient -EmailAddressPolicyEnabled $false -WhatIf
-                    Write-Output "$recipient is in cloud"
+                    Set-RemoteMailbox $recipient -EmailAddressPolicyEnabled $false; Break
                 }
             }
         }
     }
-    $FormatEnumerationLimit = -1
-    Get-Recipient -ResultSize Unlimited |
-        Where-Object {
-            $_.EmailAddressPolicyEnabled -eq $true -and
-            $_.CustomAttribute8 -like "world=H*"
-        } |
-        Select-Object SamAccountName, PrimarySmtpAddress, Company > $params.outputFilePath
 }
