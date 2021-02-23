@@ -58,15 +58,15 @@ process {
             Select-Object CustomAttribute8, PrimarySMTPAddress
 
         if ($groupManagers) {
-            $groupManagersCount = ($groupManagers | Measure-Object).count
+            $groupManagersCount = ($groupManagers | Measure-Object).Count
             $groupManagerProperties = $groupManagers.CustomAttribute8
 
             $firstCompanyManagersCount = (
                 $groupManagerProperties | Where-Object { $_ -like "CAA*" } | Measure-Object
-            ).count
+            ).Count
             $secondCompanyManagersCount = (
                 $groupManagerProperties | Where-Object { $_ -like "CAB*" } | Measure-Object
-            ).count
+            ).Count
 
             $groupManagerProperties = $groupManagerProperties -join ";"
             $managerCustomAttribute8 = $groupManagerProperties
@@ -88,10 +88,10 @@ process {
             $groupsManagedBySMTP = $groupsManagedBySMTP -join ";"
             $groupsManagedByCompany = $groupsManagedByCompany -join ";"
         } else {
-            $groupMembersCount = ($groupMembers | Measure-Object).count
+            $groupMembersCount = ($groupMembers | Measure-Object).Count
             $ADUserProperties = $groupMembers.CustomAttribute8
-            $compBcount = ($ADUserProperties | ? {$_ -like "CAB*"} | Measure-Object).count
-            $compAcount = ($ADUserProperties | ? {$_ -like "CAA*"} | Measure-Object).count
+            $compBcount = ($ADUserProperties | ? {$_ -like "CAB*"} | Measure-Object).Count
+            $compAcount = ($ADUserProperties | ? {$_ -like "CAA*"} | Measure-Object).Count
             $ADUserProperties = $ADUserProperties -join ";"
             # $UserProperties = $ADUserProperties
             $groupMembersOrManagersCount = $groupMembersCount
