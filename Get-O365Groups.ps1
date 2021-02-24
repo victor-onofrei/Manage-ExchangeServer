@@ -13,11 +13,11 @@ process {
     $groupsCount = @($groups).Count
 
     $header = -join (
-        "Group>Group Name>Group GUID>Group SMTP>Group Category>Group Company>",
-        "Group Member Properties>Group Members Or Managers Count>",
-        "First Company Members Or Managers Count>Second Company Members Or Managers Count>",
-        "Groups Managed By SMTP>Groups Managed By Company>Manager Custom Attribute 8>",
-        "Group Members Emails"
+        'Group>Group Name>Group GUID>Group SMTP>Group Category>Group Company>',
+        'Group Member Properties>Group Members Or Managers Count>',
+        'First Company Members Or Managers Count>Second Company Members Or Managers Count>',
+        'Groups Managed By SMTP>Groups Managed By Company>Manager Custom Attribute 8>',
+        'Group Members Emails'
     )
 
     $header >> $params.outputFilePath
@@ -46,13 +46,13 @@ process {
             $groupManagerProperties = $groupManagers.CustomAttribute8
 
             $firstCompanyManagersCount = (
-                $groupManagerProperties | Where-Object { $_ -like "CAA*" } | Measure-Object
+                $groupManagerProperties | Where-Object { $_ -like 'CAA*' } | Measure-Object
             ).Count
             $secondCompanyManagersCount = (
-                $groupManagerProperties | Where-Object { $_ -like "CAB*" } | Measure-Object
+                $groupManagerProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
 
-            $groupManagerProperties = $groupManagerProperties -join ";"
+            $groupManagerProperties = $groupManagerProperties -join ';'
             $managerCustomAttribute8 = $groupManagerProperties
             $groupMembersOrManagersCount = $groupManagersCount
 
@@ -69,20 +69,20 @@ process {
                 $groupsManagedByCompany += $manager | Select-Object Company -ExpandProperty Company
             }
 
-            $groupsManagedBySMTP = $groupsManagedBySMTP -join ";"
-            $groupsManagedByCompany = $groupsManagedByCompany -join ";"
+            $groupsManagedBySMTP = $groupsManagedBySMTP -join ';'
+            $groupsManagedByCompany = $groupsManagedByCompany -join ';'
         } else {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
 
             $firstCompanyMembersCount = (
-                $groupMemberProperties | Where-Object { $_ -like "CAA*" } | Measure-Object
+                $groupMemberProperties | Where-Object { $_ -like 'CAA*' } | Measure-Object
             ).Count
             $secondCompanyMembersCount = (
-                $groupMemberProperties | Where-Object { $_ -like "CAB*" } | Measure-Object
+                $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
 
-            $groupMemberProperties = $groupMemberProperties -join ";"
+            $groupMemberProperties = $groupMemberProperties -join ';'
             $groupMembersOrManagersCount = $groupMembersCount
 
             $firstCompanyMembersOrManagersCount = $firstCompanyMembersCount
@@ -94,44 +94,44 @@ process {
             $groupMembersOrManagersCount -eq 0 -and
             $firstCompanyMembersOrManagersCount -eq 0
         ) {
-            $groupCompany = "None"
+            $groupCompany = 'None'
         } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
-            $groupCompany = "Mixed Owners"
+            $groupCompany = 'Mixed Owners'
         } elseif ($secondCompanyMembersCount -and $firstCompanyMembersCount) {
-            $groupCompany = "Mixed Users"
+            $groupCompany = 'Mixed Users'
         } elseif (
             $secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
                 $secondCompanyMembersOrManagersCount -eq 0 -and
                 $firstCompanyMembersOrManagersCount -eq 0 -and
-                $groupsManagedByCompany -match "compB" -and
-                $groupsManagedByCompany -notmatch "compA"
+                $groupsManagedByCompany -match 'compB' -and
+                $groupsManagedByCompany -notmatch 'compA'
             ) -or (
                 $secondCompanyMembersOrManagersCount -and
                 $firstCompanyMembersOrManagersCount -eq 0
             )
         ) {
-            $groupCompany = "compB"
+            $groupCompany = 'compB'
         } elseif (
             $firstCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
                 $secondCompanyMembersOrManagersCount -eq 0 -and
                 $firstCompanyMembersOrManagersCount -eq 0 -and
-                $groupsManagedByCompany -match "compA" -and
-                $groupsManagedByCompany -notmatch "compB"
+                $groupsManagedByCompany -match 'compA' -and
+                $groupsManagedByCompany -notmatch 'compB'
             ) -or (
                 $firstCompanyMembersOrManagersCount -and
                 $secondCompanyMembersOrManagersCount -eq 0
             )
         ) {
-            $groupCompany = "compA"
+            $groupCompany = 'compA'
         }
 
-        if ($groupCompany -eq "compA" -or $groupCompany -like "Mixed*") {
+        if ($groupCompany -eq 'compA' -or $groupCompany -like 'Mixed*') {
             $groupName = $group.Name
             $groupCategory = $group.RecipientType
             $groupGUID = $group.GUID
 
             $groupMembersEmails = $groupMembers.PrimarySMTPAddress
-            $groupMembersEmails = $groupMembersEmails -join ";"
+            $groupMembersEmails = $groupMembersEmails -join ';'
 
             $row = -join (
                 "$group>$groupName>$groupGUID>$groupSMTP>$groupCategory>$groupCompany>",
@@ -156,14 +156,14 @@ process {
     $attachment = New-Object Net.Mail.Attachment($params.outputFilePath)
 
     $message = New-Object Net.Mail.MailMessage
-    $message.From = "noreply_group_details@compA.com"
-    $message.Cc.Add("user1@compA.com")
-    $message.To.Add("user2@compA.com")
+    $message.From = 'noreply_group_details@compA.com'
+    $message.Cc.Add('user1@compA.com')
+    $message.To.Add('user2@compA.com')
     $message.Subject = "$outputFileName report is ready"
     $message.Body = "Attached is the $outputFileName report"
     $message.Attachments.Add($attachment)
 
-    $smtpServer = "smtp.compB.com"
+    $smtpServer = 'smtp.compB.com'
     $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
     $smtp.Send($message)
 

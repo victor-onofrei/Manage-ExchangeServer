@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    name: Run PSScriptAnalyzer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2
+
+      - name: Lint 🕵🏻‍♂️
+        uses: devblackops/github-action-psscriptanalyzer@master
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}

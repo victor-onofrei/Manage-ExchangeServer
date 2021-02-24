@@ -1,4 +1,4 @@
-Set-Variable "configGlobalCategory" -Option Constant -Value "Global"
+Set-Variable 'configGlobalCategory' -Option Constant -Value 'Global'
 
 function Read-Param {
     param (
@@ -63,8 +63,8 @@ function Get-ExchangeObjectLocation {
         Get-Recipient -Identity $ExchangeObject -ErrorAction SilentlyContinue
     ) | Select-Object -ExpandProperty RecipientTypeDetails -ErrorAction SilentlyContinue
 
-    $isLocal = $exchangeObjectTypeDetails -like "*Mailbox"
-    $isRemote = $exchangeObjectTypeDetails -like "Remote*"
+    $isLocal = $exchangeObjectTypeDetails -like '*Mailbox'
+    $isRemote = $exchangeObjectTypeDetails -like 'Remote*'
 
     if ($isLocal -and (-not $isRemote)) {
         return [ExchangeObjectLocation]::exchangeOnPremises

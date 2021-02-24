@@ -1,9 +1,9 @@
 param (
-    [String]$SizeFieldName = "TotalItemSizeInGB",
+    [String]$SizeFieldName = 'TotalItemSizeInGB',
 
-    [String]$DefaultProhibitSendReceiveQuota = "100GB",
-    [String]$DefaultRecoverableItemsQuota = "30GB",
-    [String]$DefaultRecoverableItemsWarningQuota = "20GB",
+    [String]$DefaultProhibitSendReceiveQuota = '100GB',
+    [String]$DefaultRecoverableItemsQuota = '30GB',
+    [String]$DefaultRecoverableItemsWarningQuota = '20GB',
 
     [Int]$MailboxMinimumQuotaDifference = 1,
     [Int]$MailboxMinimumQuota = 2,
@@ -78,9 +78,9 @@ process {
                             $_.
                             TotalItemSize.
                             ToString().
-                            Split("(")[1].
-                            Split(" ")[0].
-                            Replace(",", "") / 1GB
+                            Split('(')[1].
+                            Split(' ')[0].
+                            Replace(',', '') / 1GB
                         ),
                         2
                     )
@@ -107,7 +107,7 @@ process {
             -IssueWarningQuota $movingIssueWarningQuota
 
         $mailboxInfo = Get-Mailbox -Identity $exchangeObject
-        $hasArchiveGuid = $mailboxInfo.archiveGuid -ne "00000000-0000-0000-0000-000000000000"
+        $hasArchiveGuid = $mailboxInfo.archiveGuid -ne '00000000-0000-0000-0000-000000000000'
         $hasArchive = $hasArchiveGuid -and $mailboxInfo.archiveDatabase
 
         if ($hasArchive) {
@@ -120,9 +120,9 @@ process {
                                 $_.
                                 TotalItemSize.
                                 ToString().
-                                Split("(")[1].
-                                Split(" ")[0].
-                                Replace(",", "") / 1GB
+                                Split('(')[1].
+                                Split(' ')[0].
+                                Replace(',', '') / 1GB
                             ),
                             2
                         )

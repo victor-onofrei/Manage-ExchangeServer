@@ -1,6 +1,6 @@
 param (
-    [Alias("DEAP")][Switch]$DisableEAP,
-    [Alias("OUT")][Switch]$Output
+    [Alias('DEAP')][Switch]$DisableEAP,
+    [Alias('OUT')][Switch]$Output
 )
 
 begin {
@@ -12,10 +12,10 @@ process {
     $recipients = (
         Get-Recipient -ResultSize Unlimited |
             Where-Object {
-                $_.RecipientTypeDetails -like "*Mailbox" -and
+                $_.RecipientTypeDetails -like '*Mailbox' -and
                 $_.EmailAddressPolicyEnabled -eq $true -and (
-                    $_.CustomAttribute8 -like "world=H*" -or
-                    $_.CustomAttribute8 -like "world=N*"
+                    $_.CustomAttribute8 -like 'world=H*' -or
+                    $_.CustomAttribute8 -like 'world=N*'
                 )
             } |
             Select-Object -ExpandProperty SamAccountName
