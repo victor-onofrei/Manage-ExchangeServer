@@ -25,29 +25,33 @@ Write-Host "`t`tOnprem_Mailboxes: $($Timer.ElapsedMilliseconds - $cp)"
 Write-Host "Getting Onprem TotalMailboxSizes"
 $cp = $Timer.ElapsedMilliseconds
 $Onprem_Mailboxes_TotalSizeinMB = @()
-$Onprem_Mailboxes_TotalSizeinMB = $MailboxPool | Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue | Select -expandproperty Alias | Get-MailboxStatistics -ErrorAction SilentlyContinue | select MailboxGuid,@{name="TotalItemSizeinMB"; expression={[math]::Round( `
-    ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB))}}
+$Onprem_Mailboxes_TotalSizeinMB = $MailboxPool | Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue | Select -expandproperty Alias | Get-MailboxStatistics -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalItemSizeinMB"; expression = { [math]::Round( `
+            ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
+}
 $Onprem_Mailboxes_TotalDeletedItemSizeinMB = @()
-$Onprem_Mailboxes_TotalDeletedItemSizeinMB = $MailboxPool | Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue | Get-MailboxStatistics -ErrorAction SilentlyContinue | select MailboxGuid,@{name="TotalDeletedItemSizeinMB"; expression={[math]::Round( `
-    ($_.TotalDeletedItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB))}}
+$Onprem_Mailboxes_TotalDeletedItemSizeinMB = $MailboxPool | Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue | Get-MailboxStatistics -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalDeletedItemSizeinMB"; expression = { [math]::Round( `
+            ($_.TotalDeletedItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
+}
 
 Write-Host "`t`tOnprem_Mailboxes_TotalSizeinMB: $($Timer.ElapsedMilliseconds - $cp)"
 
 Write-Host "Getting Onprem Archive TotalMailboxSizes"
 $cp = $Timer.ElapsedMilliseconds
-$Onprem_Mailboxes_Archive = $MailboxPool | Get-Mailbox -ResultSize Unlimited -ErrorAction SilentlyContinue | select ExchangeGuid,ArchiveName,ArchiveGuid
+$Onprem_Mailboxes_Archive = $MailboxPool | Get-Mailbox -ResultSize Unlimited -ErrorAction SilentlyContinue | select ExchangeGuid, ArchiveName, ArchiveGuid
 $Onprem_Mailboxes_Archive_TotalSizeinMB = @()
-$Onprem_Mailboxes_Archive_TotalSizeinMB = $MailboxPool | Get-Recipient -RecipientType $RecipientType -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Select -expandproperty Alias | Get-MailboxStatistics -Archive -ErrorAction SilentlyContinue | select MailboxGuid,@{name="TotalItemSizeinMB"; expression={[math]::Round( `
-    ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB))}}
+$Onprem_Mailboxes_Archive_TotalSizeinMB = $MailboxPool | Get-Recipient -RecipientType $RecipientType -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Select -expandproperty Alias | Get-MailboxStatistics -Archive -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalItemSizeinMB"; expression = { [math]::Round( `
+            ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
+}
 $Onprem_Mailboxes_Archive_TotalDeletedItemSizeinMB = @()
-$Onprem_Mailboxes_Archive_TotalDeletedItemSizeinMB = $MailboxPool |  Get-Recipient -RecipientType $RecipientType -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Select -expandproperty Alias | Get-MailboxStatistics -Archive -ErrorAction SilentlyContinue | select MailboxGuid,@{name="TotalDeletedItemSizeinMB"; expression={[math]::Round( `
-    ($_.TotalDeletedItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB))}}
+$Onprem_Mailboxes_Archive_TotalDeletedItemSizeinMB = $MailboxPool |  Get-Recipient -RecipientType $RecipientType -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Select -expandproperty Alias | Get-MailboxStatistics -Archive -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalDeletedItemSizeinMB"; expression = { [math]::Round( `
+            ($_.TotalDeletedItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
+}
 Write-Host "`t`tOnprem_Mailboxes_Archive_TotalSizeinMB: $($Timer.ElapsedMilliseconds - $cp)"
 
 $Onprem_MailboxesCount = @($Onprem_Mailboxes).Count
 Write-Host "To process:" $Onprem_MailboxesCount "mailboxes"
 
-    Add-Content $PathtoAddressesOutfile AliasUID'>'DisplayName'>'SamAccountName'>'UPN'>'PrimarySMTPAddress'>'RecipientType'>'MbxType'>'Mailboxplan'>'ArchiveState'>'MaxSendSize'>'MaxReceiveSize'>'IssueWarningQuota'>'ProhibitSendQuota'>'ProhibitSendReceiveQuota'>'TotalDeletedItemSizeinMB'>'MbxSizeMB'>'ArchiveDisplayName'>'ArchiveGuid'>'ArchiveDeletedItemSizeMB'>'ArchiveSizeMB
+Add-Content $PathtoAddressesOutfile AliasUID'>'DisplayName'>'SamAccountName'>'UPN'>'PrimarySMTPAddress'>'RecipientType'>'MbxType'>'Mailboxplan'>'ArchiveState'>'MaxSendSize'>'MaxReceiveSize'>'IssueWarningQuota'>'ProhibitSendQuota'>'ProhibitSendReceiveQuota'>'TotalDeletedItemSizeinMB'>'MbxSizeMB'>'ArchiveDisplayName'>'ArchiveGuid'>'ArchiveDeletedItemSizeMB'>'ArchiveSizeMB
 
 $cp = $Timer.ElapsedMilliseconds
 for ($index = 0; $index -lt $Onprem_MailboxesCount; $index++) {
@@ -74,18 +78,18 @@ for ($index = 0; $index -lt $Onprem_MailboxesCount; $index++) {
     $ProhibitSendReceiveQuota = Get-Mailbox $AliasUID | select -expandproperty ProhibitSendReceiveQuota
 
     $ArchiveState = $OnpremMailbox.ArchiveState
-    $MbxSizeMB = $Onprem_Mailboxes_TotalSizeinMB | ? {$_.MailboxGuid -eq $OnpremMailbox.ExchangeGuid} | select -expandproperty TotalItemSizeinMB
-    $TotalDeletedItemSizeinMB = $Onprem_Mailboxes_TotalDeletedItemSizeinMB | ? {$_.MailboxGuid -eq $OnpremMailbox.ExchangeGuid} | select -expandproperty TotalDeletedItemSizeinMB
+    $MbxSizeMB = $Onprem_Mailboxes_TotalSizeinMB | ? { $_.MailboxGuid -eq $OnpremMailbox.ExchangeGuid } | select -expandproperty TotalItemSizeinMB
+    $TotalDeletedItemSizeinMB = $Onprem_Mailboxes_TotalDeletedItemSizeinMB | ? { $_.MailboxGuid -eq $OnpremMailbox.ExchangeGuid } | select -expandproperty TotalDeletedItemSizeinMB
 
     $ArchiveDisplayName = $null
     $ArchiveGuid = $null
     $ArchiveDeletedItemSizeMB = $null
     $ArchiveSizeMB = $null
     if ($OnpremMailbox.ArchiveState -ne "None") {
-        $ArchiveDisplayName = $Onprem_Mailboxes_Archive | ? {$_.ExchangeGuid -eq $OnpremMailbox.ExchangeGuid} | select -expandproperty ArchiveName
-        $ArchiveGuid = $Onprem_Mailboxes_Archive | ? {$_.ExchangeGuid -eq $OnpremMailbox.ExchangeGuid} | select -expandproperty ArchiveGuid
-        $ArchiveDeletedItemSizeMB = $Onprem_Mailboxes_Archive_TotalDeletedItemSizeinMB | ? {$_.MailboxGuid -eq $OnpremMailbox.ArchiveGuid} | select -expandproperty TotalDeletedItemSizeinMB
-        $ArchiveSizeMB = $Onprem_Mailboxes_Archive_TotalSizeinMB | ? {$_.MailboxGuid -eq $OnpremMailbox.ArchiveGuid} | select -expandproperty TotalItemSizeinMB
+        $ArchiveDisplayName = $Onprem_Mailboxes_Archive | ? { $_.ExchangeGuid -eq $OnpremMailbox.ExchangeGuid } | select -expandproperty ArchiveName
+        $ArchiveGuid = $Onprem_Mailboxes_Archive | ? { $_.ExchangeGuid -eq $OnpremMailbox.ExchangeGuid } | select -expandproperty ArchiveGuid
+        $ArchiveDeletedItemSizeMB = $Onprem_Mailboxes_Archive_TotalDeletedItemSizeinMB | ? { $_.MailboxGuid -eq $OnpremMailbox.ArchiveGuid } | select -expandproperty TotalDeletedItemSizeinMB
+        $ArchiveSizeMB = $Onprem_Mailboxes_Archive_TotalSizeinMB | ? { $_.MailboxGuid -eq $OnpremMailbox.ArchiveGuid } | select -expandproperty TotalItemSizeinMB
     }
 
     Add-Content $PathtoAddressesOutfile $AliasUID'>'$DisplayName'>'$SamAccountName'>'$UPN'>'$PrimarySMTPAddress'>'$RecipientType'>'$MbxType'>'$Mailboxplan'>'$ArchiveState'>'$MaxSendSize'>'$MaxReceiveSize'>'$IssueWarningQuota'>'$ProhibitSendQuota'>'$ProhibitSendReceiveQuota'>'$TotalDeletedItemSizeinMB'>'$MbxSizeMB'>'$ArchiveDisplayName'>'$ArchiveGuid'>'$ArchiveDeletedItemSizeMB'>'$ArchiveSizeMB

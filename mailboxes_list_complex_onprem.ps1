@@ -1,5 +1,5 @@
 $ts = Get-Date -Format yyyyMMdd_hhmmss
-$Path="\\path\outputs"
+$Path = "\\path\outputs"
 $ProjName = "mailboxes_list"
 $FileName = "Mailboxes_list_complex_onprem.full.$ts.xls"
 New-Item -Name $ProjName -Path $Path -Type Directory -ErrorAction SilentlyContinue
@@ -26,15 +26,17 @@ Write-Host "`t`tOnPrem_Mailboxes: $($Timer.ElapsedMilliseconds - $cp) millisecon
 Write-Host "Getting OnPremise TotalMailboxSizes"
 $cp = $Timer.ElapsedMilliseconds
 $OnPrem_Mailboxes_TotalSizeinMB = @()
-$OnPrem_Mailboxes_TotalSizeinMB = Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue | Select -expandproperty Alias | Get-MailboxStatistics -ErrorAction SilentlyContinue | select MailboxGuid,@{name="TotalItemSizeinMB"; expression={[math]::Round( `
-    ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB))}}
+$OnPrem_Mailboxes_TotalSizeinMB = Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue | Select -expandproperty Alias | Get-MailboxStatistics -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalItemSizeinMB"; expression = { [math]::Round( `
+            ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
+}
 Write-Host "`t`tOnPrem_Mailboxes_TotalSizeinMB: $($Timer.ElapsedMilliseconds - $cp) milliseconds"
 
 Write-Host "Getting OnPremise Archive TotalMailboxSizes"
 $cp = $Timer.ElapsedMilliseconds
 $OnPrem_Mailboxes_Archive_TotalSizeinMB = @()
-$OnPrem_Mailboxes_Archive_TotalSizeinMB = Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Select -expandproperty Alias | Get-MailboxStatistics -Archive -ErrorAction SilentlyContinue | select MailboxGuid,@{name="TotalItemSizeinMB"; expression={[math]::Round( `
-    ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",","")/1MB))}}
+$OnPrem_Mailboxes_Archive_TotalSizeinMB = Get-Recipient -RecipientType $RecipientType -ResultSize Unlimited -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Select -expandproperty Alias | Get-MailboxStatistics -Archive -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalItemSizeinMB"; expression = { [math]::Round( `
+            ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
+}
 Write-Host "`t`tOnPrem_Mailboxes_Archive_TotalSizeinMB: $($Timer.ElapsedMilliseconds - $cp) milliseconds"
 
 $OnPrem_MailboxesCount = @($OnPrem_Mailboxes).Count
@@ -65,10 +67,10 @@ for ($index = 0; $index -lt $OnPrem_MailboxesCount; $index++) {
     $Department = $OnPremMailbox.Department
     $intExt = $OnPremMailbox.CustomAttribute10
     $Owner = $OnPremMailbox.CustomAttribute3
-    $MbxSizeMB = $OnPrem_Mailboxes_TotalSizeinMB | ? {$_.MailboxGuid -eq $OnPremMailbox.ExchangeGuid} | select -expandproperty TotalItemSizeinMB
+    $MbxSizeMB = $OnPrem_Mailboxes_TotalSizeinMB | ? { $_.MailboxGuid -eq $OnPremMailbox.ExchangeGuid } | select -expandproperty TotalItemSizeinMB
     if ($OnPremMailbox.ArchiveState -ne "None") {
         $HasArchive = "1"
-        $ArchiveSizeMB = $OnPrem_Mailboxes_Archive_TotalSizeinMB | ? {$_.MailboxGuid -eq $OnPremMailbox.ArchiveGuid} | select -expandproperty TotalItemSizeinMB
+        $ArchiveSizeMB = $OnPrem_Mailboxes_Archive_TotalSizeinMB | ? { $_.MailboxGuid -eq $OnPremMailbox.ArchiveGuid } | select -expandproperty TotalItemSizeinMB
     } else {
         $HasArchive = "0"
         $ArchiveSizeMB = "0"
