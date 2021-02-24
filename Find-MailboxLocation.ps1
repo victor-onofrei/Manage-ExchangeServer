@@ -6,7 +6,11 @@ begin {
 process {
     "exchangeObject,mailboxLocation" >> $params.outputFilePath
 
-    for ($index = 0; $index -lt $params.exchangeObjects.Count; $index++) {
+    $exchangeObjectsCount = $params.exchangeObjects.Count
+
+    Write-Output "To process $exchangeObjectsCount exchange objects"
+
+    for ($index = 0; $index -lt $exchangeObjectsCount; $index++) {
         $exchangeObject = $params.exchangeObjects[$index]
 
         Write-Output "Processing object: $exchangeObject"
