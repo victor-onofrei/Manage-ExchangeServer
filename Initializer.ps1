@@ -15,20 +15,20 @@ function Initialize-DefaultParams {
     param (
         [String]$_ScriptName = (Get-ScriptName),
 
-        [Alias("IP")][String]$InputPath,
-        [Alias("ID")][String]$InputDir,
-        [Alias("IFN")][String]$InputFileName,
+        [Alias('IP')][String]$InputPath,
+        [Alias('ID')][String]$InputDir,
+        [Alias('IFN')][String]$InputFileName,
 
-        [Alias("OP")][String]$OutputPath,
-        [Alias("OD")][String]$OutputDir,
-        [Alias("OFN")][String]$OutputFileName,
+        [Alias('OP')][String]$OutputPath,
+        [Alias('OD')][String]$OutputDir,
+        [Alias('OFN')][String]$OutputFileName,
 
-        [Alias("EO")][String[]]$ExchangeObjects
+        [Alias('EO')][String[]]$ExchangeObjects
     )
 
     begin {
         function Initialize-IniModule {
-            Set-Variable "iniModule" -Option Constant -Value "PsIni"
+            Set-Variable 'iniModule' -Option Constant -Value 'PsIni'
 
             $isModuleInstalled = Get-Module $iniModule -ListAvailable
 
@@ -40,9 +40,9 @@ function Initialize-DefaultParams {
         }
 
         function Get-Config {
-            Set-Variable "configDirectoryPath" -Option Constant -Value "$HOME\.config"
-            Set-Variable "configFilePath" -Option Constant -Value (
-                Join-Path $configDirectoryPath -ChildPath "manage-exchange_server.ini"
+            Set-Variable 'configDirectoryPath' -Option Constant -Value "$HOME\.config"
+            Set-Variable 'configFilePath' -Option Constant -Value (
+                Join-Path $configDirectoryPath -ChildPath 'manage-exchange_server.ini'
             )
 
             Initialize-IniModule
@@ -74,35 +74,35 @@ function Initialize-DefaultParams {
         $config = Get-Config
 
         # Set timestamp variable.
-        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+        $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
 
         # Read the params.
 
-        $inputPath = Read-Param "InputPath" `
+        $inputPath = Read-Param 'InputPath' `
             -Value $InputPath `
             -DefaultValue "$HOME" `
             -Config $config `
             -ScriptName $_ScriptName
-        $inputDir = Read-Param "InputDir" `
+        $inputDir = Read-Param 'InputDir' `
             -Value $InputDir `
             -Config $config `
             -ScriptName $_ScriptName
-        $inputFileName = Read-Param "InputFileName" `
+        $inputFileName = Read-Param 'InputFileName' `
             -Value $InputFileName `
             -DefaultValue "input_$_ScriptName.csv" `
             -Config $config `
             -ScriptName $_ScriptName
 
-        $outputPath = Read-Param "OutputPath" `
+        $outputPath = Read-Param 'OutputPath' `
             -Value $OutputPath `
             -DefaultValue "$HOME" `
             -Config $config `
             -ScriptName $_ScriptName
-        $outputDir = Read-Param "OutputDir" `
+        $outputDir = Read-Param 'OutputDir' `
             -Value $OutputDir `
             -Config $config `
             -ScriptName $_ScriptName
-        $outputFileName = Read-Param "OutputFileName" `
+        $outputFileName = Read-Param 'OutputFileName' `
             -Value $OutputFileName `
             -DefaultValue "output_$_ScriptName.$timestamp.csv" `
             -Config $config `
@@ -119,7 +119,7 @@ function Initialize-DefaultParams {
                 -ErrorAction SilentlyContinue > $null
         }
 
-        $exchangeObjects = Read-Param "ExchangeObjects" `
+        $exchangeObjects = Read-Param 'ExchangeObjects' `
             -Value $ExchangeObjects `
             -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
 

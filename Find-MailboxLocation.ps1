@@ -4,7 +4,7 @@ begin {
 }
 
 process {
-    "exchangeObject,mailboxLocation" >> $params.outputFilePath
+    'exchangeObject,mailboxLocation' >> $params.outputFilePath
 
     $exchangeObjectsCount = $params.exchangeObjects.Count
 
