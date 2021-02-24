@@ -12,9 +12,6 @@ Start-Transcript "$Path\$ProjName\$FileName.txt"
 # On premise: Which mailbox type should be searched for? Possible Values: "DiscoveryMailbox, EquipmentMailbox, GroupMailbox, LegacyMailbox, LinkedMailbox, LinkedRoomMailbox, RoomMailbox, SchedulingMailbox, SharedMailbox, TeamMailbox, UserMailbox"
 $RecipientType = "UserMailbox"
 
-# Import AD module
-Import-Module Activedirectory
-
 # Get the Dataset of Mailboxes and RemoteMailboxes to work with
 Write-Host "Getting OnPremise $RecipientType"
 $Timer = [System.diagnostics.stopwatch]::startNew()
