@@ -10,7 +10,7 @@ Start-Transcript "$Path\$ProjName\Faster\$FileName.txt"
 
 # Adresses of the users in scope
 # On premise: Which mailbox type should be searched for? Possible Values: "DiscoveryMailbox, EquipmentMailbox, GroupMailbox, LegacyMailbox, LinkedMailbox, LinkedRoomMailbox, RoomMailbox, SchedulingMailbox, SharedMailbox, TeamMailbox, UserMailbox"
-$RecipientType = "UserMailbox" 
+$RecipientType = "UserMailbox"
 # Get the Dataset of Mailboxes and RemoteMailboxes to work with
 Write-Host "Getting Cloud $RecipientType"
 $Timer = [System.diagnostics.stopwatch]::startNew()
@@ -70,7 +70,7 @@ for ($index = 0; $index -lt $Cloud_MailboxesCount; $index++) {
         $HasArchive = "0"
         $ArchiveSizeMB = "0"
     }
-    
+
     Add-Content $PathtoAddressesOutfile $SamAccountName'>'$UPN'>'$PrimarySMTPAddress'>'$MailDomain'>'$Realm'>'$World'>'$MbxType'>'$DisplayName'>'$Company'>'$Department'>'$intExt'>'$Owner'>'$MbxSizeMB'>'$HasArchive'>'$ArchiveSizeMB
 }
 
@@ -89,8 +89,5 @@ $msg.Subject = "Mailbox list complex Cloud report is ready"
 $msg.Body = "Attached is the mailbox list complex Cloud report"
 $msg.Attachments.Add($att)
 $smtp.Send($msg)
+
 Stop-Transcript
-
-
-
-

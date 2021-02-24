@@ -13,7 +13,7 @@ $MailboxPool = Get-Content "\\path\inputs\mapping_export.csv"
 
 # Adresses of the users in scope
 # On premise: Which mailbox type should be searched for? Possible Values: "DiscoveryMailbox, EquipmentMailbox, GroupMailbox, LegacyMailbox, LinkedMailbox, LinkedRoomMailbox, RoomMailbox, SchedulingMailbox, SharedMailbox, TeamMailbox, UserMailbox"
-$RecipientType = "UserMailbox" 
+$RecipientType = "UserMailbox"
 # Get the Dataset of Mailboxes and RemoteMailboxes to work with
 Write-Host "Getting Cloud $RecipientType"
 $Timer = [System.diagnostics.stopwatch]::startNew()
@@ -58,23 +58,13 @@ for ($index = 0; $index -lt $Cloud_MailboxesCount; $index++) {
     $AliasUID = $CloudMailbox.Alias
     $SamAccountName = $CloudMailbox.SamAccountName
     $PrimarySMTPAddress = $CloudMailbox.PrimarySMTPAddress
-    # $MailDomain = $PrimarySMTPAddress.ToString().split('@')[1]
-    # $Realm = "O365"
     $UPN = $CloudMailbox.WindowsLiveId
-    # $CloudMailbox_CA8 = $CloudMailbox.CustomAttribute8
-    # if ($CloudMailbox_CA8) {
-    #     $World = $CloudMailbox_CA8.ToString().split('=')[1][0]
-    # }
     $RecipientType = $CloudMailbox.RecipientType
     $MbxType = $CloudMailbox.RecipientTypeDetails
     if ($MbxType -like "UserMailbox" -and $SamAccountName -like "SRV*") {
         $MbxType = "SrvMailbox"
     }
     $DisplayName = $CloudMailbox.DisplayName
-    # $Company = $CloudMailbox.CustomAttribute9.split('#')[0]
-    # $Department = $CloudMailbox.Department
-    # $intExt = $CloudMailbox.CustomAttribute10
-    # $Owner = $CloudMailbox.CustomAttribute3
     $Mailboxplan = Get-EXOMailbox $AliasUID -Properties MailboxPlan | select -expandproperty Mailboxplan
     $MaxSendSize = Get-EXOMailbox $AliasUID -Properties MaxSendSize | select -expandproperty MaxSendSize
     $MaxReceiveSize = Get-EXOMailbox $AliasUID -Properties MaxReceiveSize | select -expandproperty MaxReceiveSize
@@ -96,7 +86,7 @@ for ($index = 0; $index -lt $Cloud_MailboxesCount; $index++) {
         $ArchiveDeletedItemSizeMB = $Cloud_Mailboxes_Archive_TotalDeletedItemSizeinMB | ? {$_.MailboxGuid -eq $CloudMailbox.ArchiveGuid} | select -expandproperty TotalDeletedItemSizeinMB
         $ArchiveSizeMB = $Cloud_Mailboxes_Archive_TotalSizeinMB | ? {$_.MailboxGuid -eq $CloudMailbox.ArchiveGuid} | select -expandproperty TotalItemSizeinMB
     }
-    
+
     Add-Content $PathtoAddressesOutfile $AliasUID'>'$DisplayName'>'$SamAccountName'>'$UPN'>'$PrimarySMTPAddress'>'$RecipientType'>'$MbxType'>'$Mailboxplan'>'$ArchiveState'>'$MaxSendSize'>'$MaxReceiveSize'>'$IssueWarningQuota'>'$ProhibitSendQuota'>'$ProhibitSendReceiveQuota'>'$TotalDeletedItemSizeinMB'>'$MbxSizeMB'>'$ArchiveDisplayName'>'$ArchiveGuid'>'$ArchiveDeletedItemSizeMB'>'$ArchiveSizeMB
 }
 
@@ -115,7 +105,3 @@ $msg.Attachments.Add($att)
 $smtp.Send($msg)
 
 Stop-Transcript
-
-
-
-

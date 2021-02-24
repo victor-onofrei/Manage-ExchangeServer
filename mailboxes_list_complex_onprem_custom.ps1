@@ -13,7 +13,7 @@ $MailboxPool = Get-Content "\\path\inputs\mapping_export.csv"
 
 # Adresses of the users in scope
 # On premise: Which mailbox type should be searched for? Possible Values: "DiscoveryMailbox, EquipmentMailbox, GroupMailbox, LegacyMailbox, LinkedMailbox, LinkedRoomMailbox, RoomMailbox, SchedulingMailbox, SharedMailbox, TeamMailbox, UserMailbox"
-$RecipientType = "UserMailbox" 
+$RecipientType = "UserMailbox"
 # Get the Dataset of Mailboxes and RemoteMailboxes to work with
 Write-Host "Getting Onprem $RecipientType"
 $Timer = [System.diagnostics.stopwatch]::startNew()
@@ -58,23 +58,14 @@ for ($index = 0; $index -lt $Onprem_MailboxesCount; $index++) {
     $AliasUID = $OnpremMailbox.Alias
     $SamAccountName = $OnpremMailbox.SamAccountName
     $PrimarySMTPAddress = $OnpremMailbox.PrimarySMTPAddress
-    # $MailDomain = $PrimarySMTPAddress.ToString().split('@')[1]
-    # $Realm = "O365"
     $UPN = Get-Mailbox $AliasUID | select -expandproperty UserPrincipalName
-    # $OnpremMailbox_CA8 = $OnpremMailbox.CustomAttribute8
-    # if ($OnpremMailbox_CA8) {
-    #     $World = $OnpremMailbox_CA8.ToString().split('=')[1][0]
-    # }
     $RecipientType = $OnpremMailbox.RecipientType
     $MbxType = $OnpremMailbox.RecipientTypeDetails
     if ($MbxType -like "UserMailbox" -and $SamAccountName -like "SRV*") {
         $MbxType = "SrvMailbox"
     }
     $DisplayName = $OnpremMailbox.DisplayName
-    # $Company = $OnpremMailbox.CustomAttribute9.split('#')[0]
-    # $Department = $OnpremMailbox.Department
-    # $intExt = $OnpremMailbox.CustomAttribute10
-    # $Owner = $OnpremMailbox.CustomAttribute3
+
     $Mailboxplan = Get-Mailbox $AliasUID | select -expandproperty Mailboxplan
     $MaxSendSize = Get-Mailbox $AliasUID | select -expandproperty MaxSendSize
     $MaxReceiveSize = Get-Mailbox $AliasUID | select -expandproperty MaxReceiveSize
@@ -96,7 +87,7 @@ for ($index = 0; $index -lt $Onprem_MailboxesCount; $index++) {
         $ArchiveDeletedItemSizeMB = $Onprem_Mailboxes_Archive_TotalDeletedItemSizeinMB | ? {$_.MailboxGuid -eq $OnpremMailbox.ArchiveGuid} | select -expandproperty TotalDeletedItemSizeinMB
         $ArchiveSizeMB = $Onprem_Mailboxes_Archive_TotalSizeinMB | ? {$_.MailboxGuid -eq $OnpremMailbox.ArchiveGuid} | select -expandproperty TotalItemSizeinMB
     }
-    
+
     Add-Content $PathtoAddressesOutfile $AliasUID'>'$DisplayName'>'$SamAccountName'>'$UPN'>'$PrimarySMTPAddress'>'$RecipientType'>'$MbxType'>'$Mailboxplan'>'$ArchiveState'>'$MaxSendSize'>'$MaxReceiveSize'>'$IssueWarningQuota'>'$ProhibitSendQuota'>'$ProhibitSendReceiveQuota'>'$TotalDeletedItemSizeinMB'>'$MbxSizeMB'>'$ArchiveDisplayName'>'$ArchiveGuid'>'$ArchiveDeletedItemSizeMB'>'$ArchiveSizeMB
 }
 
@@ -115,7 +106,3 @@ $msg.Attachments.Add($att)
 $smtp.Send($msg)
 
 Stop-Transcript
-
-
-
-

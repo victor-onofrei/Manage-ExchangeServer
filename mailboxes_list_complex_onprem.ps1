@@ -10,7 +10,7 @@ Start-Transcript "$Path\$ProjName\$FileName.txt"
 
 # Adresses of the users in scope
 # On premise: Which mailbox type should be searched for? Possible Values: "DiscoveryMailbox, EquipmentMailbox, GroupMailbox, LegacyMailbox, LinkedMailbox, LinkedRoomMailbox, RoomMailbox, SchedulingMailbox, SharedMailbox, TeamMailbox, UserMailbox"
-$RecipientType = "UserMailbox" 
+$RecipientType = "UserMailbox"
 
 # Import AD module
 Import-Module Activedirectory
@@ -73,7 +73,7 @@ for ($index = 0; $index -lt $OnPrem_MailboxesCount; $index++) {
         $HasArchive = "0"
         $ArchiveSizeMB = "0"
     }
-        
+
     Add-Content $PathtoAddressesOutfile $SamAccountName">"$UPN">"$PrimarySMTPAddress">"$MailDomain">"$Realm">"$World">"$MbxType">"$DisplayName">"$Company">"$Department">"$intExt">"$Owner">"$MbxSizeMB">"$HasArchive">"$ArchiveSizeMB
 }
 
@@ -92,4 +92,5 @@ $msg.Subject = "Mailbox list complex OnPrem report is ready"
 $msg.Body = "Attached is the mailbox list complex OnPrem report"
 $msg.Attachments.Add($att)
 $smtp.Send($msg)
+
 Stop-Transcript
