@@ -44,40 +44,24 @@ process {
                     -EmailAddresses $mailboxInfo.EmailAddresses `
                     -EmailAddressPolicyEnabled $false
             } else {
-                [System.String]$message = "Mailbox $exchangeObject has on-premise archive " +
-                'enabled. Processing the script requires permanently disabling the archive which ' +
-                'will result in data loss. Consider merging the 2 mailbox objects manually after ' +
-                'backup. Skipping this mailbox...'
-                [System.Management.Automation.PSInvalidCastException]$exception = New-Object `
-                    -TypeName System.Management.Automation.PSInvalidCastException `
-                    -ArgumentList $message
-                [System.Management.Automation.ErrorRecord]$errorRecord = New-Object `
-                    -TypeName System.Management.Automation.ErrorRecord `
-                    -ArgumentList (
-                    $exception,
-                    'ArchiveEnabled',
-                    ([System.Management.Automation.ErrorCategory]::PermissionDenied),
-                    $exchangeObject
+                $errorMessage = -join (
+                    "Mailbox $exchangeObject has on-premise archive enabled. Processing the ",
+                    'script requires permanently disabling the archive which will result in data ',
+                    'loss. Consider merging the 2 mailbox objects manually after backup. Skipping ',
+                    'this mailbox...'
                 )
-                Write-Error -ErrorRecord $errorRecord
+
+                Write-Error $errorMessage
             }
         } else {
-            [System.String]$message = "Mailbox $exchangeObject has on-premise content above " +
-            'threshold. Processing the script requires permanently disabling the mailbox which ' +
-            'will result in data loss. Consider merging the 2 mailbox objects manually after ' +
-            'backup. Skipping this mailbox...'
-            [System.Management.Automation.PSInvalidCastException]$exception = New-Object `
-                -TypeName System.Management.Automation.PSInvalidCastException `
-                -ArgumentList $message
-            [System.Management.Automation.ErrorRecord]$errorRecord = New-Object `
-                -TypeName System.Management.Automation.ErrorRecord `
-                -ArgumentList (
-                $exception,
-                'ContentAboveThreshold',
-                ([System.Management.Automation.ErrorCategory]::PermissionDenied),
-                $exchangeObject
+            $errorMessage = -join (
+                "Mailbox $exchangeObject has on-premise content above threshold. Processing the ",
+                'script requires permanently disabling the mailbox which will result in data ',
+                'loss. Consider merging the 2 mailbox objects manually after backup. Skipping ',
+                'this mailbox...'
             )
-            Write-Error -ErrorRecord $errorRecord
+
+            Write-Error $errorMessage
         }
     }
 }
