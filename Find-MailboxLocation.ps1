@@ -4,8 +4,6 @@ begin {
 }
 
 process {
-    'exchangeObject,mailboxLocation' >> $params.outputFilePath
-
     $exchangeObjectsCount = $params.exchangeObjects.Count
 
     Write-Output "To process $exchangeObjectsCount exchange objects"
@@ -19,6 +17,9 @@ process {
 
         $location = Get-ExchangeObjectLocation -ExchangeObject $exchangeObject
 
-        "$exchangeObject,$location" >> $params.outputFilePath
+        [PSCustomObject]@{
+            exchangeObject = $exchangeObject
+            mailboxLocation = $location
+        } | Export-Csv $params.outputFilePath -Append
     }
 }
