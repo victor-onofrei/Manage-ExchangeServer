@@ -49,25 +49,25 @@ process {
                 $firstCompanyManagersCount -and $secondCompanyManagersCount
             )
 
-            $groupManagerProperties = $groupManagerProperties -join ';'
-            $groupManagerOrMemberCustomAttribute8 = $groupManagerProperties
+            $groupManagerOrMemberCustomAttribute8 = $groupManagerProperties -join ';'
             $groupManagersOrMembersCount = $groupManagersCount
 
             $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
             $secondCompanyManagersOrMembersCount = $secondCompanyManagersCount
 
-            $groupsManagedBySMTP = @()
-            $groupsManagedByCompany = @()
+            $groupsManagedBySMTPList = @()
+            $groupsManagedByCompanyList = @()
 
             foreach ($manager in $groupManagers) {
-                $groupsManagedBySMTP += $manager |
+                $groupsManagedBySMTPList += $manager |
                     Select-Object PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
 
-                $groupsManagedByCompany += $manager | Select-Object Company -ExpandProperty Company
+                $groupsManagedByCompanyList += $manager |
+                    Select-Object Company -ExpandProperty Company
             }
 
-            $groupsManagedBySMTP = $groupsManagedBySMTP -join ';'
-            $groupsManagedByCompany = $groupsManagedByCompany -join ';'
+            $groupsManagedBySMTP = $groupsManagedBySMTPList -join ';'
+            $groupsManagedByCompany = $groupsManagedByCompanyList -join ';'
 
             $groupMembersEmails = ''
         } else {
@@ -83,8 +83,7 @@ process {
 
             $areMembersInBothCompanies = $firstCompanyMembersCount -and $secondCompanyMembersCount
 
-            $groupMemberProperties = $groupMemberProperties -join ';'
-            $groupManagerOrMemberCustomAttribute8 = $groupMemberProperties
+            $groupManagerOrMemberCustomAttribute8 = $groupMemberProperties -join ';'
             $groupManagersOrMembersCount = $groupMembersCount
 
             $firstCompanyManagersOrMembersCount = $firstCompanyMembersCount
@@ -93,8 +92,7 @@ process {
             $groupsManagedBySMTP = ''
             $groupsManagedByCompany = ''
 
-            $groupMembersEmails = $groupMembers.PrimarySMTPAddress
-            $groupMembersEmails = $groupMembersEmails -join ';'
+            $groupMembersEmails = $groupMembers.PrimarySMTPAddress -join ';'
         }
 
         if (
