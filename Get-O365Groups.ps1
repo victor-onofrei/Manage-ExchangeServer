@@ -80,6 +80,7 @@ process {
             $secondCompanyManagersOrMembersCount = $secondCompanyMembersCount
 
             $groupsManagedBySMTP = ''
+            $groupsManagedByCompany = ''
         }
 
         if (
