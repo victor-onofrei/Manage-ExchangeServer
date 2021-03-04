@@ -78,6 +78,8 @@ process {
 
             $firstCompanyManagersOrMembersCount = $firstCompanyMembersCount
             $secondCompanyManagersOrMembersCount = $secondCompanyMembersCount
+
+            $groupsManagedBySMTP = ''
         }
 
         if (
