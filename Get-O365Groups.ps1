@@ -43,7 +43,7 @@ process {
             ).Count
 
             $groupManagerProperties = $groupManagerProperties -join ';'
-            $managerCustomAttribute8 = $groupManagerProperties
+            $groupManagerOrMemberCustomAttribute8 = $groupManagerProperties
             $groupMembersOrManagersCount = $groupManagersCount
 
             $firstCompanyMembersOrManagersCount = $firstCompanyManagersCount
@@ -73,6 +73,7 @@ process {
             ).Count
 
             $groupMemberProperties = $groupMemberProperties -join ';'
+            $groupManagerOrMemberCustomAttribute8 = $groupMemberProperties
             $groupMembersOrManagersCount = $groupMembersCount
 
             $firstCompanyMembersOrManagersCount = $firstCompanyMembersCount
@@ -130,13 +131,12 @@ process {
                 'Group SMTP' = $groupSMTP
                 'Group Category' = $groupCategory
                 'Group Company' = $groupCompany
-                'Group Member Properties' = $groupMemberProperties
+                'Group Manager or Member Custom Attribute 8' = $groupManagerOrMemberCustomAttribute8
                 'Group Members Or Managers Count' = $groupMembersOrManagersCount
                 'First Company Members Or Managers Count' = $firstCompanyMembersOrManagersCount
                 'Second Company Members Or Managers Count' = $secondCompanyMembersOrManagersCount
                 'Groups Managed By SMTP' = $groupsManagedBySMTP
                 'Groups Managed By Company' = $groupsManagedByCompany
-                'Manager Custom Attribute 8' = $managerCustomAttribute8
                 'Group Members Emails' = $groupMembersEmails
             } | Export-Csv $params.outputFilePath -Append
         }
