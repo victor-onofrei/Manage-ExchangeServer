@@ -147,14 +147,6 @@ process {
                 'Group Members Emails' = $groupMembersEmails
             } | Export-Csv $params.outputFilePath -Append
         }
-
-        $groupMembers = $null
-
-        $firstCompanyManagersCount = $null
-        $secondCompanyManagersCount = $null
-
-        $firstCompanyMembersCount = $null
-        $secondCompanyMembersCount = $null
     }
 
     $attachment = New-Object Net.Mail.Attachment($params.outputFilePath)
