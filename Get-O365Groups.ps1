@@ -47,7 +47,7 @@ process {
             $groupManagersOrMembersCount = $groupManagersCount
 
             $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
-            $secondCompanyMembersOrManagersCount = $secondCompanyManagersCount
+            $secondCompanyManagersOrMembersCount = $secondCompanyManagersCount
 
             $groupsManagedBySMTP = @()
             $groupsManagedByCompany = @()
@@ -77,11 +77,11 @@ process {
             $groupManagersOrMembersCount = $groupMembersCount
 
             $firstCompanyManagersOrMembersCount = $firstCompanyMembersCount
-            $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
+            $secondCompanyManagersOrMembersCount = $secondCompanyMembersCount
         }
 
         if (
-            $secondCompanyMembersOrManagersCount -eq 0 -and
+            $secondCompanyManagersOrMembersCount -eq 0 -and
             $groupManagersOrMembersCount -eq 0 -and
             $firstCompanyManagersOrMembersCount -eq 0
         ) {
@@ -91,26 +91,26 @@ process {
         } elseif ($secondCompanyMembersCount -and $firstCompanyMembersCount) {
             $groupCompany = 'Mixed Users'
         } elseif (
-            $secondCompanyMembersOrManagersCount -eq $groupManagersOrMembersCount -or (
-                $secondCompanyMembersOrManagersCount -eq 0 -and
+            $secondCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
+                $secondCompanyManagersOrMembersCount -eq 0 -and
                 $firstCompanyManagersOrMembersCount -eq 0 -and
                 $groupsManagedByCompany -match 'compB' -and
                 $groupsManagedByCompany -notmatch 'compA'
             ) -or (
-                $secondCompanyMembersOrManagersCount -and
+                $secondCompanyManagersOrMembersCount -and
                 $firstCompanyManagersOrMembersCount -eq 0
             )
         ) {
             $groupCompany = 'compB'
         } elseif (
             $firstCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
-                $secondCompanyMembersOrManagersCount -eq 0 -and
+                $secondCompanyManagersOrMembersCount -eq 0 -and
                 $firstCompanyManagersOrMembersCount -eq 0 -and
                 $groupsManagedByCompany -match 'compA' -and
                 $groupsManagedByCompany -notmatch 'compB'
             ) -or (
                 $firstCompanyManagersOrMembersCount -and
-                $secondCompanyMembersOrManagersCount -eq 0
+                $secondCompanyManagersOrMembersCount -eq 0
             )
         ) {
             $groupCompany = 'compA'
@@ -136,7 +136,7 @@ process {
                 'Group Manager or Member Custom Attribute 8' = $groupManagerOrMemberCustomAttribute8
                 'Group Managers or Members Count' = $groupManagersOrMembersCount
                 'First Company Managers Or Members Count' = $firstCompanyManagersOrMembersCount
-                'Second Company Members Or Managers Count' = $secondCompanyMembersOrManagersCount
+                'Second Company Managers Or Members Count' = $secondCompanyManagersOrMembersCount
                 'Groups Managed By SMTP' = $groupsManagedBySMTP
                 'Groups Managed By Company' = $groupsManagedByCompany
                 'Group Members Emails' = $groupMembersEmails
