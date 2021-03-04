@@ -31,6 +31,9 @@ process {
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySMTPAddress
 
+        $areManagersInBothCompanies = false
+        $areMembersInBothCompanies = false
+
         if ($groupManagers) {
             $groupManagersCount = ($groupManagers | Measure-Object).Count
             $groupManagerProperties = $groupManagers.CustomAttribute8
@@ -41,6 +44,10 @@ process {
             $secondCompanyManagersCount = (
                 $groupManagerProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
+
+            $areManagersInBothCompanies = (
+                $secondCompanyManagersCount -and $firstCompanyManagersCount
+            )
 
             $groupManagerProperties = $groupManagerProperties -join ';'
             $groupManagerOrMemberCustomAttribute8 = $groupManagerProperties
@@ -74,6 +81,8 @@ process {
                 $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
 
+            $areMembersInBothCompanies = $secondCompanyMembersCount -and $firstCompanyMembersCount
+
             $groupMemberProperties = $groupMemberProperties -join ';'
             $groupManagerOrMemberCustomAttribute8 = $groupMemberProperties
             $groupManagersOrMembersCount = $groupMembersCount
@@ -94,9 +103,9 @@ process {
             $firstCompanyManagersOrMembersCount -eq 0
         ) {
             $groupCompany = 'None'
-        } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
+        } elseif ($areManagersInBothCompanies) {
             $groupCompany = 'Mixed Owners'
-        } elseif ($secondCompanyMembersCount -and $firstCompanyMembersCount) {
+        } elseif ($areMembersInBothCompanies) {
             $groupCompany = 'Mixed Users'
         } elseif (
             $secondCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
