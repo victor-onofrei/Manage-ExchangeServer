@@ -114,6 +114,8 @@ process {
             )
         ) {
             $groupCompany = 'compA'
+        } else {
+            $groupCompany = 'N/A'
         }
 
         if ($groupCompany -eq 'compA' -or $groupCompany -like 'Mixed*') {
