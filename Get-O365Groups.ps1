@@ -61,6 +61,8 @@ process {
 
             $groupsManagedBySMTP = $groupsManagedBySMTP -join ';'
             $groupsManagedByCompany = $groupsManagedByCompany -join ';'
+
+            $groupMembersEmails = ''
         } else {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
@@ -81,6 +83,9 @@ process {
 
             $groupsManagedBySMTP = ''
             $groupsManagedByCompany = ''
+
+            $groupMembersEmails = $groupMembers.PrimarySMTPAddress
+            $groupMembersEmails = $groupMembersEmails -join ';'
         }
 
         if (
@@ -125,9 +130,6 @@ process {
             $groupName = $group.Name
             $groupCategory = $group.RecipientType
             $groupGUID = $group.GUID
-
-            $groupMembersEmails = $groupMembers.PrimarySMTPAddress
-            $groupMembersEmails = $groupMembersEmails -join ';'
 
             [PSCustomObject]@{
                 'Group' = $group
