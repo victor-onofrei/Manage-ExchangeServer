@@ -12,16 +12,6 @@ process {
         Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
     $groupsCount = @($groups).Count
 
-    $header = -join (
-        'Group>Group Name>Group GUID>Group SMTP>Group Category>Group Company>',
-        'Group Member Properties>Group Members Or Managers Count>',
-        'First Company Members Or Managers Count>Second Company Members Or Managers Count>',
-        'Groups Managed By SMTP>Groups Managed By Company>Manager Custom Attribute 8>',
-        'Group Members Emails'
-    )
-
-    $header >> $params.outputFilePath
-
     Write-Output "To process: $groupsCount groups"
 
     for ($index = 0; $index -lt $groupsCount; $index++) {
@@ -133,15 +123,22 @@ process {
             $groupMembersEmails = $groupMembers.PrimarySMTPAddress
             $groupMembersEmails = $groupMembersEmails -join ';'
 
-            $row = -join (
-                "$group>$groupName>$groupGUID>$groupSMTP>$groupCategory>$groupCompany>",
-                "$groupMemberProperties>$groupMembersOrManagersCount>",
-                "$firstCompanyMembersOrManagersCount>$secondCompanyMembersOrManagersCount>",
-                "$groupsManagedBySMTP>$groupsManagedByCompany>$managerCustomAttribute8>",
-                "$groupMembersEmails"
-            )
-
-            $row >> $params.outputFilePath
+            [PSCustomObject]@{
+                'Group' = $group
+                'Group Name' = $groupName
+                'Group GUID' = $groupGUID
+                'Group SMTP' = $groupSMTP
+                'Group Category' = $groupCategory
+                'Group Company' = $groupCompany
+                'Group Member Properties' = $groupMemberProperties
+                'Group Members Or Managers Count' = $groupMembersOrManagersCount
+                'First Company Members Or Managers Count' = $firstCompanyMembersOrManagersCount
+                'Second Company Members Or Managers Count' = $secondCompanyMembersOrManagersCount
+                'Groups Managed By SMTP' = $groupsManagedBySMTP
+                'Groups Managed By Company' = $groupsManagedByCompany
+                'Manager Custom Attribute 8' = $managerCustomAttribute8
+                'Group Members Emails' = $groupMembersEmails
+            } | Export-Csv $params.outputFilePath -Append
         }
 
         $groupMembers = $null
