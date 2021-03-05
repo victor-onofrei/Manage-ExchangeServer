@@ -33,7 +33,7 @@ process {
                 [PSCustomObject]@{
                     exchangeObject = $exchangeObject
                     emailAddress = $emailAddress
-                } | Export-Csv $params.outputFilePath -Append
+                } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
             }
 
             $hasArchiveGuid = $mailboxInfo.archiveGuid -ne '00000000-0000-0000-0000-000000000000'

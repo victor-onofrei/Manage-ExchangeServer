@@ -20,6 +20,6 @@ process {
         [PSCustomObject]@{
             exchangeObject = $exchangeObject
             mailboxLocation = $location
-        } | Export-Csv $params.outputFilePath -Append
+        } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
     }
 }

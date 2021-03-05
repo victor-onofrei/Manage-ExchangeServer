@@ -152,7 +152,7 @@ process {
                 'Groups Managed By SMTP' = $groupsManagedBySMTP
                 'Groups Managed By Company' = $groupsManagedByCompany
                 'Group Members Emails' = $groupMembersEmails
-            } | Export-Csv $params.outputFilePath -Append
+            } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
         }
     }
 
