@@ -114,9 +114,9 @@ process {
             $groupCompany = 'Mixed Owners'
         } elseif ($areMembersInBothCompanies) {
             $groupCompany = 'Mixed Users'
-        } elseif ($firstCompanyUsersCount -eq $groupUsersCount -or $hasOnlyFirstCompanyUsers) {
+        } elseif ($groupUsersCount -eq $firstCompanyUsersCount -or $hasOnlyFirstCompanyUsers) {
             $groupCompany = 'compA'
-        } elseif ($secondCompanyUsersCount -eq $groupUsersCount -or $hasOnlySecondCompanyUsers) {
+        } elseif ($groupUsersCount -eq $secondCompanyUsersCount -or $hasOnlySecondCompanyUsers) {
             $groupCompany = 'compB'
         } else {
             $groupCompany = 'N/A'
