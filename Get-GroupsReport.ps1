@@ -152,6 +152,9 @@ process {
         $groupManagerProperties = $null
         $groupMemberProperties = $null
 
+        $groupManagersCount = 0
+        $groupMembersCount = 0
+
         if ($groupManagersList) {
             $groupManagers = Get-ManagersFromList $groupManagersList
 
@@ -262,7 +265,8 @@ process {
 
                 'Group Manager Properties' = $groupManagerProperties -join ';'
                 'Group Member Properties' = $groupMemberProperties -join ';'
-                'Group Managers or Members Count' = $groupUsersCount
+                'Group Managers Count' = $groupManagersCount
+                'Group Members Count' = $groupMembersCount
 
                 'First Company Managers Or Members Count' = $firstCompanyUsersCount
                 'Second Company Managers Or Members Count' = $secondCompanyUsersCount
