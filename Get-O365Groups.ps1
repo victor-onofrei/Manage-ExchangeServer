@@ -123,16 +123,12 @@ process {
         }
 
         if ($groupCompany -eq 'compA' -or $groupCompany -like 'Mixed*') {
-            $groupName = $group.Name
-            $groupCategory = $group.RecipientType
-            $groupGUID = $group.GUID
-
             [PSCustomObject]@{
                 'Group' = $group
-                'Group Name' = $groupName
-                'Group GUID' = $groupGUID
+                'Group Name' = $group.Name
+                'Group GUID' = $group.GUID
                 'Group SMTP' = $groupSMTP
-                'Group Category' = $groupCategory
+                'Group Category' = $group.RecipientType
                 'Group Company' = $groupCompany
                 'Group Manager or Member Properties' = $groupUserProperties
                 'Group Managers or Members Count' = $groupUsersCount
