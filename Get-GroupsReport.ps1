@@ -255,9 +255,9 @@ process {
             }
 
             if ($groupMembers) {
-                $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
+                $groupMembersSMTPAddresses = $groupMembers.PrimarySmtpAddress -join ';'
             } else {
-                $groupMembersEmails = ''
+                $groupMembersSMTPAddresses = ''
             }
 
             [PSCustomObject]@{
@@ -282,7 +282,7 @@ process {
                 'Group Managers SMTP Addresses' = $groupManagersSMTPAddresses
                 'Group Managers Companies' = $groupManagersCompanies
 
-                'Group Members Emails' = $groupMembersEmails
+                'Group Members SMTP Addresses' = $groupMembersSMTPAddresses
             } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
         }
     }
