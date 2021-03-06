@@ -116,7 +116,6 @@ process {
             $groupCompany = 'Mixed Users'
         } elseif (
             $secondCompanyUsersCount -eq $groupUsersCount -or (
-                (-not $hasFirstOrSecondCompanyUsers) -and
                 $groupManagersCompanies -match 'compB' -and
                 $groupManagersCompanies -notmatch 'compA'
             ) -or $hasOnlySecondCompanyUsers
@@ -124,7 +123,6 @@ process {
             $groupCompany = 'compB'
         } elseif (
             $firstCompanyUsersCount -eq $groupUsersCount -or (
-                (-not $hasFirstOrSecondCompanyUsers) -and
                 $groupManagersCompanies -match 'compA' -and
                 $groupManagersCompanies -notmatch 'compB'
             ) -or $hasOnlyFirstCompanyUsers
