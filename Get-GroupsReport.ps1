@@ -64,7 +64,8 @@ process {
         $group = $groups[$index]
         $groupSMTP = $group.WindowsEmailAddress
 
-        $groupManagers = $group.ManagedBy |
+        $groupManagersList = $group.ManagedBy
+        $groupManagers = $groupManagersList |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySmtpAddress, Company
 
