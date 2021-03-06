@@ -1,5 +1,3 @@
-using namespace System.Management.Automation
-
 begin {
     . "$PSScriptRoot\Initializer.ps1"
     $params = Invoke-Expression "Initialize-DefaultParams $args"
