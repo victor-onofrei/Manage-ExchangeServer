@@ -59,6 +59,18 @@ begin {
 
         return $list
     }
+
+    function Get-MembersFromList {
+        param (
+            [Object[]]$List
+        )
+
+        $members = $List |
+            Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
+            Select-Object CustomAttribute8, PrimarySmtpAddress
+
+        return $members
+    }
 }
 
 process {
@@ -97,9 +109,7 @@ process {
         $groupManagersList = $group.ManagedBy
 
         $groupMembersList = Get-MembersListFromGroup $group
-        $groupMembers = $groupMembersList |
-            Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySmtpAddress
+        $groupMembers = Get-MembersFromList $groupMembersList
 
         $areManagersInBothCompanies = $false
         $areMembersInBothCompanies = $false
