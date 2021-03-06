@@ -103,8 +103,7 @@ process {
 
         if (
             $firstCompanyManagersOrMembersCount -eq 0 -and
-            $secondCompanyManagersOrMembersCount -eq 0 -and
-            $groupManagersOrMembersCount -eq 0
+            $secondCompanyManagersOrMembersCount -eq 0
         ) {
             $groupCompany = 'None'
         } elseif ($areManagersInBothCompanies) {
