@@ -55,7 +55,7 @@ process {
             $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
             $secondCompanyManagersOrMembersCount = $secondCompanyManagersCount
 
-            $groupsManagedBySMTP = (
+            $groupManagersSMTPAddresses = (
                 $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
             ) -join ';'
             $groupsManagedByCompany = (
@@ -82,7 +82,7 @@ process {
             $firstCompanyManagersOrMembersCount = $firstCompanyMembersCount
             $secondCompanyManagersOrMembersCount = $secondCompanyMembersCount
 
-            $groupsManagedBySMTP = ''
+            $groupManagersSMTPAddresses = ''
             $groupsManagedByCompany = ''
 
             $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
@@ -142,7 +142,7 @@ process {
                 'Group Managers or Members Count' = $groupManagersOrMembersCount
                 'First Company Managers Or Members Count' = $firstCompanyManagersOrMembersCount
                 'Second Company Managers Or Members Count' = $secondCompanyManagersOrMembersCount
-                'Groups Managed By SMTP' = $groupsManagedBySMTP
+                'Group Managers SMTP Addresses' = $groupManagersSMTPAddresses
                 'Groups Managed By Company' = $groupsManagedByCompany
                 'Group Members Emails' = $groupMembersEmails
             } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
