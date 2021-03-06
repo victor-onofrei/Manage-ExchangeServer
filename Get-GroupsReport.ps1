@@ -39,8 +39,19 @@ process {
 
     Start-Transcript "$($params.outputFilePath).txt"
 
-    $groups = Get-Group -ResultSize Unlimited -Filter { RecipientTypeDetails -eq 'GroupMailbox' } |
-        Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid
+    switch ($groupsType) {
+        ([GroupsType]::distribution) {
+            $groups = Get-DistributionGroup -ResultSize Unlimited |
+                Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid
+        }
+        ([GroupsType]::office365) {
+            $groups = Get-Group -ResultSize Unlimited -Filter {
+                RecipientTypeDetails -eq 'GroupMailbox'
+            } |
+                Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid
+        }
+    }
+
     $groupsCount = @($groups).Count
 
     Write-Output "To process: $groupsCount groups"
