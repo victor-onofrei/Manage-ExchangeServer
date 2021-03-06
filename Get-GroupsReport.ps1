@@ -85,13 +85,6 @@ process {
 
             $firstCompanyUsersCount = $firstCompanyManagersCount
             $secondCompanyUsersCount = $secondCompanyManagersCount
-
-            $groupManagersSMTPAddresses = (
-                $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
-            ) -join ';'
-            $groupManagersCompanies = (
-                $groupManagers | Select-Object -ExpandProperty Company
-            ) -join ';'
         } elseif ($groupMembers) {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
@@ -112,16 +105,22 @@ process {
 
             $firstCompanyUsersCount = $firstCompanyMembersCount
             $secondCompanyUsersCount = $secondCompanyMembersCount
-
-            $groupManagersSMTPAddresses = ''
-            $groupManagersCompanies = ''
         } else {
             $groupUserProperties = ''
             $groupUsersCount = 0
 
             $firstCompanyUsersCount = 0
             $secondCompanyUsersCount = 0
+        }
 
+        if ($groupManagers) {
+            $groupManagersSMTPAddresses = (
+                $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
+            ) -join ';'
+            $groupManagersCompanies = (
+                $groupManagers | Select-Object -ExpandProperty Company
+            ) -join ';'
+        } else {
             $groupManagersSMTPAddresses = ''
             $groupManagersCompanies = ''
         }
