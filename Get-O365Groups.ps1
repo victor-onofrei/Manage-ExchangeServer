@@ -55,13 +55,12 @@ process {
             $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
             $secondCompanyManagersOrMembersCount = $secondCompanyManagersCount
 
-            $groupsManagedBySMTPList = $groupManagers |
-                Select-Object -ExpandProperty PrimarySmtpAddress
-            $groupsManagedByCompanyList = $groupManagers |
-                Select-Object -ExpandProperty Company
-
-            $groupsManagedBySMTP = $groupsManagedBySMTPList -join ';'
-            $groupsManagedByCompany = $groupsManagedByCompanyList -join ';'
+            $groupsManagedBySMTP = (
+                $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
+            ) -join ';'
+            $groupsManagedByCompany = (
+                $groupManagers | Select-Object -ExpandProperty Company
+            ) -join ';'
 
             $groupMembersEmails = ''
         } else {
