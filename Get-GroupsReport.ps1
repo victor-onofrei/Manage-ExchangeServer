@@ -62,8 +62,8 @@ process {
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySmtpAddress
 
-        $areManagersInBothCompanies = false
-        $areMembersInBothCompanies = false
+        $areManagersInBothCompanies = $false
+        $areMembersInBothCompanies = $false
 
         if ($groupManagers) {
             $groupManagersCount = ($groupManagers | Measure-Object).Count
