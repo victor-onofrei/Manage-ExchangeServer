@@ -74,7 +74,9 @@ process {
                 $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
 
-            $areMembersInBothCompanies = $firstCompanyMembersCount -and $secondCompanyMembersCount
+            $areMembersInBothCompanies = (
+                $firstCompanyMembersCount -and $secondCompanyMembersCount
+            )
 
             $groupManagerOrMemberProperties = $groupMemberProperties -join ';'
             $groupManagersOrMembersCount = $groupMembersCount
