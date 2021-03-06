@@ -149,6 +149,9 @@ process {
         $groupManagers = $null
         $groupMembers = $null
 
+        $groupManagerProperties = $null
+        $groupMemberProperties = $null
+
         if ($groupManagersList) {
             $groupManagers = Get-ManagersFromList $groupManagersList
 
@@ -166,7 +169,6 @@ process {
                 $firstCompanyManagersCount -and $secondCompanyManagersCount
             )
 
-            $groupUserProperties = $groupManagerProperties -join ';'
             $groupUsersCount = $groupManagersCount
 
             $firstCompanyUsersCount = $firstCompanyManagersCount
@@ -189,13 +191,11 @@ process {
                     $firstCompanyMembersCount -and $secondCompanyMembersCount
                 )
 
-                $groupUserProperties = $groupMemberProperties -join ';'
                 $groupUsersCount = $groupMembersCount
 
                 $firstCompanyUsersCount = $firstCompanyMembersCount
                 $secondCompanyUsersCount = $secondCompanyMembersCount
             } else {
-                $groupUserProperties = ''
                 $groupUsersCount = 0
 
                 $firstCompanyUsersCount = 0
@@ -260,7 +260,8 @@ process {
                 'Group Category' = $group.RecipientType
                 'Group Company' = $groupCompany
 
-                'Group Manager or Member Properties' = $groupUserProperties
+                'Group Manager Properties' = $groupManagerProperties -join ';'
+                'Group Member Properties' = $groupMemberProperties -join ';'
                 'Group Managers or Members Count' = $groupUsersCount
 
                 'First Company Managers Or Members Count' = $firstCompanyUsersCount
