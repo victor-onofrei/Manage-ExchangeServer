@@ -77,8 +77,9 @@ process {
 
         $groupManagersList = $group.ManagedBy
 
-        $groupMembers = Get-Group -Identity $group.Guid -ErrorAction SilentlyContinue |
-            Select-Object -ExpandProperty Members |
+        $groupMembersList = Get-Group -Identity $group.Guid -ErrorAction SilentlyContinue |
+            Select-Object -ExpandProperty Members
+        $groupMembers = $groupMembersList |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySmtpAddress
 
