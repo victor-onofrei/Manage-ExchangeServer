@@ -49,13 +49,28 @@ begin {
             [ADPresentationObject]$Group
         )
 
-        $getGroupParams = @{
-            Identity = $Group.Guid
-            ErrorAction = [ActionPreference]::SilentlyContinue
-        }
+        switch ($groupsType) {
+            ([GroupsType]::distribution) {
+                $getADGroupMemberParams = @{
+                    Identity = $Group.Guid
+                    Recursive = $true
+                    ErrorAction = [ActionPreference]::SilentlyContinue
+                }
 
-        $list = Get-Group @getGroupParams |
-            Select-Object -ExpandProperty Members
+                $list = Get-ADGroupMember @getADGroupMemberParams |
+                    Get-ADUser -Identity $_.ObjectGUID -Properties mail |
+                    Where-Object { $_.Enabled -eq 'True' -and $_.mail }
+            }
+            ([GroupsType]::office365) {
+                $getGroupParams = @{
+                    Identity = $Group.Guid
+                    ErrorAction = [ActionPreference]::SilentlyContinue
+                }
+
+                $list = Get-Group @getGroupParams |
+                    Select-Object -ExpandProperty Members
+            }
+        }
 
         return $list
     }
