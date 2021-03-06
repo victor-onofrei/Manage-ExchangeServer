@@ -1,6 +1,33 @@
+param (
+    [ValidateSet('Distribution Groups', 'Office 365 Groups')]
+    [String]
+    $Type
+)
+
 begin {
+    enum GroupsType {
+        none
+        distribution
+        office365
+    }
+
     . "$PSScriptRoot\Initializer.ps1"
     $params = Invoke-Expression "Initialize-DefaultParams $args"
+
+    $typeParams = @{
+        Name = 'Type'
+        Value = $Type
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+
+    $Type = Read-Param @typeParams
+
+    switch ($Type) {
+        'Distribution Groups' { $groupsType = [GroupsType]::distribution }
+        'Office 365 Groups' { $groupsType = [GroupsType]::office365 }
+        Default { $groupsType = [GroupsType]::none }
+    }
 }
 
 process {
