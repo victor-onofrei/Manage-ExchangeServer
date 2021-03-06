@@ -158,6 +158,9 @@ process {
         $firstCompanyManagersCount = 0
         $firstCompanyMembersCount = 0
 
+        $secondCompanyManagersCount = 0
+        $secondCompanyMembersCount = 0
+
         if ($groupManagersList) {
             $groupManagers = Get-ManagersFromList $groupManagersList
 
@@ -273,7 +276,8 @@ process {
 
                 'First Company Managers Count' = $firstCompanyManagersCount
                 'First Company Members Count' = $firstCompanyMembersCount
-                'Second Company Managers Or Members Count' = $secondCompanyUsersCount
+                'Second Company Managers Count' = $secondCompanyManagersCount
+                'Second Company Members Count' = $secondCompanyMembersCount
 
                 'Group Managers SMTP Addresses' = $groupManagersSMTPAddresses
                 'Group Managers Companies' = $groupManagersCompanies
