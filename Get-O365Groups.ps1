@@ -105,6 +105,9 @@ process {
         $hasSecondCompanyUsers = $secondCompanyUsersCount -gt 0
         $hasFirstOrSecondCompanyUsers = $hasFirstCompanyUsers -or $hasSecondCompanyUsers
 
+        $hasOnlyFirstCompanyUsers = $hasFirstCompanyUsers -and (-not $hasSecondCompanyUsers)
+        $hasOnlySecondCompanyUsers = (-not $hasFirstCompanyUsers) -and $hasSecondCompanyUsers
+
         if (-not $hasFirstOrSecondCompanyUsers) {
             $groupCompany = 'None'
         } elseif ($areManagersInBothCompanies) {
@@ -116,10 +119,7 @@ process {
                 (-not $hasFirstOrSecondCompanyUsers) -and
                 $groupManagersCompanies -match 'compB' -and
                 $groupManagersCompanies -notmatch 'compA'
-            ) -or (
-                (-not $hasFirstCompanyUsers) -and
-                $hasSecondCompanyUsers
-            )
+            ) -or $hasOnlySecondCompanyUsers
         ) {
             $groupCompany = 'compB'
         } elseif (
@@ -127,10 +127,7 @@ process {
                 (-not $hasFirstOrSecondCompanyUsers) -and
                 $groupManagersCompanies -match 'compA' -and
                 $groupManagersCompanies -notmatch 'compB'
-            ) -or (
-                $hasFirstCompanyUsers -and
-                (-not $hasSecondCompanyUsers)
-            )
+            ) -or $hasOnlyFirstCompanyUsers
         ) {
             $groupCompany = 'compA'
         } else {
