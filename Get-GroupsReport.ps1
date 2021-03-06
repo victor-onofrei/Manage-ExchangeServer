@@ -31,6 +31,12 @@ begin {
 }
 
 process {
+    if ($groupsType -eq [GroupsType]::none) {
+        Write-Error "Filtering by the groups type '$Type' is not implemented!"
+
+        return
+    }
+
     Start-Transcript "$($params.outputFilePath).txt"
 
     $groups = Get-Group -ResultSize Unlimited -Filter { RecipientTypeDetails -eq 'GroupMailbox' } |
