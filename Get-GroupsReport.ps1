@@ -74,11 +74,10 @@ process {
         Start-Sleep -Milliseconds 500
 
         $group = $groups[$index]
-        $groupSMTP = $group.WindowsEmailAddress
 
         $groupManagersList = $group.ManagedBy
 
-        $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue |
+        $groupMembers = Get-Group -Identity $group.Guid -ErrorAction SilentlyContinue |
             Select-Object -ExpandProperty Members |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySmtpAddress
@@ -187,7 +186,7 @@ process {
 
                 'Group Name' = $group.Name
                 'Group GUID' = $group.Guid
-                'Group SMTP' = $groupSMTP
+                'Group SMTP' = $group.WindowsEmailAddress
                 'Group Category' = $group.RecipientType
                 'Group Company' = $groupCompany
 
