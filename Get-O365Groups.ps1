@@ -46,7 +46,7 @@ process {
             ).Count
 
             $areManagersInBothCompanies = (
-                $secondCompanyManagersCount -and $firstCompanyManagersCount
+                $firstCompanyManagersCount -and $secondCompanyManagersCount
             )
 
             $groupManagerProperties = $groupManagerProperties -join ';'
@@ -81,7 +81,7 @@ process {
                 $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
 
-            $areMembersInBothCompanies = $secondCompanyMembersCount -and $firstCompanyMembersCount
+            $areMembersInBothCompanies = $firstCompanyMembersCount -and $secondCompanyMembersCount
 
             $groupMemberProperties = $groupMemberProperties -join ';'
             $groupManagerOrMemberCustomAttribute8 = $groupMemberProperties
@@ -98,9 +98,9 @@ process {
         }
 
         if (
+            $firstCompanyManagersOrMembersCount -eq 0 -and
             $secondCompanyManagersOrMembersCount -eq 0 -and
-            $groupManagersOrMembersCount -eq 0 -and
-            $firstCompanyManagersOrMembersCount -eq 0
+            $groupManagersOrMembersCount -eq 0
         ) {
             $groupCompany = 'None'
         } elseif ($areManagersInBothCompanies) {
@@ -109,20 +109,20 @@ process {
             $groupCompany = 'Mixed Users'
         } elseif (
             $secondCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
-                $secondCompanyManagersOrMembersCount -eq 0 -and
                 $firstCompanyManagersOrMembersCount -eq 0 -and
+                $secondCompanyManagersOrMembersCount -eq 0 -and
                 $groupsManagedByCompany -match 'compB' -and
                 $groupsManagedByCompany -notmatch 'compA'
             ) -or (
-                $secondCompanyManagersOrMembersCount -and
-                $firstCompanyManagersOrMembersCount -eq 0
+                $firstCompanyManagersOrMembersCount -eq 0 -and
+                $secondCompanyManagersOrMembersCount
             )
         ) {
             $groupCompany = 'compB'
         } elseif (
             $firstCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
-                $secondCompanyManagersOrMembersCount -eq 0 -and
                 $firstCompanyManagersOrMembersCount -eq 0 -and
+                $secondCompanyManagersOrMembersCount -eq 0 -and
                 $groupsManagedByCompany -match 'compA' -and
                 $groupsManagedByCompany -notmatch 'compB'
             ) -or (
