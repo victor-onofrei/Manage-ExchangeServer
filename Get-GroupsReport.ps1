@@ -77,7 +77,6 @@ process {
         $groupSMTP = $group.WindowsEmailAddress
 
         $groupManagersList = $group.ManagedBy
-        $groupManagers = Get-ManagersFromList $groupManagersList
 
         $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue |
             Select-Object -ExpandProperty Members |
@@ -87,7 +86,11 @@ process {
         $areManagersInBothCompanies = $false
         $areMembersInBothCompanies = $false
 
-        if ($groupManagers) {
+        $groupManagers = $null
+
+        if ($groupManagersList) {
+            $groupManagers = Get-ManagersFromList $groupManagersList
+
             $groupManagersCount = ($groupManagers | Measure-Object).Count
             $groupManagerProperties = $groupManagers.CustomAttribute8
 
@@ -135,7 +138,11 @@ process {
             $secondCompanyUsersCount = 0
         }
 
-        if ($groupManagers) {
+        if ($groupManagersList) {
+            if (-not $groupManagers) {
+                $groupManagers = Get-ManagersFromList $groupManagersList
+            }
+
             $groupManagersSMTPAddresses = (
                 $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
             ) -join ';'
