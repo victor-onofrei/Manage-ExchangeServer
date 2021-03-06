@@ -24,12 +24,12 @@ process {
 
         $groupManagers = $group.ManagedBy |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySMTPAddress, Company
+            Select-Object CustomAttribute8, PrimarySmtpAddress, Company
 
         $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue |
             Select-Object -ExpandProperty Members |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySMTPAddress
+            Select-Object CustomAttribute8, PrimarySmtpAddress
 
         $areManagersInBothCompanies = false
         $areMembersInBothCompanies = false
@@ -86,7 +86,7 @@ process {
             $groupsManagedBySMTP = ''
             $groupsManagedByCompany = ''
 
-            $groupMembersEmails = $groupMembers.PrimarySMTPAddress -join ';'
+            $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
         }
 
         if (
