@@ -103,11 +103,9 @@ process {
 
         $hasFirstCompanyUsers = $firstCompanyUsersCount -gt 0
         $hasSecondCompanyUsers = $secondCompanyUsersCount -gt 0
+        $hasFirstOrSecondCompanyUsers = $hasFirstCompanyUsers -or $hasSecondCompanyUsers
 
-        if (
-            (-not $hasFirstCompanyUsers) -and
-            (-not $hasSecondCompanyUsers)
-        ) {
+        if (-not $hasFirstOrSecondCompanyUsers) {
             $groupCompany = 'None'
         } elseif ($areManagersInBothCompanies) {
             $groupCompany = 'Mixed Owners'
@@ -115,8 +113,7 @@ process {
             $groupCompany = 'Mixed Users'
         } elseif (
             $secondCompanyUsersCount -eq $groupUsersCount -or (
-                (-not $hasFirstCompanyUsers) -and
-                (-not $hasSecondCompanyUsers) -and
+                (-not $hasFirstOrSecondCompanyUsers) -and
                 $groupManagersCompanies -match 'compB' -and
                 $groupManagersCompanies -notmatch 'compA'
             ) -or (
@@ -127,8 +124,7 @@ process {
             $groupCompany = 'compB'
         } elseif (
             $firstCompanyUsersCount -eq $groupUsersCount -or (
-                (-not $hasFirstCompanyUsers) -and
-                (-not $hasSecondCompanyUsers) -and
+                (-not $hasFirstOrSecondCompanyUsers) -and
                 $groupManagersCompanies -match 'compA' -and
                 $groupManagersCompanies -notmatch 'compB'
             ) -or (
