@@ -55,16 +55,10 @@ process {
             $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
             $secondCompanyManagersOrMembersCount = $secondCompanyManagersCount
 
-            $groupsManagedBySMTPList = @()
-            $groupsManagedByCompanyList = @()
-
-            foreach ($manager in $groupManagers) {
-                $groupsManagedBySMTPList += $manager |
-                    Select-Object PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
-
-                $groupsManagedByCompanyList += $manager |
-                    Select-Object Company -ExpandProperty Company
-            }
+            $groupsManagedBySMTPList = $groupManagers |
+                Select-Object -ExpandProperty PrimarySmtpAddress
+            $groupsManagedByCompanyList = $groupManagers |
+                Select-Object -ExpandProperty Company
 
             $groupsManagedBySMTP = $groupsManagedBySMTPList -join ';'
             $groupsManagedByCompany = $groupsManagedByCompanyList -join ';'
