@@ -115,19 +115,19 @@ process {
         } elseif ($areMembersInBothCompanies) {
             $groupCompany = 'Mixed Users'
         } elseif (
-            $secondCompanyUsersCount -eq $groupUsersCount -or (
-                $groupManagersCompanies -match 'compB' -and
-                $groupManagersCompanies -notmatch 'compA'
-            ) -or $hasOnlySecondCompanyUsers
-        ) {
-            $groupCompany = 'compB'
-        } elseif (
             $firstCompanyUsersCount -eq $groupUsersCount -or (
                 $groupManagersCompanies -match 'compA' -and
                 $groupManagersCompanies -notmatch 'compB'
             ) -or $hasOnlyFirstCompanyUsers
         ) {
             $groupCompany = 'compA'
+        } elseif (
+            $secondCompanyUsersCount -eq $groupUsersCount -or (
+                $groupManagersCompanies -match 'compB' -and
+                $groupManagersCompanies -notmatch 'compA'
+            ) -or $hasOnlySecondCompanyUsers
+        ) {
+            $groupCompany = 'compB'
         } else {
             $groupCompany = 'N/A'
         }
