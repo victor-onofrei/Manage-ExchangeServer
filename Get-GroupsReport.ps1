@@ -71,6 +71,26 @@ begin {
 
         return $members
     }
+
+    function Get-MembersFromGroup {
+        param (
+            [ADPresentationObject]$Group
+        )
+
+        $list = Get-MembersListFromGroup $Group
+
+        if (-not $list) {
+            return $null
+        }
+
+        $members = Get-MembersFromList $list
+
+        if (-not $members) {
+            return $null
+        }
+
+        return $members
+    }
 }
 
 process {
@@ -108,8 +128,7 @@ process {
 
         $groupManagersList = $group.ManagedBy
 
-        $groupMembersList = Get-MembersListFromGroup $group
-        $groupMembers = Get-MembersFromList $groupMembersList
+        $groupMembers = Get-MembersFromGroup $group
 
         $areManagersInBothCompanies = $false
         $areMembersInBothCompanies = $false
