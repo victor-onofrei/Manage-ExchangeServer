@@ -7,7 +7,7 @@ process {
     Start-Transcript "$($params.outputFilePath).txt"
 
     $groups = Get-Group -ResultSize Unlimited -Filter { RecipientTypeDetails -eq 'GroupMailbox' } |
-        Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
+        Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid
     $groupsCount = @($groups).Count
 
     Write-Output "To process: $groupsCount groups"
@@ -124,7 +124,7 @@ process {
             [PSCustomObject]@{
                 'Group' = $group
                 'Group Name' = $group.Name
-                'Group GUID' = $group.GUID
+                'Group GUID' = $group.Guid
                 'Group SMTP' = $groupSMTP
                 'Group Category' = $group.RecipientType
                 'Group Company' = $groupCompany
