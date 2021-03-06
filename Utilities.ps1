@@ -19,7 +19,8 @@ function Read-Param {
         [Object[]]$DefaultValue,
 
         [Hashtable]$Config,
-        [String]$ScriptName
+        [String]$ScriptName,
+        [Switch]$AllowGlobal
     )
 
     if ($Value) {
@@ -43,11 +44,13 @@ function Read-Param {
             }
         }
 
-        $globalValue = $Config[$configGlobalCategory][$key]
+        if ($AllowGlobal) {
+            $globalValue = $Config[$configGlobalCategory][$key]
 
-        if ($globalValue) {
-            # Return the global value from the config file if it exists.
-            return $globalValue
+            if ($globalValue) {
+                # Return the global value from the config file if it exists.
+                return $globalValue
+            }
         }
     }
 

@@ -82,31 +82,37 @@ function Initialize-DefaultParams {
             -Value $InputPath `
             -DefaultValue "$HOME" `
             -Config $config `
-            -ScriptName $_ScriptName
+            -ScriptName $_ScriptName `
+            -AllowGlobal
         $inputDir = Read-Param 'InputDir' `
             -Value $InputDir `
             -Config $config `
-            -ScriptName $_ScriptName
+            -ScriptName $_ScriptName `
+            -AllowGlobal
         $inputFileName = Read-Param 'InputFileName' `
             -Value $InputFileName `
             -DefaultValue "input_$_ScriptName.csv" `
             -Config $config `
-            -ScriptName $_ScriptName
+            -ScriptName $_ScriptName `
+            -AllowGlobal
 
         $outputPath = Read-Param 'OutputPath' `
             -Value $OutputPath `
             -DefaultValue "$HOME" `
             -Config $config `
-            -ScriptName $_ScriptName
+            -ScriptName $_ScriptName `
+            -AllowGlobal
         $outputDir = Read-Param 'OutputDir' `
             -Value $OutputDir `
             -Config $config `
-            -ScriptName $_ScriptName
+            -ScriptName $_ScriptName `
+            -AllowGlobal
         $outputFileName = Read-Param 'OutputFileName' `
             -Value $OutputFileName `
             -DefaultValue "output_$_ScriptName.$timestamp.csv" `
             -Config $config `
-            -ScriptName $_ScriptName
+            -ScriptName $_ScriptName `
+            -AllowGlobal
 
         $intermediateInputFilePath = Join-Path $inputPath -ChildPath $inputDir
         $intermediateOutputFilePath = Join-Path $outputPath -ChildPath $outputDir
@@ -121,7 +127,8 @@ function Initialize-DefaultParams {
 
         $exchangeObjects = Read-Param 'ExchangeObjects' `
             -Value $ExchangeObjects `
-            -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
+            -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) `
+            -AllowGlobal
 
         if ($null -eq $exchangeObjects) {
             $exchangeObjects = @()
