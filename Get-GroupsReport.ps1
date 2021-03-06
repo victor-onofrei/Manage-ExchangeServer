@@ -92,8 +92,6 @@ process {
             $groupManagersCompanies = (
                 $groupManagers | Select-Object -ExpandProperty Company
             ) -join ';'
-
-            $groupMembersEmails = ''
         } elseif ($groupMembers) {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
@@ -117,8 +115,6 @@ process {
 
             $groupManagersSMTPAddresses = ''
             $groupManagersCompanies = ''
-
-            $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
         } else {
             $groupUserProperties = ''
             $groupUsersCount = 0
@@ -128,7 +124,11 @@ process {
 
             $groupManagersSMTPAddresses = ''
             $groupManagersCompanies = ''
+        }
 
+        if ($groupMembers) {
+            $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
+        } else {
             $groupMembersEmails = ''
         }
 
@@ -156,17 +156,22 @@ process {
         if ($groupCompany -eq 'compA' -or $groupCompany -like 'Mixed*') {
             [PSCustomObject]@{
                 'Group' = $group
+
                 'Group Name' = $group.Name
                 'Group GUID' = $group.Guid
                 'Group SMTP' = $groupSMTP
                 'Group Category' = $group.RecipientType
                 'Group Company' = $groupCompany
+
                 'Group Manager or Member Properties' = $groupUserProperties
                 'Group Managers or Members Count' = $groupUsersCount
+
                 'First Company Managers Or Members Count' = $firstCompanyUsersCount
                 'Second Company Managers Or Members Count' = $secondCompanyUsersCount
+
                 'Group Managers SMTP Addresses' = $groupManagersSMTPAddresses
                 'Group Managers Companies' = $groupManagersCompanies
+
                 'Group Members Emails' = $groupMembersEmails
             } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
         }
