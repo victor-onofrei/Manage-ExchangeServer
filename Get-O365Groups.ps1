@@ -8,7 +8,7 @@ begin {
 process {
     Start-Transcript "$($params.outputFilePath).txt"
 
-    $groups = Get-Group -ResultSize Unlimited -Filter "RecipientTypeDetails -eq 'GroupMailbox'" |
+    $groups = Get-Group -ResultSize Unlimited -Filter { RecipientTypeDetails -eq 'GroupMailbox' } |
         Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
     $groupsCount = @($groups).Count
 
