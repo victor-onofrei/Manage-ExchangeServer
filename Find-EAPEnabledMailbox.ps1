@@ -27,7 +27,8 @@ process {
 
     if ($Output) {
         $recipients |
-            Select-Object SamAccountName, PrimarySmtpAddress, Company > $params.outputFilePath
+            Select-Object SamAccountName, PrimarySmtpAddress, Company |
+            Export-Csv $params.outputFilePath -NoTypeInformation
     }
 
     if ($DisableEAP) {

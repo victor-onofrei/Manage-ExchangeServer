@@ -1,4 +1,16 @@
-Set-Variable 'configGlobalCategory' -Option Constant -Value 'Global'
+using namespace System.Management.Automation
+
+if (-not (Test-Path variable:global:configGlobalCategory)) {
+    $params = @{
+        Name = 'configGlobalCategory'
+        Option = [ScopedItemOptions]::Constant
+        Scope = 'Global'
+        Value = 'Global'
+        Visibility = [SessionStateEntryVisibility]::Private
+    }
+
+    Set-Variable @params
+}
 
 function Read-Param {
     param (

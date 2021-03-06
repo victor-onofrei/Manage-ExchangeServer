@@ -12,16 +12,6 @@ process {
         Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, GUID
     $groupsCount = @($groups).Count
 
-    $header = -join (
-        'Group>Group Name>Group GUID>Group SMTP>Group Category>Group Company>',
-        'Group Member Properties>Group Members Or Managers Count>',
-        'First Company Members Or Managers Count>Second Company Members Or Managers Count>',
-        'Groups Managed By SMTP>Groups Managed By Company>Manager Custom Attribute 8>',
-        'Group Members Emails'
-    )
-
-    $header >> $params.outputFilePath
-
     Write-Output "To process: $groupsCount groups"
 
     for ($index = 0; $index -lt $groupsCount; $index++) {
@@ -34,12 +24,15 @@ process {
 
         $groupManagers = $group.ManagedBy |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySMTPAddress, Company
+            Select-Object CustomAttribute8, PrimarySmtpAddress, Company
 
         $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue |
             Select-Object -ExpandProperty Members |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySMTPAddress
+            Select-Object CustomAttribute8, PrimarySmtpAddress
+
+        $areManagersInBothCompanies = false
+        $areMembersInBothCompanies = false
 
         if ($groupManagers) {
             $groupManagersCount = ($groupManagers | Measure-Object).Count
@@ -52,26 +45,25 @@ process {
                 $groupManagerProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
 
-            $groupManagerProperties = $groupManagerProperties -join ';'
-            $managerCustomAttribute8 = $groupManagerProperties
-            $groupMembersOrManagersCount = $groupManagersCount
+            $areManagersInBothCompanies = (
+                $firstCompanyManagersCount -and $secondCompanyManagersCount
+            )
 
-            $firstCompanyMembersOrManagersCount = $firstCompanyManagersCount
-            $secondCompanyMembersOrManagersCount = $secondCompanyManagersCount
+            $groupManagerOrMemberProperties = $groupManagerProperties -join ';'
+            $groupManagersOrMembersCount = $groupManagersCount
 
-            $groupsManagedBySMTP = @()
-            $groupsManagedByCompany = @()
+            $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
+            $secondCompanyManagersOrMembersCount = $secondCompanyManagersCount
 
-            foreach ($manager in $groupManagers) {
-                $groupsManagedBySMTP += $manager |
-                    Select-Object PrimarySMTPAddress -ExpandProperty PrimarySMTPAddress
+            $groupManagersSMTPAddresses = (
+                $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
+            ) -join ';'
+            $groupManagersCompanies = (
+                $groupManagers | Select-Object -ExpandProperty Company
+            ) -join ';'
 
-                $groupsManagedByCompany += $manager | Select-Object Company -ExpandProperty Company
-            }
-
-            $groupsManagedBySMTP = $groupsManagedBySMTP -join ';'
-            $groupsManagedByCompany = $groupsManagedByCompany -join ';'
-        } else {
+            $groupMembersEmails = ''
+        } elseif ($groupMembers) {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
 
@@ -82,47 +74,68 @@ process {
                 $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
             ).Count
 
-            $groupMemberProperties = $groupMemberProperties -join ';'
-            $groupMembersOrManagersCount = $groupMembersCount
+            $areMembersInBothCompanies = (
+                $firstCompanyMembersCount -and $secondCompanyMembersCount
+            )
 
-            $firstCompanyMembersOrManagersCount = $firstCompanyMembersCount
-            $secondCompanyMembersOrManagersCount = $secondCompanyMembersCount
+            $groupManagerOrMemberProperties = $groupMemberProperties -join ';'
+            $groupManagersOrMembersCount = $groupMembersCount
+
+            $firstCompanyManagersOrMembersCount = $firstCompanyMembersCount
+            $secondCompanyManagersOrMembersCount = $secondCompanyMembersCount
+
+            $groupManagersSMTPAddresses = ''
+            $groupManagersCompanies = ''
+
+            $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
+        } else {
+            $groupManagerOrMemberProperties = ''
+            $groupManagersOrMembersCount = 0
+
+            $firstCompanyManagersOrMembersCount = 0
+            $secondCompanyManagersOrMembersCount = 0
+
+            $groupManagersSMTPAddresses = ''
+            $groupManagersCompanies = ''
+
+            $groupMembersEmails = ''
         }
 
         if (
-            $secondCompanyMembersOrManagersCount -eq 0 -and
-            $groupMembersOrManagersCount -eq 0 -and
-            $firstCompanyMembersOrManagersCount -eq 0
+            $firstCompanyManagersOrMembersCount -eq 0 -and
+            $secondCompanyManagersOrMembersCount -eq 0
         ) {
             $groupCompany = 'None'
-        } elseif ($secondCompanyManagersCount -and $firstCompanyManagersCount) {
+        } elseif ($areManagersInBothCompanies) {
             $groupCompany = 'Mixed Owners'
-        } elseif ($secondCompanyMembersCount -and $firstCompanyMembersCount) {
+        } elseif ($areMembersInBothCompanies) {
             $groupCompany = 'Mixed Users'
         } elseif (
-            $secondCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
-                $secondCompanyMembersOrManagersCount -eq 0 -and
-                $firstCompanyMembersOrManagersCount -eq 0 -and
-                $groupsManagedByCompany -match 'compB' -and
-                $groupsManagedByCompany -notmatch 'compA'
+            $secondCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
+                $firstCompanyManagersOrMembersCount -eq 0 -and
+                $secondCompanyManagersOrMembersCount -eq 0 -and
+                $groupManagersCompanies -match 'compB' -and
+                $groupManagersCompanies -notmatch 'compA'
             ) -or (
-                $secondCompanyMembersOrManagersCount -and
-                $firstCompanyMembersOrManagersCount -eq 0
+                $firstCompanyManagersOrMembersCount -eq 0 -and
+                $secondCompanyManagersOrMembersCount
             )
         ) {
             $groupCompany = 'compB'
         } elseif (
-            $firstCompanyMembersOrManagersCount -eq $groupMembersOrManagersCount -or (
-                $secondCompanyMembersOrManagersCount -eq 0 -and
-                $firstCompanyMembersOrManagersCount -eq 0 -and
-                $groupsManagedByCompany -match 'compA' -and
-                $groupsManagedByCompany -notmatch 'compB'
+            $firstCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
+                $firstCompanyManagersOrMembersCount -eq 0 -and
+                $secondCompanyManagersOrMembersCount -eq 0 -and
+                $groupManagersCompanies -match 'compA' -and
+                $groupManagersCompanies -notmatch 'compB'
             ) -or (
-                $firstCompanyMembersOrManagersCount -and
-                $secondCompanyMembersOrManagersCount -eq 0
+                $firstCompanyManagersOrMembersCount -and
+                $secondCompanyManagersOrMembersCount -eq 0
             )
         ) {
             $groupCompany = 'compA'
+        } else {
+            $groupCompany = 'N/A'
         }
 
         if ($groupCompany -eq 'compA' -or $groupCompany -like 'Mixed*') {
@@ -130,27 +143,22 @@ process {
             $groupCategory = $group.RecipientType
             $groupGUID = $group.GUID
 
-            $groupMembersEmails = $groupMembers.PrimarySMTPAddress
-            $groupMembersEmails = $groupMembersEmails -join ';'
-
-            $row = -join (
-                "$group>$groupName>$groupGUID>$groupSMTP>$groupCategory>$groupCompany>",
-                "$groupMemberProperties>$groupMembersOrManagersCount>",
-                "$firstCompanyMembersOrManagersCount>$secondCompanyMembersOrManagersCount>",
-                "$groupsManagedBySMTP>$groupsManagedByCompany>$managerCustomAttribute8>",
-                "$groupMembersEmails"
-            )
-
-            $row >> $params.outputFilePath
+            [PSCustomObject]@{
+                'Group' = $group
+                'Group Name' = $groupName
+                'Group GUID' = $groupGUID
+                'Group SMTP' = $groupSMTP
+                'Group Category' = $groupCategory
+                'Group Company' = $groupCompany
+                'Group Manager or Member Properties' = $groupManagerOrMemberProperties
+                'Group Managers or Members Count' = $groupManagersOrMembersCount
+                'First Company Managers Or Members Count' = $firstCompanyManagersOrMembersCount
+                'Second Company Managers Or Members Count' = $secondCompanyManagersOrMembersCount
+                'Group Managers SMTP Addresses' = $groupManagersSMTPAddresses
+                'Group Managers Companies' = $groupManagersCompanies
+                'Group Members Emails' = $groupMembersEmails
+            } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
         }
-
-        $groupMembers = $null
-
-        $firstCompanyManagersCount = $null
-        $secondCompanyManagersCount = $null
-
-        $firstCompanyMembersCount = $null
-        $secondCompanyMembersCount = $null
     }
 
     $attachment = New-Object Net.Mail.Attachment($params.outputFilePath)
