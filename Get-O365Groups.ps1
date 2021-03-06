@@ -101,8 +101,10 @@ process {
             $groupMembersEmails = ''
         }
 
+        $hasFirstCompanyUsers = $firstCompanyUsersCount -gt 0
+
         if (
-            $firstCompanyUsersCount -eq 0 -and
+            (-not $hasFirstCompanyUsers) -and
             $secondCompanyUsersCount -eq 0
         ) {
             $groupCompany = 'None'
@@ -112,24 +114,24 @@ process {
             $groupCompany = 'Mixed Users'
         } elseif (
             $secondCompanyUsersCount -eq $groupUsersCount -or (
-                $firstCompanyUsersCount -eq 0 -and
+                (-not $hasFirstCompanyUsers) -and
                 $secondCompanyUsersCount -eq 0 -and
                 $groupManagersCompanies -match 'compB' -and
                 $groupManagersCompanies -notmatch 'compA'
             ) -or (
-                $firstCompanyUsersCount -eq 0 -and
+                (-not $hasFirstCompanyUsers) -and
                 $secondCompanyUsersCount
             )
         ) {
             $groupCompany = 'compB'
         } elseif (
             $firstCompanyUsersCount -eq $groupUsersCount -or (
-                $firstCompanyUsersCount -eq 0 -and
+                (-not $hasFirstCompanyUsers) -and
                 $secondCompanyUsersCount -eq 0 -and
                 $groupManagersCompanies -match 'compA' -and
                 $groupManagersCompanies -notmatch 'compB'
             ) -or (
-                $firstCompanyUsersCount -and
+                $hasFirstCompanyUsers -and
                 $secondCompanyUsersCount -eq 0
             )
         ) {
