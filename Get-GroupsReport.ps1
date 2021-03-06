@@ -28,6 +28,18 @@ begin {
         'Office 365 Groups' { $groupsType = [GroupsType]::office365 }
         Default { $groupsType = [GroupsType]::none }
     }
+
+    function Get-ManagersFromList {
+        param (
+            [Object[]]$List
+        )
+
+        $managers = $List |
+            Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
+            Select-Object CustomAttribute8, PrimarySmtpAddress, Company
+
+        return $managers
+    }
 }
 
 process {
@@ -65,9 +77,7 @@ process {
         $groupSMTP = $group.WindowsEmailAddress
 
         $groupManagersList = $group.ManagedBy
-        $groupManagers = $groupManagersList |
-            Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySmtpAddress, Company
+        $groupManagers = Get-ManagersFromList $groupManagersList
 
         $groupMembers = Get-Group -Identity $groupSMTP -ErrorAction SilentlyContinue |
             Select-Object -ExpandProperty Members |
