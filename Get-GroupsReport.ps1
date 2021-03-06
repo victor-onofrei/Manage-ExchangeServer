@@ -1,3 +1,6 @@
+using namespace Microsoft.Exchange.Data.Directory.Management
+using namespace System.Management.Automation
+
 param (
     [ValidateSet('Distribution Groups', 'Office 365 Groups')]
     [String]
@@ -40,6 +43,22 @@ begin {
 
         return $managers
     }
+
+    function Get-MembersListFromGroup {
+        param (
+            [ADPresentationObject]$Group
+        )
+
+        $getGroupParams = @{
+            Identity = $Group.Guid
+            ErrorAction = [ActionPreference]::SilentlyContinue
+        }
+
+        $list = Get-Group @getGroupParams |
+            Select-Object -ExpandProperty Members
+
+        return $list
+    }
 }
 
 process {
@@ -77,8 +96,7 @@ process {
 
         $groupManagersList = $group.ManagedBy
 
-        $groupMembersList = Get-Group -Identity $group.Guid -ErrorAction SilentlyContinue |
-            Select-Object -ExpandProperty Members
+        $groupMembersList = Get-MembersListFromGroup $group
         $groupMembers = $groupMembersList |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
             Select-Object CustomAttribute8, PrimarySmtpAddress
