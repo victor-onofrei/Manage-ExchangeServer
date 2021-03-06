@@ -58,7 +58,7 @@ process {
             $groupManagersSMTPAddresses = (
                 $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
             ) -join ';'
-            $groupsManagedByCompany = (
+            $groupManagersCompanies = (
                 $groupManagers | Select-Object -ExpandProperty Company
             ) -join ';'
 
@@ -83,7 +83,7 @@ process {
             $secondCompanyManagersOrMembersCount = $secondCompanyMembersCount
 
             $groupManagersSMTPAddresses = ''
-            $groupsManagedByCompany = ''
+            $groupManagersCompanies = ''
 
             $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
         }
@@ -102,8 +102,8 @@ process {
             $secondCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
                 $firstCompanyManagersOrMembersCount -eq 0 -and
                 $secondCompanyManagersOrMembersCount -eq 0 -and
-                $groupsManagedByCompany -match 'compB' -and
-                $groupsManagedByCompany -notmatch 'compA'
+                $groupManagersCompanies -match 'compB' -and
+                $groupManagersCompanies -notmatch 'compA'
             ) -or (
                 $firstCompanyManagersOrMembersCount -eq 0 -and
                 $secondCompanyManagersOrMembersCount
@@ -114,8 +114,8 @@ process {
             $firstCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
                 $firstCompanyManagersOrMembersCount -eq 0 -and
                 $secondCompanyManagersOrMembersCount -eq 0 -and
-                $groupsManagedByCompany -match 'compA' -and
-                $groupsManagedByCompany -notmatch 'compB'
+                $groupManagersCompanies -match 'compA' -and
+                $groupManagersCompanies -notmatch 'compB'
             ) -or (
                 $firstCompanyManagersOrMembersCount -and
                 $secondCompanyManagersOrMembersCount -eq 0
@@ -143,7 +143,7 @@ process {
                 'First Company Managers Or Members Count' = $firstCompanyManagersOrMembersCount
                 'Second Company Managers Or Members Count' = $secondCompanyManagersOrMembersCount
                 'Group Managers SMTP Addresses' = $groupManagersSMTPAddresses
-                'Groups Managed By Company' = $groupsManagedByCompany
+                'Group Managers Companies' = $groupManagersCompanies
                 'Group Members Emails' = $groupMembersEmails
             } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
         }
