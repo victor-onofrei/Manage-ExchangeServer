@@ -63,7 +63,7 @@ process {
             ) -join ';'
 
             $groupMembersEmails = ''
-        } else {
+        } elseif ($groupMembers) {
             $groupMembersCount = ($groupMembers | Measure-Object).Count
             $groupMemberProperties = $groupMembers.CustomAttribute8
 
@@ -88,6 +88,17 @@ process {
             $groupManagersCompanies = ''
 
             $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
+        } else {
+            $groupManagerOrMemberProperties = ''
+            $groupManagersOrMembersCount = 0
+
+            $firstCompanyManagersOrMembersCount = 0
+            $secondCompanyManagersOrMembersCount = 0
+
+            $groupManagersSMTPAddresses = ''
+            $groupManagersCompanies = ''
+
+            $groupMembersEmails = ''
         }
 
         if (
