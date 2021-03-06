@@ -128,12 +128,11 @@ process {
 
         $groupManagersList = $group.ManagedBy
 
-        $groupMembers = Get-MembersFromGroup $group
-
         $areManagersInBothCompanies = $false
         $areMembersInBothCompanies = $false
 
         $groupManagers = $null
+        $groupMembers = $null
 
         if ($groupManagersList) {
             $groupManagers = Get-ManagersFromList $groupManagersList
@@ -157,32 +156,36 @@ process {
 
             $firstCompanyUsersCount = $firstCompanyManagersCount
             $secondCompanyUsersCount = $secondCompanyManagersCount
-        } elseif ($groupMembers) {
-            $groupMembersCount = ($groupMembers | Measure-Object).Count
-            $groupMemberProperties = $groupMembers.CustomAttribute8
-
-            $firstCompanyMembersCount = (
-                $groupMemberProperties | Where-Object { $_ -like 'CAA*' } | Measure-Object
-            ).Count
-            $secondCompanyMembersCount = (
-                $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
-            ).Count
-
-            $areMembersInBothCompanies = (
-                $firstCompanyMembersCount -and $secondCompanyMembersCount
-            )
-
-            $groupUserProperties = $groupMemberProperties -join ';'
-            $groupUsersCount = $groupMembersCount
-
-            $firstCompanyUsersCount = $firstCompanyMembersCount
-            $secondCompanyUsersCount = $secondCompanyMembersCount
         } else {
-            $groupUserProperties = ''
-            $groupUsersCount = 0
+            $groupMembers = Get-MembersFromGroup $group
 
-            $firstCompanyUsersCount = 0
-            $secondCompanyUsersCount = 0
+            if ($groupMembers) {
+                $groupMembersCount = ($groupMembers | Measure-Object).Count
+                $groupMemberProperties = $groupMembers.CustomAttribute8
+
+                $firstCompanyMembersCount = (
+                    $groupMemberProperties | Where-Object { $_ -like 'CAA*' } | Measure-Object
+                ).Count
+                $secondCompanyMembersCount = (
+                    $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
+                ).Count
+
+                $areMembersInBothCompanies = (
+                    $firstCompanyMembersCount -and $secondCompanyMembersCount
+                )
+
+                $groupUserProperties = $groupMemberProperties -join ';'
+                $groupUsersCount = $groupMembersCount
+
+                $firstCompanyUsersCount = $firstCompanyMembersCount
+                $secondCompanyUsersCount = $secondCompanyMembersCount
+            } else {
+                $groupUserProperties = ''
+                $groupUsersCount = 0
+
+                $firstCompanyUsersCount = 0
+                $secondCompanyUsersCount = 0
+            }
         }
 
         if ($groupManagersList) {
@@ -199,12 +202,6 @@ process {
         } else {
             $groupManagersSMTPAddresses = ''
             $groupManagersCompanies = ''
-        }
-
-        if ($groupMembers) {
-            $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
-        } else {
-            $groupMembersEmails = ''
         }
 
         $hasFirstCompanyUsers = $firstCompanyUsersCount -gt 0
@@ -229,6 +226,16 @@ process {
         }
 
         if ($groupCompany -eq 'compA' -or $groupCompany -like 'Mixed*') {
+            if (-not $groupMembers) {
+                $groupMembers = Get-MembersFromGroup $group
+            }
+
+            if ($groupMembers) {
+                $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
+            } else {
+                $groupMembersEmails = ''
+            }
+
             [PSCustomObject]@{
                 'Group' = $group
 
