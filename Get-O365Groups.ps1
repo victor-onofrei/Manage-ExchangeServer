@@ -49,11 +49,11 @@ process {
                 $firstCompanyManagersCount -and $secondCompanyManagersCount
             )
 
-            $groupManagerOrMemberProperties = $groupManagerProperties -join ';'
-            $groupManagersOrMembersCount = $groupManagersCount
+            $groupUserProperties = $groupManagerProperties -join ';'
+            $groupUsersCount = $groupManagersCount
 
-            $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
-            $secondCompanyManagersOrMembersCount = $secondCompanyManagersCount
+            $firstCompanyUsersCount = $firstCompanyManagersCount
+            $secondCompanyUsersCount = $secondCompanyManagersCount
 
             $groupManagersSMTPAddresses = (
                 $groupManagers | Select-Object -ExpandProperty PrimarySmtpAddress
@@ -78,22 +78,22 @@ process {
                 $firstCompanyMembersCount -and $secondCompanyMembersCount
             )
 
-            $groupManagerOrMemberProperties = $groupMemberProperties -join ';'
-            $groupManagersOrMembersCount = $groupMembersCount
+            $groupUserProperties = $groupMemberProperties -join ';'
+            $groupUsersCount = $groupMembersCount
 
-            $firstCompanyManagersOrMembersCount = $firstCompanyMembersCount
-            $secondCompanyManagersOrMembersCount = $secondCompanyMembersCount
+            $firstCompanyUsersCount = $firstCompanyMembersCount
+            $secondCompanyUsersCount = $secondCompanyMembersCount
 
             $groupManagersSMTPAddresses = ''
             $groupManagersCompanies = ''
 
             $groupMembersEmails = $groupMembers.PrimarySmtpAddress -join ';'
         } else {
-            $groupManagerOrMemberProperties = ''
-            $groupManagersOrMembersCount = 0
+            $groupUserProperties = ''
+            $groupUsersCount = 0
 
-            $firstCompanyManagersOrMembersCount = 0
-            $secondCompanyManagersOrMembersCount = 0
+            $firstCompanyUsersCount = 0
+            $secondCompanyUsersCount = 0
 
             $groupManagersSMTPAddresses = ''
             $groupManagersCompanies = ''
@@ -102,8 +102,8 @@ process {
         }
 
         if (
-            $firstCompanyManagersOrMembersCount -eq 0 -and
-            $secondCompanyManagersOrMembersCount -eq 0
+            $firstCompanyUsersCount -eq 0 -and
+            $secondCompanyUsersCount -eq 0
         ) {
             $groupCompany = 'None'
         } elseif ($areManagersInBothCompanies) {
@@ -111,26 +111,26 @@ process {
         } elseif ($areMembersInBothCompanies) {
             $groupCompany = 'Mixed Users'
         } elseif (
-            $secondCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
-                $firstCompanyManagersOrMembersCount -eq 0 -and
-                $secondCompanyManagersOrMembersCount -eq 0 -and
+            $secondCompanyUsersCount -eq $groupUsersCount -or (
+                $firstCompanyUsersCount -eq 0 -and
+                $secondCompanyUsersCount -eq 0 -and
                 $groupManagersCompanies -match 'compB' -and
                 $groupManagersCompanies -notmatch 'compA'
             ) -or (
-                $firstCompanyManagersOrMembersCount -eq 0 -and
-                $secondCompanyManagersOrMembersCount
+                $firstCompanyUsersCount -eq 0 -and
+                $secondCompanyUsersCount
             )
         ) {
             $groupCompany = 'compB'
         } elseif (
-            $firstCompanyManagersOrMembersCount -eq $groupManagersOrMembersCount -or (
-                $firstCompanyManagersOrMembersCount -eq 0 -and
-                $secondCompanyManagersOrMembersCount -eq 0 -and
+            $firstCompanyUsersCount -eq $groupUsersCount -or (
+                $firstCompanyUsersCount -eq 0 -and
+                $secondCompanyUsersCount -eq 0 -and
                 $groupManagersCompanies -match 'compA' -and
                 $groupManagersCompanies -notmatch 'compB'
             ) -or (
-                $firstCompanyManagersOrMembersCount -and
-                $secondCompanyManagersOrMembersCount -eq 0
+                $firstCompanyUsersCount -and
+                $secondCompanyUsersCount -eq 0
             )
         ) {
             $groupCompany = 'compA'
@@ -150,10 +150,10 @@ process {
                 'Group SMTP' = $groupSMTP
                 'Group Category' = $groupCategory
                 'Group Company' = $groupCompany
-                'Group Manager or Member Properties' = $groupManagerOrMemberProperties
-                'Group Managers or Members Count' = $groupManagersOrMembersCount
-                'First Company Managers Or Members Count' = $firstCompanyManagersOrMembersCount
-                'Second Company Managers Or Members Count' = $secondCompanyManagersOrMembersCount
+                'Group Manager or Member Properties' = $groupUserProperties
+                'Group Managers or Members Count' = $groupUsersCount
+                'First Company Managers Or Members Count' = $firstCompanyUsersCount
+                'Second Company Managers Or Members Count' = $secondCompanyUsersCount
                 'Group Managers SMTP Addresses' = $groupManagersSMTPAddresses
                 'Group Managers Companies' = $groupManagersCompanies
                 'Group Members Emails' = $groupMembersEmails
