@@ -49,7 +49,7 @@ process {
                 $firstCompanyManagersCount -and $secondCompanyManagersCount
             )
 
-            $groupManagerOrMemberCustomAttribute8 = $groupManagerProperties -join ';'
+            $groupManagerOrMemberProperties = $groupManagerProperties -join ';'
             $groupManagersOrMembersCount = $groupManagersCount
 
             $firstCompanyManagersOrMembersCount = $firstCompanyManagersCount
@@ -83,7 +83,7 @@ process {
 
             $areMembersInBothCompanies = $firstCompanyMembersCount -and $secondCompanyMembersCount
 
-            $groupManagerOrMemberCustomAttribute8 = $groupMemberProperties -join ';'
+            $groupManagerOrMemberProperties = $groupMemberProperties -join ';'
             $groupManagersOrMembersCount = $groupMembersCount
 
             $firstCompanyManagersOrMembersCount = $firstCompanyMembersCount
@@ -145,7 +145,7 @@ process {
                 'Group SMTP' = $groupSMTP
                 'Group Category' = $groupCategory
                 'Group Company' = $groupCompany
-                'Group Manager or Member Custom Attribute 8' = $groupManagerOrMemberCustomAttribute8
+                'Group Manager or Member Properties' = $groupManagerOrMemberProperties
                 'Group Managers or Members Count' = $groupManagersOrMembersCount
                 'First Company Managers Or Members Count' = $firstCompanyManagersOrMembersCount
                 'Second Company Managers Or Members Count' = $secondCompanyManagersOrMembersCount
