@@ -5,27 +5,22 @@ param (
     [String]
     $Type,
 
-    [Parameter(Mandatory = $true)]
     [Alias('FCI')]
     [String]
     $FirstCompanyIdentifier,
 
-    [Parameter(Mandatory = $true)]
     [Alias('FCN')]
     [String]
     $FirstCompanyName,
 
-    [Parameter(Mandatory = $true)]
     [Alias('SCI')]
     [String]
     $SecondCompanyIdentifier,
 
-    [Parameter(Mandatory = $true)]
     [Alias('SCN')]
     [String]
     $SecondCompanyName,
 
-    [Parameter(Mandatory = $true)]
     [Alias('CIA')]
     [String]
     $CompanyIdentifierAttribute
@@ -48,6 +43,46 @@ begin {
         ScriptName = $params.scriptName
     }
     $Type = Read-Param @typeParams
+
+    $firstCompanyIdentifierParams = @{
+        Name = 'FirstCompanyIdentifier'
+        Value = $FirstCompanyIdentifier
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+    $FirstCompanyIdentifier = Read-Param @firstCompanyIdentifierParams
+
+    $firstCompanyNameParams = @{
+        Name = 'FirstCompanyName'
+        Value = $FirstCompanyName
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+    $FirstCompanyName = Read-Param @firstCompanyNameParams
+
+    $secondCompanyIdentifierParams = @{
+        Name = 'SecondCompanyIdentifier'
+        Value = $SecondCompanyIdentifier
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+    $SecondCompanyIdentifier = Read-Param @secondCompanyIdentifierParams
+
+    $secondCompanyNameParams = @{
+        Name = 'SecondCompanyName'
+        Value = $SecondCompanyName
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+    $SecondCompanyName = Read-Param @secondCompanyNameParams
+
+    $companyIdentifierAttributeParams = @{
+        Name = 'CompanyIdentifierAttribute'
+        Value = $CompanyIdentifierAttribute
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+    $CompanyIdentifierAttribute = Read-Param @companyIdentifierAttributeParams
 
     switch ($Type) {
         'Distribution Groups' { $groupsType = [GroupsType]::distribution }
