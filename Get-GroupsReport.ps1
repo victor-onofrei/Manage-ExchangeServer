@@ -86,7 +86,7 @@ begin {
             }
             ([GroupsType]::unified) {
                 $getGroupParams = @{
-                    Identity = $Group.Guid
+                    Identity = $Group.SamAccountName
                     ErrorAction = [ActionPreference]::SilentlyContinue
                 }
                 $list = Get-Group @getGroupParams |
@@ -152,7 +152,8 @@ process {
             $groups = Get-Group -ResultSize Unlimited -Filter {
                 RecipientTypeDetails -eq 'GroupMailbox'
             } |
-                Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid
+                Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid,
+                SamAccountName
         }
     }
 
