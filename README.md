@@ -73,8 +73,8 @@ Name | Alias
 `-OutputFileName` | OFN
 `-ExchangeObjects` | EO
 
-_Note: When you need to specify multiple value for the `-ExchangeObjects` param,
-you have to enclose them in single quotes like: `-ExchangeObjects
+_Note: When you need to specify multiple values for the `-ExchangeObjects`
+param, you have to enclose them in single quotes like: `-ExchangeObjects
 'first.user@example.com,second.user@example.com'`._
 
 _Note: It's not guaranteed that all of the scripts are using all of these
