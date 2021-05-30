@@ -1,7 +1,7 @@
 using namespace System.Management.Automation
 
 param (
-    [ValidateSet('Distribution Groups', 'Office 365 Groups')]
+    [ValidateSet('Distribution Groups', 'Microsoft 365 Groups')]
     [String]
     $Type
 )
@@ -10,7 +10,7 @@ begin {
     enum GroupsType {
         none
         distribution
-        office365
+        unified
     }
 
     . "$PSScriptRoot\Initializer.ps1"
@@ -27,7 +27,7 @@ begin {
 
     switch ($Type) {
         'Distribution Groups' { $groupsType = [GroupsType]::distribution }
-        'Office 365 Groups' { $groupsType = [GroupsType]::office365 }
+        'Microsoft 365 Groups' { $groupsType = [GroupsType]::unified }
         Default { $groupsType = [GroupsType]::none }
     }
 
@@ -60,7 +60,7 @@ begin {
                     Get-ADUser -Identity $_.ObjectGUID -Properties mail |
                     Where-Object { $_.Enabled -eq 'True' -and $_.mail }
             }
-            ([GroupsType]::office365) {
+            ([GroupsType]::unified) {
                 $getGroupParams = @{
                     Identity = $Group.Guid
                     ErrorAction = [ActionPreference]::SilentlyContinue
@@ -121,7 +121,7 @@ process {
             $groups = Get-DistributionGroup -ResultSize Unlimited |
                 Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid
         }
-        ([GroupsType]::office365) {
+        ([GroupsType]::unified) {
             $groups = Get-Group -ResultSize Unlimited -Filter {
                 RecipientTypeDetails -eq 'GroupMailbox'
             } |
