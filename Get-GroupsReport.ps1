@@ -75,7 +75,7 @@ begin {
         switch ($groupsType) {
             ([GroupsType]::distribution) {
                 $getADGroupMemberParams = @{
-                    Identity = $Group.Guid
+                    Identity = $Group.SamAccountName
                     Recursive = $true
                     ErrorAction = [ActionPreference]::SilentlyContinue
                 }
@@ -146,7 +146,8 @@ process {
     switch ($groupsType) {
         ([GroupsType]::distribution) {
             $groups = Get-DistributionGroup -ResultSize Unlimited |
-                Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid
+                Select-Object WindowsEmailAddress, ManagedBy, Name, RecipientType, Guid,
+                SamAccountName
         }
         ([GroupsType]::unified) {
             $groups = Get-Group -ResultSize Unlimited -Filter {
