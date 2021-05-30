@@ -130,6 +130,10 @@ begin {
 }
 
 process {
+    # Workaround for https://github.com/PowerShell/PSScriptAnalyzer/issues/1643.
+    Write-Verbose $FirstCompanyIdentifier
+    Write-Verbose $SecondCompanyIdentifier
+
     if ($groupsType -eq [GroupsType]::none) {
         Write-Error "Filtering by the groups type '$Type' is not implemented!"
 
