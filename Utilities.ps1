@@ -89,3 +89,32 @@ function Get-ExchangeObjectLocation {
         return [ExchangeObjectLocation]::notAvailable
     }
 }
+
+function Send-ReportMail {
+    param (
+        [String]$From,
+        [String]$To,
+        [String]$CC,
+
+        [String]$AttachmentFilePath,
+        [String]$AttachmentFileName,
+
+        [String]$SMTPHost
+    )
+
+    $attachment = New-Object Net.Mail.Attachment($AttachmentFilePath)
+
+    $message = New-Object Net.Mail.MailMessage
+
+    $message.From = $From
+    $message.To.Add($To)
+    $message.Cc.Add($CC)
+
+    $message.Subject = "$AttachmentFileName report is ready"
+    $message.Body = "Attached is the $AttachmentFileName report"
+
+    $message.Attachments.Add($attachment)
+
+    $smtp = New-Object Net.Mail.SmtpClient($SMTPHost)
+    $smtp.Send($message)
+}

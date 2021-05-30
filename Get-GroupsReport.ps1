@@ -319,19 +319,18 @@ process {
         }
     }
 
-    $attachment = New-Object Net.Mail.Attachment($params.outputFilePath)
+    $mailParams = @{
+        From = 'noreply_group_details@compA.com'
+        To = 'user2@compA.com'
+        CC = 'user1@compA.com'
 
-    $message = New-Object Net.Mail.MailMessage
-    $message.From = 'noreply_group_details@compA.com'
-    $message.Cc.Add('user1@compA.com')
-    $message.To.Add('user2@compA.com')
-    $message.Subject = "$($params.outputFileName) report is ready"
-    $message.Body = "Attached is the $($params.outputFileName) report"
-    $message.Attachments.Add($attachment)
+        AttachmentFilePath = $params.outputFilePath
+        AttachmentFileName = $params.outputFileName
 
-    $smtpServer = 'smtp.compB.com'
-    $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
-    $smtp.Send($message)
+        SMTPServer = 'smtp.compB.com'
+    }
+
+    Send-ReportMail @mailParams
 
     Stop-Transcript
 }
