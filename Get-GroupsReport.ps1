@@ -81,7 +81,8 @@ begin {
                 }
                 $list = Get-ADGroupMember @getADGroupMemberParams |
                     Get-ADUser -Properties mail |
-                    Where-Object { $_.Enabled -eq 'True' -and $_.mail }
+                    Where-Object { $_.Enabled -eq 'True' -and $_.mail } |
+                    Select-Object -ExpandProperty mail
             }
             ([GroupsType]::unified) {
                 $getGroupParams = @{
