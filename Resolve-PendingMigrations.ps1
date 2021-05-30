@@ -39,7 +39,7 @@ process {
             $hasArchiveGuid = $mailboxInfo.archiveGuid -ne '00000000-0000-0000-0000-000000000000'
             $hasArchive = $hasArchiveGuid -and $mailboxInfo.archiveDatabase
 
-            if (!$hasArchive) {
+            if (-not $hasArchive) {
                 Disable-Mailbox -Identity $mailboxInfo.Alias -Confirm:$false
                 Enable-RemoteMailbox $mailboxInfo.Alias `
                     -RemoteRoutingAddress "$exchangeObject@$routingAddress"
