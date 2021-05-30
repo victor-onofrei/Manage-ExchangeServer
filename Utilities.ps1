@@ -8,7 +8,6 @@ if (-not (Test-Path variable:global:configGlobalCategory)) {
         Value = 'Global'
         Visibility = [SessionStateEntryVisibility]::Private
     }
-
     Set-Variable @params
 }
 
@@ -133,7 +132,6 @@ function Send-DefaultReportMail {
         ScriptName = $ScriptParams.scriptName
         AllowGlobal = $true
     }
-
     $from = Read-Param @fromParams
 
     $toParams = @{
@@ -142,7 +140,6 @@ function Send-DefaultReportMail {
         ScriptName = $ScriptParams.scriptName
         AllowGlobal = $true
     }
-
     $to = Read-Param @toParams
 
     $ccParams = @{
@@ -151,7 +148,6 @@ function Send-DefaultReportMail {
         ScriptName = $ScriptParams.scriptName
         AllowGlobal = $true
     }
-
     $cc = Read-Param @ccParams
 
     $smtpHostParams = @{
@@ -160,7 +156,6 @@ function Send-DefaultReportMail {
         ScriptName = $ScriptParams.scriptName
         AllowGlobal = $true
     }
-
     $smtpHost = Read-Param @smtpHostParams
 
     $mailParams = @{
@@ -173,6 +168,5 @@ function Send-DefaultReportMail {
 
         SMTPHost = $smtpHost
     }
-
     Send-ReportMail @mailParams
 }

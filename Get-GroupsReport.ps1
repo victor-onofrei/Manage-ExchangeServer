@@ -47,7 +47,6 @@ begin {
         Config = $params.config
         ScriptName = $params.scriptName
     }
-
     $Type = Read-Param @typeParams
 
     switch ($Type) {
@@ -80,7 +79,6 @@ begin {
                     Recursive = $true
                     ErrorAction = [ActionPreference]::SilentlyContinue
                 }
-
                 $list = Get-ADGroupMember @getADGroupMemberParams |
                     Get-ADUser -Identity $_.ObjectGUID -Properties mail |
                     Where-Object { $_.Enabled -eq 'True' -and $_.mail }
@@ -90,7 +88,6 @@ begin {
                     Identity = $Group.Guid
                     ErrorAction = [ActionPreference]::SilentlyContinue
                 }
-
                 $list = Get-Group @getGroupParams |
                     Select-Object -ExpandProperty Members
             }
