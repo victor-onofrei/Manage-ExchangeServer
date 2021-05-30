@@ -80,7 +80,7 @@ begin {
                     ErrorAction = [ActionPreference]::SilentlyContinue
                 }
                 $list = Get-ADGroupMember @getADGroupMemberParams |
-                    Get-ADUser -Identity $_.ObjectGUID -Properties mail |
+                    Get-ADUser -Properties mail |
                     Where-Object { $_.Enabled -eq 'True' -and $_.mail }
             }
             ([GroupsType]::unified) {
