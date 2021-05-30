@@ -108,7 +108,10 @@ function Send-ReportMail {
 
     $message.From = $From
     $message.To.Add($To)
-    $message.Cc.Add($CC)
+
+    if (-not [string]::IsNullOrEmpty($CC)) {
+        $message.Cc.Add($CC)
+    }
 
     $message.Subject = "$AttachmentFileName report is ready"
     $message.Body = "Attached is the $AttachmentFileName report"
