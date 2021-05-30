@@ -3,7 +3,32 @@ using namespace System.Management.Automation
 param (
     [ValidateSet('Distribution Groups', 'Microsoft 365 Groups')]
     [String]
-    $Type
+    $Type,
+
+    [Parameter(Mandatory = $true)]
+    [Alias('FCI')]
+    [String]
+    $FirstCompanyIdentifier,
+
+    [Parameter(Mandatory = $true)]
+    [Alias('FCN')]
+    [String]
+    $FirstCompanyName,
+
+    [Parameter(Mandatory = $true)]
+    [Alias('SCI')]
+    [String]
+    $SecondCompanyIdentifier,
+
+    [Parameter(Mandatory = $true)]
+    [Alias('SCN')]
+    [String]
+    $SecondCompanyName,
+
+    [Parameter(Mandatory = $true)]
+    [Alias('CIA')]
+    [String]
+    $CompanyIdentifierAttribute
 )
 
 begin {
@@ -38,7 +63,7 @@ begin {
 
         $managers = $List |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySmtpAddress, Company
+            Select-Object $CompanyIdentifierAttribute, PrimarySmtpAddress, Company
 
         return $managers
     }
@@ -81,7 +106,7 @@ begin {
 
         $members = $List |
             Get-Recipient -ResultSize Unlimited -ErrorAction SilentlyContinue |
-            Select-Object CustomAttribute8, PrimarySmtpAddress
+            Select-Object $CompanyIdentifierAttribute, PrimarySmtpAddress
 
         return $members
     }
@@ -164,13 +189,17 @@ process {
             $groupManagers = Get-ManagersFromList $groupManagersList
 
             $groupManagersCount = ($groupManagers | Measure-Object).Count
-            $groupManagerProperties = $groupManagers.CustomAttribute8
+            $groupManagerProperties = $groupManagers.$CompanyIdentifierAttribute
 
             $firstCompanyManagersCount = (
-                $groupManagerProperties | Where-Object { $_ -like 'CAA*' } | Measure-Object
+                $groupManagerProperties |
+                    Where-Object { $_ -like $FirstCompanyIdentifier } |
+                    Measure-Object
             ).Count
             $secondCompanyManagersCount = (
-                $groupManagerProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
+                $groupManagerProperties |
+                    Where-Object { $_ -like $SecondCompanyIdentifier } |
+                    Measure-Object
             ).Count
 
             $areManagersInBothCompanies = (
@@ -186,13 +215,17 @@ process {
 
             if ($groupMembers) {
                 $groupMembersCount = ($groupMembers | Measure-Object).Count
-                $groupMemberProperties = $groupMembers.CustomAttribute8
+                $groupMemberProperties = $groupMembers.$CompanyIdentifierAttribute
 
                 $firstCompanyMembersCount = (
-                    $groupMemberProperties | Where-Object { $_ -like 'CAA*' } | Measure-Object
+                    $groupMemberProperties |
+                        Where-Object { $_ -like $FirstCompanyIdentifier } |
+                        Measure-Object
                 ).Count
                 $secondCompanyMembersCount = (
-                    $groupMemberProperties | Where-Object { $_ -like 'CAB*' } | Measure-Object
+                    $groupMemberProperties |
+                        Where-Object { $_ -like $SecondCompanyIdentifier } |
+                        Measure-Object
                 ).Count
 
                 $areMembersInBothCompanies = (
@@ -241,14 +274,14 @@ process {
         } elseif ($areMembersInBothCompanies) {
             $groupCompany = 'Mixed Users'
         } elseif ($groupUsersCount -eq $firstCompanyUsersCount -or $hasOnlyFirstCompanyUsers) {
-            $groupCompany = 'compA'
+            $groupCompany = $FirstCompanyName
         } elseif ($groupUsersCount -eq $secondCompanyUsersCount -or $hasOnlySecondCompanyUsers) {
-            $groupCompany = 'compB'
+            $groupCompany = $SecondCompanyName
         } else {
             $groupCompany = 'N/A'
         }
 
-        if ($groupCompany -eq 'compA' -or $groupCompany -like 'Mixed*') {
+        if ($groupCompany -eq $FirstCompanyName -or $groupCompany -like 'Mixed*') {
             if (-not $groupMembers) {
                 $groupMembers = Get-MembersFromGroup $group
             }
