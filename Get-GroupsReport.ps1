@@ -1,4 +1,3 @@
-using namespace Microsoft.Exchange.Data.Directory.Management
 using namespace System.Management.Automation
 
 param (
@@ -46,7 +45,7 @@ begin {
 
     function Get-MembersListFromGroup {
         param (
-            [ADPresentationObject]$Group
+            [PSObject]$Group
         )
 
         switch ($groupsType) {
@@ -89,7 +88,7 @@ begin {
 
     function Get-MembersFromGroup {
         param (
-            [ADPresentationObject]$Group
+            [PSObject]$Group
         )
 
         $list = Get-MembersListFromGroup $Group
