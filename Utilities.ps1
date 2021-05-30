@@ -118,3 +118,58 @@ function Send-ReportMail {
     $smtp = New-Object Net.Mail.SmtpClient($SMTPHost)
     $smtp.Send($message)
 }
+
+function Send-DefaultReportMail {
+    param (
+        [Hashtable]$ScriptParams
+    )
+
+    $fromParams = @{
+        Name = 'ReportMailFrom'
+        Config = $ScriptParams.config
+        ScriptName = $ScriptParams.scriptName
+        AllowGlobal = $true
+    }
+
+    $from = Read-Param @fromParams
+
+    $toParams = @{
+        Name = 'ReportMailTo'
+        Config = $ScriptParams.config
+        ScriptName = $ScriptParams.scriptName
+        AllowGlobal = $true
+    }
+
+    $to = Read-Param @toParams
+
+    $ccParams = @{
+        Name = 'ReportMailCC'
+        Config = $ScriptParams.config
+        ScriptName = $ScriptParams.scriptName
+        AllowGlobal = $true
+    }
+
+    $cc = Read-Param @ccParams
+
+    $smtpHostParams = @{
+        Name = 'ReportMailSMTPHost'
+        Config = $ScriptParams.config
+        ScriptName = $ScriptParams.scriptName
+        AllowGlobal = $true
+    }
+
+    $smtpHost = Read-Param @smtpHostParams
+
+    $mailParams = @{
+        From = $from
+        To = $to
+        CC = $cc
+
+        AttachmentFilePath = $ScriptParams.outputFilePath
+        AttachmentFileName = $ScriptParams.outputFileName
+
+        SMTPHost = $smtpHost
+    }
+
+    Send-ReportMail @mailParams
+}

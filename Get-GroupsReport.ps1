@@ -319,18 +319,7 @@ process {
         }
     }
 
-    $mailParams = @{
-        From = 'noreply_group_details@compA.com'
-        To = 'user2@compA.com'
-        CC = 'user1@compA.com'
-
-        AttachmentFilePath = $params.outputFilePath
-        AttachmentFileName = $params.outputFileName
-
-        SMTPServer = 'smtp.compB.com'
-    }
-
-    Send-ReportMail @mailParams
+    Send-DefaultReportMail -ScriptParams $params
 
     Stop-Transcript
 }
