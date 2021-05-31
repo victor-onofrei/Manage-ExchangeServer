@@ -44,6 +44,11 @@ OutputPath=C:\exchange
 OutputDir=outputs
 OutputFileName=output.csv
 
+ReportMailFrom=noreply@domain.com
+ReportMailTo=recipient@domain.com
+ReportMailCC=
+ReportMailSMTPHost=smtp.domain.com
+
 [Set-MailboxQuota]
 InputPath=C:\quotas
 InputDir=inputs
@@ -52,6 +57,20 @@ InputFileName=users_list.csv
 OutputPath=C:\quotas
 OutputDir=outputs
 OutputFileName=result.csv
+
+[Resolve-PendingMigrations]
+InputFileName=input_Resolve-PendingMigrations.csv
+OutputDir=Resolve-PendingMigrations
+OutputFileName=output_Resolve-PendingMigrations.csv
+ItemCountThreshold=100
+
+[Get-GroupsReport]
+FirstCompanyIdentifier=compA
+FirstCompanyName=CompanyA
+SecondCompanyIdentifier=compB
+SecondCompanyName=CompanyB
+CompanyIdentifierAttribute=Department
+
 ```
 
 ## Parameters
