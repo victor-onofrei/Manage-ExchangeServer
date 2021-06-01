@@ -32,7 +32,7 @@ ParamName=value
 ```
 
 As a reference, here is a sample config file specifying global values for all
-the parameters and specific values for the `Set-MailboxQuota` script:
+the parameters and specific values for several scripts:
 
 ```ini
 [Global]
