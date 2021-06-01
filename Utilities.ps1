@@ -82,7 +82,7 @@ function Get-ExchangeObjectLocation {
     $isMailUser = $exchangeObjectTypeDetails -eq 'MailUser'
 
     $sessionScope = Get-PSSession |
-        Where-Object { $_.State -eq "Opened" -and $_.ConfigurationName -eq "Microsoft.Exchange" } |
+        Where-Object { $_.State -eq 'Opened' -and $_.ConfigurationName -eq 'Microsoft.Exchange' } |
         Select-Object -ExpandProperty ComputerName
     if ($sessionScope -eq 'outlook.office365.com') {
         if ($isLocal) {
