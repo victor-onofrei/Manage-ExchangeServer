@@ -6,14 +6,11 @@ begin {
 process {
     Start-Transcript "$($params.outputFilePath).txt"
 
-    $domainsInputPath = "$env:homeshare\VDI-UserData\Download\generic\inputs"
-    $domainsInputFile = 'bigbang_domains_input.csv'
-    $domains = Get-Content $domainsInputPath\$domainsInputFile
-
     Write-Output 'To gather all recipient information'
     $allRecipients = Get-Recipient -ResultSize Unlimited |
         Where-Object { $_.RecipientType -match 'User' }
 
+    $domains = Get-AcceptedDomain
     $domainsCount = $domains | Measure-Object |
         Select-Object -ExpandProperty Count
     Write-Output "To process $domainsCount domains"
@@ -31,7 +28,6 @@ process {
                 $_.EmailAddresses -match $domain }
         $matchMailboxesAliasCount = $matchMailboxesAlias |
             Measure-Object | Select-Object -ExpandProperty Count
-
         $matchMailboxesCount = $matchMailboxes | Measure-Object |
             Select-Object -ExpandProperty Count
         $matchMailboxesEXP = 0
@@ -60,19 +56,7 @@ process {
         } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
     }
 
-    $attachment = New-Object Net.Mail.Attachment($params.outputFilePath)
-
-    $message = New-Object Net.Mail.MailMessage
-    $message.From = 'noreply_group_details@compA.com'
-    # $message.Cc.Add('user1@compA.com')
-    $message.To.Add('user1@compB.com')
-    $message.Subject = "$($params.outputFileName) report is ready"
-    $message.Body = "Attached is the $($params.outputFileName) report"
-    $message.Attachments.Add($attachment)
-
-    $smtpServer = 'smtp.compA.com'
-    $smtp = New-Object Net.Mail.SmtpClient($smtpServer)
-    $smtp.Send($message)
+    Send-DefaultReportMail -ScriptParams $params
 
     Stop-Transcript
 }
