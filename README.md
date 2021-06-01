@@ -70,7 +70,6 @@ FirstCompanyName=CompanyA
 SecondCompanyIdentifier=compB
 SecondCompanyName=CompanyB
 CompanyIdentifierAttribute=Department
-
 ```
 
 ## Parameters
