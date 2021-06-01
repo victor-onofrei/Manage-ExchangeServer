@@ -91,11 +91,13 @@ Name | Alias
 `-OutputFileName` | OFN
 `-ExchangeObjects` | EO
 
-_Note: In order to leverage this setup, you need to initialize any new script with
-`begin {
+_Note: In order to leverage this setup, you need to initialize any new script with:_
+
+```pwsh
+begin {
     . "$PSScriptRoot\Initializer.ps1"
     $params = Invoke-Expression "Initialize-DefaultParams $args"
-}`
+}
 
 _Note: When you need to specify multiple values for the `-ExchangeObjects`
 param, you have to enclose them in single quotes like: `-ExchangeObjects
