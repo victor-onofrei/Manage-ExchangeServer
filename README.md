@@ -32,7 +32,7 @@ ParamName=value
 ```
 
 As a reference, here is a sample config file specifying global values for all
-the parameters and specific values for the `Set-MailboxQuota` script:
+the parameters and specific values for several scripts:
 
 ```ini
 [Global]
@@ -44,6 +44,11 @@ OutputPath=C:\exchange
 OutputDir=outputs
 OutputFileName=output.csv
 
+ReportMailFrom=noreply@domain.com
+ReportMailTo=recipient@domain.com
+ReportMailCC=
+ReportMailSMTPHost=smtp.domain.com
+
 [Set-MailboxQuota]
 InputPath=C:\quotas
 InputDir=inputs
@@ -52,6 +57,19 @@ InputFileName=users_list.csv
 OutputPath=C:\quotas
 OutputDir=outputs
 OutputFileName=result.csv
+
+[Resolve-PendingMigrations]
+InputFileName=input_Resolve-PendingMigrations.csv
+OutputDir=Resolve-PendingMigrations
+OutputFileName=output_Resolve-PendingMigrations.csv
+ItemCountThreshold=100
+
+[Get-GroupsReport]
+FirstCompanyIdentifier=compA
+FirstCompanyName=CompanyA
+SecondCompanyIdentifier=compB
+SecondCompanyName=CompanyB
+CompanyIdentifierAttribute=Department
 ```
 
 ## Parameters
@@ -72,6 +90,15 @@ Name | Alias
 `-OutputDir` | OD
 `-OutputFileName` | OFN
 `-ExchangeObjects` | EO
+
+_Note: In order to leverage this setup, you need to initialize any new script with:_
+
+```pwsh
+begin {
+    . "$PSScriptRoot\Initializer.ps1"
+    $params = Invoke-Expression "Initialize-DefaultParams $args"
+}
+```
 
 _Note: When you need to specify multiple values for the `-ExchangeObjects`
 param, you have to enclose them in single quotes like: `-ExchangeObjects
