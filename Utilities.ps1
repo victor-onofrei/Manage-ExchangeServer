@@ -79,13 +79,33 @@ function Get-ExchangeObjectLocation {
 
     $isLocal = $exchangeObjectTypeDetails -like '*Mailbox'
     $isRemote = $exchangeObjectTypeDetails -like 'Remote*'
+    $isMailUser = $exchangeObjectTypeDetails -eq 'MailUser'
 
-    if ($isLocal -and (-not $isRemote)) {
-        return [ExchangeObjectLocation]::exchangeOnPremises
-    } elseif ($isRemote) {
-        return [ExchangeObjectLocation]::exchangeOnline
+    $sessionScope = Get-PSSession |
+        Where-Object { $_.State -eq "Opened" -and $_.ConfigurationName -eq "Microsoft.Exchange" } |
+        Select-Object -ExpandProperty ComputerName
+    if ($sessionScope -eq 'outlook.office365.com') {
+        if ($isLocal) {
+            return [ExchangeObjectLocation]::exchangeOnline
+        } elseif ($isMailUser) {
+            # return [ExchangeObjectLocation]::notAvailable
+            $errorMessage = -join (
+                'You ran the script from PowerShell connected to Exchange Online ',
+                "and recipient $ExchangeObject is of type $exchangeObjectTypeDetails ",
+                'which means that either its mailbox is located remotely or that this is a ',
+                'mail user with no mailbox attached. Please consider running this script ',
+                'from PowerShell connected to Exchange On Premises for accurate results.'
+            )
+            return $errorMessage
+        }
     } else {
-        return [ExchangeObjectLocation]::notAvailable
+        if ($isLocal -and (-not $isRemote)) {
+            return [ExchangeObjectLocation]::exchangeOnPremises
+        } elseif ($isRemote) {
+            return [ExchangeObjectLocation]::exchangeOnline
+        } else {
+            return [ExchangeObjectLocation]::notAvailable
+        }
     }
 }
 
