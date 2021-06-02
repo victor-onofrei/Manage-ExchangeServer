@@ -88,7 +88,6 @@ function Get-ExchangeObjectLocation {
         if ($isLocal) {
             return [ExchangeObjectLocation]::exchangeOnline
         } elseif ($isMailUser) {
-            # return [ExchangeObjectLocation]::notAvailable
             $errorMessage = -join (
                 'You ran the script from PowerShell connected to Exchange Online ',
                 "and recipient $ExchangeObject is of type $exchangeObjectTypeDetails ",
