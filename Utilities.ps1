@@ -84,14 +84,14 @@ function Get-ExchangeObjectLocation {
     $sessionScope = Get-PSSession |
         Where-Object { $_.State -eq 'Opened' -and $_.ConfigurationName -eq 'Microsoft.Exchange' } |
         Select-Object -ExpandProperty ComputerName
-        
+
     if ($sessionScope -eq 'outlook.office365.com') {
         if ($isLocal) {
             return [ExchangeObjectLocation]::exchangeOnline
         } elseif ($isMailUser) {
             $errorMessage = -join (
                 'You ran the script from PowerShell connected to Exchange Online ',
-                "and recipient $ExchangeObject is of type $exchangeObjectTypeDetails ",
+                "and recipient $exchangeObject is of type $exchangeObjectTypeDetails ",
                 'which means that either its mailbox is located remotely or that this is a ',
                 'mail user with no mailbox attached. Please consider running this script ',
                 'from PowerShell connected to Exchange On Premises for accurate results.'
