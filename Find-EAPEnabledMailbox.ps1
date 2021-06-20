@@ -13,10 +13,7 @@ process {
         Get-Recipient -ResultSize Unlimited |
             Where-Object {
                 $_.RecipientTypeDetails -like '*Mailbox' -and
-                $_.EmailAddressPolicyEnabled -eq $true -and (
-                    $_.CustomAttribute8 -like 'world=H*' -or
-                    $_.CustomAttribute8 -like 'world=N*'
-                )
+                $_.EmailAddressPolicyEnabled -eq $true
             } |
             Select-Object -ExpandProperty SamAccountName
     )
