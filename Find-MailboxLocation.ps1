@@ -13,11 +13,10 @@ process {
 
         $location = Get-ExchangeObjectLocation -ExchangeObject $exchangeObject
 
-        $progress = -join (
-            "Processed exchange object $($index + 1) / $exchangeObjectsCount | ",
+        Write-Output (
+            "Processed exchange object $($index + 1) / $exchangeObjectsCount | " +
             "$exchangeObject | $location"
         )
-        Write-Output $progress
 
         [PSCustomObject]@{
             exchangeObject = $exchangeObject
