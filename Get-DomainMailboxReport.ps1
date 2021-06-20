@@ -56,7 +56,9 @@ process {
         } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
     }
 
-    Send-DefaultReportMail -ScriptParams $params
-
     Stop-Transcript
+}
+
+end {
+    Send-DefaultReportMail -ScriptParams $params
 }
