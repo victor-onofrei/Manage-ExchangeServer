@@ -7,11 +7,14 @@ begin {
     . "$PSScriptRoot\Initializer.ps1"
     $params = Invoke-Expression "Initialize-DefaultParams $args"
 
-    $itemCountThreshold = Read-Param 'ItemCountThreshold' `
-        -Value $ItemCountThreshold `
-        -DefaultValue 50 `
-        -Config $params.config `
-        -ScriptName $params.scriptName
+    $itemCountThresholdParams = @{
+        Name = 'ItemCountThreshold'
+        Value = $ItemCountThreshold
+        DefaultValue = 50
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+    $itemCountThreshold = Read-Param @itemCountThresholdParams
 
     $routingAddress = (
         Get-OrganizationConfig |

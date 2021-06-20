@@ -6,11 +6,14 @@ begin {
     . "$PSScriptRoot\Initializer.ps1"
     $params = Invoke-Expression "Initialize-DefaultParams $args"
 
-    $inactiveThreshold = Read-Param 'InactiveThreshold' `
-        -Value $InactiveThreshold `
-        -DefaultValue 90 `
-        -Config $params.config `
-        -ScriptName $params.scriptName
+    $inactiveThresholdParams = @{
+        Name = 'InactiveThreshold'
+        Value = $InactiveThreshold
+        DefaultValue = 90
+        Config = $params.config
+        ScriptName = $params.scriptName
+    }
+    $inactiveThreshold = Read-Param @inactiveThresholdParams
 
     $inactiveSpan = New-TimeSpan -Days $inactiveThreshold
     $today = Get-Date
