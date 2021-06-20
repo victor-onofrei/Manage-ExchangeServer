@@ -1,54 +1,84 @@
-$Threshold = 90
-$Today = Get-Date
-$Days = New-TimeSpan -Days $Threshold
-$Output = @()
-$Outpath = 'C:\Temp\InactiveOffice365.csv'
-$AllUserMailboxes = Get-Mailbox -ResultSize Unlimited |
-    Where-Object { $_.WhenMailboxCreated -lt ($Today - $Days) }
-$AllUserMailboxesStats = $AllUserMailboxes |
-    Get-MailboxStatistics -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
-$InactiveMailboxes = $AllUserMailboxesStats |
-    Where-Object { ($_.LastLogonTime -lt ($Today - $Days)) -or ($_.LastLogonTime -eq $Null) }
-foreach ($InactiveMailbox in $InactiveMailboxes) {
-    $Mailbox = ($AllUserMailboxes |
-            Where-Object { $_.DisplayName -eq $InactiveMailbox.DisplayName })
+param (
+    [Alias('IT')][Int]$InactiveThreshold
+)
 
-    if ($Null -eq $InactiveMailbox.LastLogonTime) {
-        $DaysInactive = ($Today - $Mailbox.WhenMailboxCreated).days
-    } else {
-        $DaysInactive = ($Today - $InactiveMailbox.LastLogonTime).days
-    }
+begin {
+    . "$PSScriptRoot\Initializer.ps1"
+    $params = Invoke-Expression "Initialize-DefaultParams $args"
 
-    $Instance = ($InactiveMailbox |
-            Select-Object @{
-                Label = 'Displayname';
-                Expression = { $Mailbox.DisplayName }
-            },
-            @{
-                Label = 'UserPrincipalName';
-                Expression = { $Mailbox.UserPrincipalName }
-            },
-            @{
-                Label = 'PrimarySmtpAddress';
-                Expression = { $Mailbox.PrimarySmtpAddress }
-            },
-            @{
-                Label = 'MailboxType';
-                Expression = { $Mailbox.Recipienttypedetails }
-            },
-            @{
-                Label = 'MailboxCreatedon';
-                Expression = { $Mailbox.WhenMailboxCreated }
-            },
-            @{
-                Label = 'Lastloggedon';
-                Expression = { $Inactivemailbox.LastLogonTime }
-            },
-            @{
-                Label = 'Inactive';
-                Expression = { $DaysInactive }
-            }
-    )
-    $Output += $Instance
+    $inactiveThreshold = Read-Param 'InactiveThreshold' `
+        -Value $InactiveThreshold `
+        -DefaultValue 90 `
+        -Config $params.config `
+        -ScriptName $params.scriptName
+
+    $inactiveSpan = New-TimeSpan -Days $inactiveThreshold
+    $today = Get-Date
 }
-$Output | Export-Csv $Outpath -Encoding UTF8 -NoTypeInformation
+
+process {
+    $allMailboxes = Get-Mailbox -ResultSize Unlimited |
+        Where-Object { $_.WhenMailboxCreated -lt ($today - $inactiveSpan) }
+    $allMailboxesStats = $allMailboxes |
+        Get-MailboxStatistics -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
+    $inactiveMailboxes = $allMailboxesStats |
+        Where-Object { ($_.LastLogonTime -lt ($today - $inactiveSpan)) -or
+            ($_.LastLogonTime -eq $Null) }
+    $inactiveMailboxesCount = $inactiveMailboxes | Measure-Object |
+        Select-Object -ExpandProperty Count
+
+    $output = @()
+    Write-Output "To process $inactiveMailboxesCount inactive mailboxes"
+
+    for ($index = 0; $index -lt $inactiveMailboxesCount; $index++) {
+        $inactiveMailbox = $inactiveMailboxes[$index]
+        Write-Output (
+            "Processing mailbox $($index + 1) / $inactiveMailboxesCount | " +
+            "$($inactiveMailbox.DisplayName)"
+        )
+
+        $mailbox = ($allMailboxes |
+                Where-Object { $_.DisplayName -eq $inactiveMailbox.DisplayName })
+
+        if ($Null -eq $inactiveMailbox.LastLogonTime) {
+            $inactiveSpanInactive = ($today - $mailbox.WhenMailboxCreated).Days
+        } else {
+            $inactiveSpanInactive = ($today - $inactiveMailbox.LastLogonTime).Days
+        }
+
+        $instance = ($inactiveMailbox |
+                Select-Object @{
+                    Label = 'Displayname';
+                    Expression = { $mailbox.DisplayName }
+                },
+                @{
+                    Label = 'UserPrincipalName';
+                    Expression = { $mailbox.UserPrincipalName }
+                },
+                @{
+                    Label = 'PrimarySmtpAddress';
+                    Expression = { $mailbox.PrimarySmtpAddress }
+                },
+                @{
+                    Label = 'MailboxType';
+                    Expression = { $mailbox.RecipientTypeDetails }
+                },
+                @{
+                    Label = 'MailboxCreatedon';
+                    Expression = { $mailbox.WhenMailboxCreated }
+                },
+                @{
+                    Label = 'Lastloggedon';
+                    Expression = { $Inactivemailbox.LastLogonTime }
+                },
+                @{
+                    Label = 'Inactive';
+                    Expression = { $inactiveSpanInactive }
+                }
+        )
+        $output += $instance
+    }
+    $output | Export-Csv $params.outputFilePath -Encoding UTF8 -NoTypeInformation
+
+    Send-DefaultReportMail -ScriptParams $params
+}
