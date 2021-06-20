@@ -78,6 +78,9 @@ process {
         )
         $output += $instance
     }
+}
+
+end {
     $output | Export-Csv $params.outputFilePath -Encoding UTF8 -NoTypeInformation
 
     Send-DefaultReportMail -ScriptParams $params

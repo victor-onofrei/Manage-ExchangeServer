@@ -358,7 +358,9 @@ process {
         }
     }
 
-    Send-DefaultReportMail -ScriptParams $params
-
     Stop-Transcript
+}
+
+end {
+    Send-DefaultReportMail -ScriptParams $params
 }
