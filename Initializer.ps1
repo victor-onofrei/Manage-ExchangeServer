@@ -77,42 +77,63 @@ function Initialize-DefaultParams {
         $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
 
         # Read the params.
+        $inputPathParams = @{
+            Name = 'InputPath'
+            Value = $InputPath
+            DefaultValue = "$HOME"
+            Config = $config
+            ScriptName = $_ScriptName
+            AllowGlobal = $true
+        }
+        $inputPath = Read-Param @inputPathParams
 
-        $inputPath = Read-Param 'InputPath' `
-            -Value $InputPath `
-            -DefaultValue "$HOME" `
-            -Config $config `
-            -ScriptName $_ScriptName `
-            -AllowGlobal
-        $inputDir = Read-Param 'InputDir' `
-            -Value $InputDir `
-            -Config $config `
-            -ScriptName $_ScriptName `
-            -AllowGlobal
-        $inputFileName = Read-Param 'InputFileName' `
-            -Value $InputFileName `
-            -DefaultValue "input_$_ScriptName.csv" `
-            -Config $config `
-            -ScriptName $_ScriptName `
-            -AllowGlobal
+        $inputDirParams = @{
+            Name = 'InputDir'
+            Value = $InputDir
+            Config = $config
+            ScriptName = $_ScriptName
+            AllowGlobal = $true
+        }
+        $inputDir = Read-Param @$inputDirParams
 
-        $outputPath = Read-Param 'OutputPath' `
-            -Value $OutputPath `
-            -DefaultValue "$HOME" `
-            -Config $config `
-            -ScriptName $_ScriptName `
-            -AllowGlobal
-        $outputDir = Read-Param 'OutputDir' `
-            -Value $OutputDir `
-            -Config $config `
-            -ScriptName $_ScriptName `
-            -AllowGlobal
-        $outputFileName = Read-Param 'OutputFileName' `
-            -Value $OutputFileName `
-            -DefaultValue "output_$_ScriptName.$timestamp.csv" `
-            -Config $config `
-            -ScriptName $_ScriptName `
-            -AllowGlobal
+        $inputFileNameParams = @{
+            Name = 'InputFileName'
+            Value = $InputFileName
+            DefaultValue = "input_$_ScriptName.csv"
+            Config = $config
+            ScriptName = $_ScriptName
+            AllowGlobal = $true
+        }
+        $inputFileName = Read-Param @inputFileNameParams
+
+        $outputPathParams = @{
+            Name = 'OutputPath'
+            Value = $OutputPath
+            DefaultValue = "$HOME"
+            Config = $config
+            ScriptName = $_ScriptName
+            AllowGlobal = $true
+        }
+        $outputPath = Read-Param @outputPathParams
+
+        $outputDirParams = @{
+            Name = 'OutputDir'
+            Value = $OutputDir
+            Config = $config
+            ScriptName = $_ScriptName
+            AllowGlobal = $true
+        }
+        $outputDir = Read-Param @outputDirParams
+
+        $outputFileNameParams = @{
+            Name = 'OutputFileName'
+            Value = $OutputFileName
+            DefaultValue = "output_$_ScriptName.$timestamp.csv"
+            Config = $config
+            ScriptName = $_ScriptName
+            AllowGlobal = $true
+        }
+        $outputFileName = ReadParam @outputFileNameParams
 
         $intermediateInputFilePath = Join-Path $inputPath -ChildPath $inputDir
         $intermediateOutputFilePath = Join-Path $outputPath -ChildPath $outputDir
@@ -125,10 +146,13 @@ function Initialize-DefaultParams {
                 -ErrorAction SilentlyContinue > $null
         }
 
-        $exchangeObjects = Read-Param 'ExchangeObjects' `
-            -Value $ExchangeObjects `
-            -DefaultValue (Get-Content $inputFilePath -ErrorAction SilentlyContinue) `
-            -AllowGlobal
+        $exchangeObjectsParams = @{
+            Name = 'ExchangeObjects'
+            Value = $ExchangeObjects
+            DefaultValue = (Get-Content $inputFilePath -ErrorAction SilentlyContinue)
+            AllowGlobal = $true
+        }
+        $exchangeObjects = Read-Param @exchangeObjectsParams
 
         if ($null -eq $exchangeObjects) {
             $exchangeObjects = @()
