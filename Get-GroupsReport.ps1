@@ -1,6 +1,7 @@
 using namespace System.Management.Automation
 
 param (
+    [Parameter(Mandatory)]
     [ValidateSet('Distribution Groups', 'Microsoft 365 Groups')]
     [String]
     $Type,
