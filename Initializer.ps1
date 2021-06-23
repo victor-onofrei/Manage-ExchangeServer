@@ -133,7 +133,7 @@ function Initialize-DefaultParams {
             ScriptName = $_ScriptName
             AllowGlobal = $true
         }
-        $outputFileName = ReadParam @outputFileNameParams
+        $outputFileName = Read-Param @outputFileNameParams
 
         $intermediateInputFilePath = Join-Path $inputPath -ChildPath $inputDir
         $intermediateOutputFilePath = Join-Path $outputPath -ChildPath $outputDir
