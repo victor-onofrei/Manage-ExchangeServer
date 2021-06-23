@@ -26,8 +26,7 @@ process {
                         -ErrorAction SilentlyContinue |
                         Select-Object `
                             -ExpandProperty IPAddress `
-                            -ErrorAction SilentlyContinue) `
-                        -join ';'
+                            -ErrorAction SilentlyContinue) -join ';'
                 }
             } |
             Sort-Object -Property Count -Descending |
