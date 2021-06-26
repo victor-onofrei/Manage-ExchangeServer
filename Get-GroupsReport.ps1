@@ -1,3 +1,13 @@
+<#
+.DESCRIPTION
+This report has a mandatory parameter named -Type.
+Value must be 'Distribution Groups' or 'Microsoft 365 Groups'.
+
+.PARAMETER Type
+Specifies the type of groups the report will run for.
+You may use 'Distribution Groups' or 'Microsoft 365 Groups'.
+#>
+
 using namespace System.Management.Automation
 
 param (
