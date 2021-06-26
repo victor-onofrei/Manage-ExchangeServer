@@ -1,7 +1,13 @@
 <#
+.SYNOPSIS
+This report computes the companies groups belong to based on its managers' and members' companies.
+
 .DESCRIPTION
 This report has a mandatory parameter named -Type.
 Value must be 'Distribution Groups' or 'Microsoft 365 Groups'.
+
+.EXAMPLE
+Get-GroupsReport -Type 'Distribution Groups' -CompanyIdentifierAttribute 'CustomAttribute1' -FirstCompanyName 'contoso' -FirstCompanyIdentifier 'contoso#employee' -SecondCompanyName 'fabrikam' -SecondCompanyIdentifier 'fabrikam#employee'
 
 .PARAMETER Type
 Specifies the type of groups the report will run for.
