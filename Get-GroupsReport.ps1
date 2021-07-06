@@ -1,3 +1,45 @@
+<#
+.SYNOPSIS
+This report computes the companies groups belong to based on its managers' and members' companies.
+
+.DESCRIPTION
+This report has a mandatory parameter named -Type.
+Value must be 'Distribution Groups' or 'Microsoft 365 Groups'.
+
+.PARAMETER Type
+Specifies the type of groups this report will process and output.
+You may use 'Distribution Groups' or 'Microsoft 365 Groups'.
+
+.PARAMETER CompanyIdentifierAttribute
+Defines the attribute where your organization stores the value for a user's company in Exchange.
+This can be 'Company' but may as well be 'CustomAttribute4' or even 'Notes'.
+
+.PARAMETER FirstCompanyName
+Only used for output.
+
+.PARAMETER SecondCompanyName
+Only used for output.
+
+.PARAMETER FirstCompanyIdentifier
+Shows how your organization defines a user's company.
+For example, user A might be part of 'Contoso' company but, in Exchange,
+'Contoso' might be defined by the value 'CompanyA' of the attribute 'CustomAttribute1'.
+
+.PARAMETER SecondCompanyIdentifier
+Shows how your organization defines a user's company.
+For example, user A might be part of 'Contoso' company but, in Exchange,
+'Contoso' might be defined by the value 'CompanyA' of the attribute 'CustomAttribute1'.
+
+.EXAMPLE
+PS> .\Get-GroupsReport.ps1 `
+-Type 'Distribution Groups' `
+-CIA 'CustomAttribute1' `
+-FCN 'contoso' `
+-FCI 'CompanyA' `
+-SCN 'fabrikam' `
+-SCI 'CompanyB'
+#>
+
 using namespace System.Management.Automation
 
 param (
