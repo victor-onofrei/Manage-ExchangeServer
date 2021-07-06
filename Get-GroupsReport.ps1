@@ -31,7 +31,13 @@ For example, user A might be part of 'Contoso' company but, in Exchange,
 'Contoso' might be defined by the value 'CompanyA' of the attribute 'CustomAttribute1'.
 
 .EXAMPLE
-PS> .\Get-GroupsReport.ps1 -Type 'Distribution Groups' -CIA 'CustomAttribute1' -FCN 'contoso' -FCI 'CompanyA' -SCN 'fabrikam' -SCI 'CompanyB'
+PS> .\Get-GroupsReport.ps1 `
+-Type 'Distribution Groups' `
+-CIA 'CustomAttribute1' `
+-FCN 'contoso' `
+-FCI 'CompanyA' `
+-SCN 'fabrikam' `
+-SCI 'CompanyB'
 #>
 
 using namespace System.Management.Automation
