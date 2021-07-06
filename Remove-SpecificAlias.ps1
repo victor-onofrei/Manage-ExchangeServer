@@ -26,9 +26,11 @@ process {
                     }
                 } | Select-Object -ExpandProperty SpecificEmailAddresses
         foreach ($alias in $aliasToRemove) {
-            Set-RemoteMailbox $exchangeObject `
-                -EmailAddresses @{ remove = "$alias" } `
-                -EmailAddressPolicyEnabled $false
+            $aliasToRemoveParams = @{
+                EmailAddresses = @{ remove = "$alias" }
+                EmailAddressPolicyEnabled = $false
+            }
+            Set-RemoteMailbox $exchangeObject @aliasToRemoveParams
         }
     }
 }
