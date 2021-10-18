@@ -1,109 +1,181 @@
 begin {
-    $ts = Get-Date -Format yyyyMMdd_hhmmss
-    $Path = "\\path\outputs"
-    $ProjName = "mailboxes_list"
-    $FileName = "Mailboxes_list_complex_cloud.full.$ts.xls"
-    New-Item -Name $ProjName -Path $Path -Type Directory -ErrorAction SilentlyContinue
-    New-Item -Name $FileName -Path $Path\$ProjName -Type File -ErrorAction SilentlyContinue
-    $PathtoAddressesOutfile = "$Path\$ProjName\$FileName"
+    . "$PSScriptRoot\Initializer.ps1"
+    $params = Invoke-Expression "Initialize-DefaultParams $args"
+    $mailboxPool = $params.exchangeObjects
 
-    Start-Transcript "$Path\$ProjName\Faster\$FileName.txt"
+    Write-Output "Getting Exchange Online mailboxes..."
+    $cloudMailboxes = $mailboxPool |
+        Get-EXORecipient -RecipientType UserMailbox -ErrorAction SilentlyContinue
+    $cloudMailboxesCount = @($cloudMailboxes).Count
+    Write-Output "Found $cloudMailboxesCount Exchange Online mailboxes"
 
+    Write-Output "Getting Exchange Online mailboxes total sizes..."
+    $cloudMailboxesTotalSizeMB = @()
+    $cloudMailboxesTotalSizeMB = $mailboxPool |
+        Get-EXORecipient -Properties ExchangeGuid -ErrorAction SilentlyContinue |
+        Get-EXOMailboxStatistics $_.ExchangeGuid -ErrorAction SilentlyContinue |
+        Select-Object MailboxGuid, @{
+            Name = "TotalItemSizeinMB";
+            Expression = {
+                [math]::Round(
+                    ($_.TotalItemSize.ToString().
+                        Split("(")[1].
+                        Split(" ")[0].
+                        Replace(",", "") / 1MB)
+                )
+            }
+        }
+    $cloudMailboxesTotalDeletedItemSizeMB = @()
+    $cloudMailboxesTotalDeletedItemSizeMB = $mailboxPool |
+        Get-EXORecipient -Properties ExchangeGuid -ErrorAction SilentlyContinue |
+        Get-EXOMailboxStatistics $_.ExchangeGuid -ErrorAction SilentlyContinue |
+        Select-Object MailboxGuid, @{
+            Name = "TotalDeletedItemSizeinMB";
+            Expression = {
+                [math]::Round(
+                    ($_.TotalDeletedItemSize.ToString().
+                        Split("(")[1].
+                        Split(" ")[0].
+                        Replace(",", "") / 1MB)
+                )
+            }
+        }
 
-    $MailboxPool = Get-Content "\\path\inputs\mapping_export.csv"
-
-    # Adresses of the users in scope
-    # On premise: Which mailbox type should be searched for? Possible Values:
-    # DiscoveryMailbox, EquipmentMailbox, GroupMailbox, LegacyMailbox, LinkedMailbox,
-    # LinkedRoomMailbox, RoomMailbox, SchedulingMailbox, SharedMailbox, TeamMailbox, UserMailbox
-    $RecipientType = "UserMailbox"
-    # Get the Dataset of Mailboxes and RemoteMailboxes to work with
-    Write-Host "Getting Cloud $RecipientType"
-    $Cloud_Mailboxes = $MailboxPool | Get-EXORecipient -RecipientType $RecipientType -Properties SamAccountName, PrimarySMTPAddress, WindowsLiveId, CustomAttribute8, RecipientTypeDetails, DisplayName, CustomAttribute9, Department, CustomAttribute10, CustomAttribute3, ExchangeGuid, ArchiveGuid, ArchiveState -ErrorAction SilentlyContinue
-    Write-Host "Found" @($Cloud_Mailboxes).Count "$RecipientType Mailboxes"
-
-    Write-Host "Getting Cloud TotalMailboxSizes"
-    $Cloud_Mailboxes_TotalSizeinMB = @()
-    $Cloud_Mailboxes_TotalSizeinMB = $MailboxPool | Get-EXORecipient -Properties ExchangeGuid -ErrorAction SilentlyContinue | Get-EXOMailboxStatistics $_.ExchangeGuid -Properties MailboxGuid, TotalItemSize -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalItemSizeinMB"; expression = { [math]::Round( `
-                ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
-    }
-    $Cloud_Mailboxes_TotalDeletedItemSizeinMB = @()
-    $Cloud_Mailboxes_TotalDeletedItemSizeinMB = $MailboxPool | Get-EXORecipient -Properties ExchangeGuid -ErrorAction SilentlyContinue | Get-EXOMailboxStatistics $_.ExchangeGuid -Properties MailboxGuid, TotalDeletedItemSize -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalDeletedItemSizeinMB"; expression = { [math]::Round( `
-                ($_.TotalDeletedItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
-    }
-
-    Write-Host "Getting Cloud Archive TotalMailboxSizes"
-    $cp = $Timer.ElapsedMilliseconds
-    $Cloud_Mailboxes_Archive = $MailboxPool | Get-EXOMailbox -Properties ExchangeGuid, ArchiveName, ArchiveGuid -ErrorAction SilentlyContinue | select ExchangeGuid, ArchiveName, ArchiveGuid
-    $Cloud_Mailboxes_Archive_TotalSizeinMB = @()
-    $Cloud_Mailboxes_Archive_TotalSizeinMB = $MailboxPool | Get-Recipient -Properties ExchangeGuid -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Get-ExoMailboxStatistics $_.ExchangeGuid -Archive -Properties MailboxGuid, TotalItemSize -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalItemSizeinMB"; expression = { [math]::Round( `
-                ($_.TotalItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
-    }
-    $Cloud_Mailboxes_Archive_TotalDeletedItemSizeinMB = @()
-    $Cloud_Mailboxes_Archive_TotalDeletedItemSizeinMB = $MailboxPool | Get-Recipient -Properties ExchangeGuid -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" | Get-ExoMailboxStatistics $_.ExchangeGuid -Archive -Properties MailboxGuid, TotalDeletedItemSize -ErrorAction SilentlyContinue | select MailboxGuid, @{name = "TotalDeletedItemSizeinMB"; expression = { [math]::Round( `
-                ($_.TotalDeletedItemSize.ToString().Split("(")[1].Split(" ")[0].Replace(",", "") / 1MB)) }
-    }
-    Write-Host "`t`tCloud_Mailboxes_Archive_TotalSizeinMB: $($Timer.ElapsedMilliseconds - $cp)"
-
-    $Cloud_MailboxesCount = @($Cloud_Mailboxes).Count
-    Write-Host "To process:" $Cloud_MailboxesCount "mailboxes"
-
-    Add-Content $PathtoAddressesOutfile AliasUID'>'DisplayName'>'SamAccountName'>'UPN'>'PrimarySMTPAddress'>'RecipientType'>'MbxType'>'Mailboxplan'>'ArchiveState'>'MaxSendSize'>'MaxReceiveSize'>'IssueWarningQuota'>'ProhibitSendQuota'>'ProhibitSendReceiveQuota'>'TotalDeletedItemSizeinMB'>'MbxSizeMB'>'ArchiveDisplayName'>'ArchiveGuid'>'ArchiveDeletedItemSizeMB'>'ArchiveSizeMB
+    Write-Output "Getting Exchange Online mailboxes' archives total size..."
+    $cloudMailboxesArchive = $mailboxPool |
+        Get-EXOMailbox -ErrorAction SilentlyContinue |
+        Select-Object ExchangeGuid, ArchiveName, ArchiveGuid
+    $cloudMailboxesArchiveTotalSizeMB = @()
+    $cloudMailboxesArchiveTotalSizeMB = $mailboxPool |
+        Get-Recipient -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" |
+        Get-EXOMailboxStatistics $_.ExchangeGuid -Archive -ErrorAction SilentlyContinue |
+        Select-Object MailboxGuid, @{
+            Name = "TotalItemSizeinMB";
+            Expression = {
+                [math]::Round(
+                    ($_.TotalItemSize.ToString().
+                        Split("(")[1].
+                        Split(" ")[0].
+                        Replace(",", "") / 1MB)
+                )
+            }
+        }
+    $cloudMailboxesArchiveTotalDeletedItemSizeMB = @()
+    $cloudMailboxesArchiveTotalDeletedItemSizeMB = $mailboxPool |
+        Get-Recipient -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" |
+        Get-EXOMailboxStatistics $_.ExchangeGuid -Archive -ErrorAction SilentlyContinue |
+        Select-Object MailboxGuid, @{
+            Name = "TotalDeletedItemSizeinMB";
+            Expression = {
+                [math]::Round(
+                    ($_.TotalDeletedItemSize.ToString().
+                        Split("(")[1].
+                        Split(" ")[0].
+                        Replace(",", "") / 1MB)
+                )
+            }
+        }
 }
 
 process {
-    for ($index = 0; $index -lt $Cloud_MailboxesCount; $index++) {
-        Write-Host "`tProcessing mailbox: " ($index + 1) "/ $Cloud_MailboxesCount"
-
-        $CloudMailbox = $Cloud_Mailboxes[$index]
-
-        $AliasUID = $CloudMailbox.Alias
-        $SamAccountName = $CloudMailbox.SamAccountName
-        $PrimarySMTPAddress = $CloudMailbox.PrimarySMTPAddress
-        $UPN = $CloudMailbox.WindowsLiveId
-        $RecipientType = $CloudMailbox.RecipientType
-        $MbxType = $CloudMailbox.RecipientTypeDetails
-        if ($MbxType -like "UserMailbox" -and $SamAccountName -like "SRV*") {
-            $MbxType = "SrvMailbox"
+    Write-Output "To process $cloudMailboxesCount Exchange Online mailboxes"
+    for ($index = 0; $index -lt $cloudMailboxesCount; $index++) {
+        $cloudMailbox = $cloudMailboxes[$index]
+        Write-Output (
+            "`tProcessing mailbox $($index + 1) / $cloudMailboxesCount | $cloudMailbox"
+        )
+        $cloudMailboxAliasUID = $cloudMailbox.Alias
+        $cloudMailboxSamAccountName = $cloudMailbox.SamAccountName
+        $cloudMailboxPrimarySMTPAddress = $cloudMailbox.PrimarySMTPAddress
+        $cloudMailboxMailDomain = $cloudMailboxPrimarySMTPAddress.ToString().split('@')[1]
+        $cloudMailboxUPN = $cloudMailbox.WindowsLiveId
+        $cloudMailboxType = $cloudMailbox.RecipientTypeDetails
+        if ($cloudMailboxType -like "UserMailbox" -and $cloudMailboxSamAccountName -like "SRV*") {
+            $cloudMailboxType = "ServiceMailbox"
         }
-        $DisplayName = $CloudMailbox.DisplayName
-        $Mailboxplan = Get-EXOMailbox $AliasUID -Properties MailboxPlan | select -expandproperty Mailboxplan
-        $MaxSendSize = Get-EXOMailbox $AliasUID -Properties MaxSendSize | select -expandproperty MaxSendSize
-        $MaxReceiveSize = Get-EXOMailbox $AliasUID -Properties MaxReceiveSize | select -expandproperty MaxReceiveSize
-        $IssueWarningQuota = Get-EXOMailbox $AliasUID -Properties IssueWarningQuota | select -expandproperty IssueWarningQuota
-        $ProhibitSendQuota = Get-EXOMailbox $AliasUID -Properties ProhibitSendQuota | select -expandproperty ProhibitSendQuota
-        $ProhibitSendReceiveQuota = Get-EXOMailbox $AliasUID -Properties ProhibitSendReceiveQuota | select -expandproperty ProhibitSendReceiveQuota
+        $cloudMailboxDisplayName = $cloudMailbox.DisplayName
+        $cloudMailboxEXOMailbox = Get-EXOMailbox $cloudMailboxAliasUID
+        $cloudMailboxPlan = $cloudMailboxEXOMailbox |
+            Select-Object -ExpandProperty Mailboxplan
+        $cloudMailboxMaxSendSize = $cloudMailboxEXOMailbox |
+            Select-Object -ExpandProperty MaxSendSize
+        $cloudMailboxMaxReceiveSize = $cloudMailboxEXOMailbox |
+            Select-Object -ExpandProperty MaxReceiveSize
+        $cloudMailboxIssueWarningQuota = $cloudMailboxEXOMailbox |
+            Select-Object -ExpandProperty IssueWarningQuota
+        $cloudMailboxProhibitSendQuota = $cloudMailboxEXOMailbox |
+            Select-Object -ExpandProperty ProhibitSendQuota
+        $cloudMailboxProhibitSendReceiveQuota = $cloudMailboxEXOMailbox |
+            Select-Object -ExpandProperty ProhibitSendReceiveQuota
 
-        $ArchiveState = $CloudMailbox.ArchiveState
-        $MbxSizeMB = $Cloud_Mailboxes_TotalSizeinMB | ? { $_.MailboxGuid -eq $CloudMailbox.ExchangeGuid } | select -expandproperty TotalItemSizeinMB
-        $TotalDeletedItemSizeinMB = $Cloud_Mailboxes_TotalDeletedItemSizeinMB | ? { $_.MailboxGuid -eq $CloudMailbox.ExchangeGuid } | select -expandproperty TotalDeletedItemSizeinMB
+        $cloudMailboxArchiveState = $cloudMailbox.ArchiveState
+        $cloudMailboxSizeMB = $cloudMailboxesTotalSizeMB |
+            Where-Object {
+                $_.MailboxGuid -eq $cloudMailbox.ExchangeGuid
+            } |
+            Select-Object -ExpandProperty TotalItemSizeinMB
+        $cloudMailboxTotalDeletedItemSizeMB = $cloudMailboxesTotalDeletedItemSizeMB |
+            Where-Object {
+                $_.MailboxGuid -eq $cloudMailbox.ExchangeGuid
+            } |
+            Select-Object -ExpandProperty TotalDeletedItemSizeinMB
 
-        $ArchiveDisplayName = $null
-        $ArchiveGuid = $null
-        $ArchiveDeletedItemSizeMB = $null
-        $ArchiveSizeMB = $null
-        if ($CloudMailbox.ArchiveState -ne "None") {
-            $ArchiveDisplayName = $Cloud_Mailboxes_Archive | ? { $_.ExchangeGuid -eq $CloudMailbox.ExchangeGuid } | select -expandproperty ArchiveName
-            $ArchiveGuid = $Cloud_Mailboxes_Archive | ? { $_.ExchangeGuid -eq $CloudMailbox.ExchangeGuid } | select -expandproperty ArchiveGuid
-            $ArchiveDeletedItemSizeMB = $Cloud_Mailboxes_Archive_TotalDeletedItemSizeinMB | ? { $_.MailboxGuid -eq $CloudMailbox.ArchiveGuid } | select -expandproperty TotalDeletedItemSizeinMB
-            $ArchiveSizeMB = $Cloud_Mailboxes_Archive_TotalSizeinMB | ? { $_.MailboxGuid -eq $CloudMailbox.ArchiveGuid } | select -expandproperty TotalItemSizeinMB
+        $cloudMailboxArchiveDisplayName = $null
+        $cloudMailboxArchiveGuid = $null
+        $cloudMailboxArchiveDeletedItemSizeMB = $null
+        $cloudMailboxArchiveSizeMB = $null
+        if ($cloudMailbox.ArchiveState -ne "None") {
+            $cloudMailboxArchiveDisplayName =
+            $cloudMailboxesArchive |
+                Where-Object {
+                    $_.ExchangeGuid -eq $cloudMailbox.ExchangeGuid
+                } |
+                Select-Object -ExpandProperty ArchiveName
+            $cloudMailboxArchiveGuid =
+            $cloudMailboxesArchive |
+                Where-Object {
+                    $_.ExchangeGuid -eq $cloudMailbox.ExchangeGuid
+                } |
+                Select-Object -ExpandProperty ArchiveGuid
+            $cloudMailboxArchiveDeletedItemSizeMB =
+            $cloudMailboxesArchiveTotalDeletedItemSizeMB |
+                Where-Object {
+                    $_.MailboxGuid -eq $cloudMailbox.ArchiveGuid
+                } |
+                Select-Object -ExpandProperty TotalDeletedItemSizeinMB
+            $cloudMailboxArchiveSizeMB =
+            $cloudMailboxesArchiveTotalSizeMB |
+                Where-Object {
+                    $_.MailboxGuid -eq $cloudMailbox.ArchiveGuid
+                } |
+                Select-Object -ExpandProperty TotalItemSizeinMB
         }
 
-        Add-Content $PathtoAddressesOutfile $AliasUID'>'$DisplayName'>'$SamAccountName'>'$UPN'>'$PrimarySMTPAddress'>'$RecipientType'>'$MbxType'>'$Mailboxplan'>'$ArchiveState'>'$MaxSendSize'>'$MaxReceiveSize'>'$IssueWarningQuota'>'$ProhibitSendQuota'>'$ProhibitSendReceiveQuota'>'$TotalDeletedItemSizeinMB'>'$MbxSizeMB'>'$ArchiveDisplayName'>'$ArchiveGuid'>'$ArchiveDeletedItemSizeMB'>'$ArchiveSizeMB
+        [PSCustomObject]@{
+            cloudMailboxAliasUID = $cloudMailboxAliasUID
+            cloudMailboxDisplayName = $cloudMailboxDisplayName
+            cloudMailboxSamAccountName = $cloudMailboxSamAccountName
+            cloudMailboxUPN = $cloudMailboxUPN
+            cloudMailboxPrimarySMTPAddress = $cloudMailboxPrimarySMTPAddress
+            cloudMailboxMailDomain = $cloudMailboxMailDomain
+            cloudMailboxType = $cloudMailboxType
+            cloudMailboxPlan = $cloudMailboxPlan
+            cloudMailboxArchiveState = $cloudMailboxArchiveState
+            cloudMailboxMaxSendSize = $cloudMailboxMaxSendSize
+            cloudMailboxMaxReceiveSize = $cloudMailboxMaxReceiveSize
+            cloudMailboxIssueWarningQuota = $cloudMailboxIssueWarningQuota
+            cloudMailboxProhibitSendQuota = $cloudMailboxProhibitSendQuota
+            cloudMailboxProhibitSendReceiveQuota = $cloudMailboxProhibitSendReceiveQuota
+            cloudMailboxTotalDeletedItemSizeMB = $cloudMailboxTotalDeletedItemSizeMB
+            cloudMailboxSizeMB = $cloudMailboxSizeMB
+            cloudMailboxArchiveDisplayName = $cloudMailboxArchiveDisplayName
+            cloudMailboxArchiveGuid = $cloudMailboxArchiveGuid
+            cloudMailboxArchiveDeletedItemSizeMB = $cloudMailboxArchiveDeletedItemSizeMB
+            cloudMailboxArchiveSizeMB = $cloudMailboxArchiveSizeMB
+        } | Export-Csv $params.outputFilePath -Append -NoTypeInformation
     }
 }
 
 end {
-    $SmtpServer = "smtp.domain.com"
-    $att = new-object Net.Mail.Attachment($PathtoAddressesOutfile)
-    $msg = new-object Net.Mail.MailMessage
-    $smtp = new-object Net.Mail.SmtpClient($SmtpServer)
-    $msg.From = "noreply_mailbox_details@domain1.com"
-    $msg.To.Add("user@domain1.com")
-    $msg.Subject = "Mailbox list complex Cloud report is ready"
-    $msg.Body = "Attached is the mailbox list complex Cloud report"
-    $msg.Attachments.Add($att)
-    $smtp.Send($msg)
-
-    Stop-Transcript
+    Send-DefaultReportMail -ScriptParams $params
 }
