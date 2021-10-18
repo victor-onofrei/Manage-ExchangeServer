@@ -3,25 +3,25 @@ begin {
     $params = Invoke-Expression "Initialize-DefaultParams $args"
     $mailboxPool = $params.exchangeObjects
 
-    Write-Output "Getting Exchange Online mailboxes..."
+    Write-Output 'Getting Exchange Online mailboxes...'
     $cloudMailboxes = $mailboxPool |
         Get-EXORecipient -RecipientType UserMailbox -ErrorAction SilentlyContinue
     $cloudMailboxesCount = @($cloudMailboxes).Count
     Write-Output "Found $cloudMailboxesCount Exchange Online mailboxes"
 
-    Write-Output "Getting Exchange Online mailboxes total sizes..."
+    Write-Output 'Getting Exchange Online mailboxes total sizes...'
     $cloudMailboxesTotalSizeMB = @()
     $cloudMailboxesTotalSizeMB = $mailboxPool |
         Get-EXORecipient -Properties ExchangeGuid -ErrorAction SilentlyContinue |
         Get-EXOMailboxStatistics $_.ExchangeGuid -ErrorAction SilentlyContinue |
         Select-Object MailboxGuid, @{
-            Name = "TotalItemSizeinMB";
+            Name = 'TotalItemSizeinMB';
             Expression = {
                 [math]::Round(
                     ($_.TotalItemSize.ToString().
-                        Split("(")[1].
-                        Split(" ")[0].
-                        Replace(",", "") / 1MB)
+                        Split('(')[1].
+                        Split(' ')[0].
+                        Replace(',', '') / 1MB)
                 )
             }
         }
@@ -30,48 +30,48 @@ begin {
         Get-EXORecipient -Properties ExchangeGuid -ErrorAction SilentlyContinue |
         Get-EXOMailboxStatistics $_.ExchangeGuid -ErrorAction SilentlyContinue |
         Select-Object MailboxGuid, @{
-            Name = "TotalDeletedItemSizeinMB";
+            Name = 'TotalDeletedItemSizeinMB';
             Expression = {
                 [math]::Round(
                     ($_.TotalDeletedItemSize.ToString().
-                        Split("(")[1].
-                        Split(" ")[0].
-                        Replace(",", "") / 1MB)
+                        Split('(')[1].
+                        Split(' ')[0].
+                        Replace(',', '') / 1MB)
                 )
             }
         }
 
-    Write-Output "Getting Exchange Online mailboxes' archives total size..."
+    Write-Output 'Getting Exchange Online mailboxes'' archives total size...'
     $cloudMailboxesArchive = $mailboxPool |
         Get-EXOMailbox -ErrorAction SilentlyContinue |
         Select-Object ExchangeGuid, ArchiveName, ArchiveGuid
     $cloudMailboxesArchiveTotalSizeMB = @()
     $cloudMailboxesArchiveTotalSizeMB = $mailboxPool |
-        Get-Recipient -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" |
+        Get-Recipient -ErrorAction SilentlyContinue -Filter 'ArchiveState -ne ''None''' |
         Get-EXOMailboxStatistics $_.ExchangeGuid -Archive -ErrorAction SilentlyContinue |
         Select-Object MailboxGuid, @{
-            Name = "TotalItemSizeinMB";
+            Name = 'TotalItemSizeinMB';
             Expression = {
                 [math]::Round(
                     ($_.TotalItemSize.ToString().
-                        Split("(")[1].
-                        Split(" ")[0].
-                        Replace(",", "") / 1MB)
+                        Split('(')[1].
+                        Split(' ')[0].
+                        Replace(',', '') / 1MB)
                 )
             }
         }
     $cloudMailboxesArchiveTotalDeletedItemSizeMB = @()
     $cloudMailboxesArchiveTotalDeletedItemSizeMB = $mailboxPool |
-        Get-Recipient -ErrorAction SilentlyContinue -Filter "ArchiveState -ne 'None'" |
+        Get-Recipient -ErrorAction SilentlyContinue -Filter 'ArchiveState -ne ''None''' |
         Get-EXOMailboxStatistics $_.ExchangeGuid -Archive -ErrorAction SilentlyContinue |
         Select-Object MailboxGuid, @{
-            Name = "TotalDeletedItemSizeinMB";
+            Name = 'TotalDeletedItemSizeinMB';
             Expression = {
                 [math]::Round(
                     ($_.TotalDeletedItemSize.ToString().
-                        Split("(")[1].
-                        Split(" ")[0].
-                        Replace(",", "") / 1MB)
+                        Split('(')[1].
+                        Split(' ')[0].
+                        Replace(',', '') / 1MB)
                 )
             }
         }
@@ -90,8 +90,8 @@ process {
         $cloudMailboxMailDomain = $cloudMailboxPrimarySMTPAddress.ToString().split('@')[1]
         $cloudMailboxUPN = $cloudMailbox.WindowsLiveId
         $cloudMailboxType = $cloudMailbox.RecipientTypeDetails
-        if ($cloudMailboxType -like "UserMailbox" -and $cloudMailboxSamAccountName -like "SRV*") {
-            $cloudMailboxType = "ServiceMailbox"
+        if ($cloudMailboxType -like 'UserMailbox' -and $cloudMailboxSamAccountName -like 'SRV*') {
+            $cloudMailboxType = 'ServiceMailbox'
         }
         $cloudMailboxDisplayName = $cloudMailbox.DisplayName
         $cloudMailboxEXOMailbox = Get-EXOMailbox $cloudMailboxAliasUID
@@ -124,7 +124,7 @@ process {
         $cloudMailboxArchiveGuid = $null
         $cloudMailboxArchiveDeletedItemSizeMB = $null
         $cloudMailboxArchiveSizeMB = $null
-        if ($cloudMailbox.ArchiveState -ne "None") {
+        if ($cloudMailbox.ArchiveState -ne 'None') {
             $cloudMailboxArchiveDisplayName =
             $cloudMailboxesArchive |
                 Where-Object {
