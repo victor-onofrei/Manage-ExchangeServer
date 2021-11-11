@@ -13,9 +13,9 @@ process {
             Expression = {
                 [math]::Round(
                     ($_.ToString().
-                        Split('(')[1].
-                        Split(' ')[0].
-                        Replace(',', '') / 1MB)
+                    Split('(')[1].
+                    Split(' ')[0].
+                    Replace(',', '') / 1MB)
                 )
             }
         } |

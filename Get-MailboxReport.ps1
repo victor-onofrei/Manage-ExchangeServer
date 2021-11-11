@@ -19,9 +19,9 @@ begin {
             Expression = {
                 [math]::Round(
                     ($_.TotalItemSize.ToString().
-                        Split('(')[1].
-                        Split(' ')[0].
-                        Replace(',', '') / 1MB)
+                    Split('(')[1].
+                    Split(' ')[0].
+                    Replace(',', '') / 1MB)
                 )
             }
         }
@@ -34,9 +34,9 @@ begin {
             Expression = {
                 [math]::Round(
                     ($_.TotalDeletedItemSize.ToString().
-                        Split('(')[1].
-                        Split(' ')[0].
-                        Replace(',', '') / 1MB)
+                    Split('(')[1].
+                    Split(' ')[0].
+                    Replace(',', '') / 1MB)
                 )
             }
         }
@@ -54,9 +54,9 @@ begin {
             Expression = {
                 [math]::Round(
                     ($_.TotalItemSize.ToString().
-                        Split('(')[1].
-                        Split(' ')[0].
-                        Replace(',', '') / 1MB)
+                    Split('(')[1].
+                    Split(' ')[0].
+                    Replace(',', '') / 1MB)
                 )
             }
         }
@@ -69,9 +69,9 @@ begin {
             Expression = {
                 [math]::Round(
                     ($_.TotalDeletedItemSize.ToString().
-                        Split('(')[1].
-                        Split(' ')[0].
-                        Replace(',', '') / 1MB)
+                    Split('(')[1].
+                    Split(' ')[0].
+                    Replace(',', '') / 1MB)
                 )
             }
         }

@@ -21,12 +21,12 @@ process {
                 Sender = $_.Name.Split(',')[1].Split(' ')[1]
                 ClientComputedIP =
                 (Resolve-DnsName `
-                        -Name $_.Name.Split(',')[0] `
-                        -Type A `
-                        -ErrorAction SilentlyContinue |
-                        Select-Object `
-                            -ExpandProperty IPAddress `
-                            -ErrorAction SilentlyContinue) -join ';'
+                    -Name $_.Name.Split(',')[0] `
+                    -Type A `
+                    -ErrorAction SilentlyContinue |
+                    Select-Object `
+                        -ExpandProperty IPAddress `
+                        -ErrorAction SilentlyContinue) -join ';'
                 }
             } |
             Sort-Object -Property Count -Descending |
