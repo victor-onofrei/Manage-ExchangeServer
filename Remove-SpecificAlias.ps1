@@ -4,7 +4,7 @@ param (
 
 begin {
     . "$PSScriptRoot\Initializer.ps1"
-    $params = Invoke-Expression "Initialize-DefaultParams $args"
+    $params = Invoke-Expression "Initialize-DefaultParam $args"
 
     $aliasIdentifierParams = @{
         Name = 'AliasIdentifier'

@@ -9,7 +9,7 @@ function Get-ScriptName {
     return [IO.Path]::GetFileNameWithoutExtension($scriptFileName)
 }
 
-function Initialize-DefaultParams {
+function Initialize-DefaultParam {
     [CmdletBinding()]
     [OutputType([Hashtable])]
     param (

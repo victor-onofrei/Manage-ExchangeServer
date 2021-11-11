@@ -16,7 +16,7 @@ param (
 
 begin {
     . "$PSScriptRoot\Initializer.ps1"
-    $params = Invoke-Expression "Initialize-DefaultParams $args"
+    $params = Invoke-Expression "Initialize-DefaultParam $args"
 }
 
 process {
@@ -50,7 +50,7 @@ process {
         [Math]::Max($downscaledQuota, $MinimumQuota)
     }
 
-    function Get-BytesFromGigaBytes {
+    function Get-BytesFromGigaByte {
         <#
             .SYNOPSIS
                 Compute and return a quota based on the input size based on specific
@@ -93,7 +93,7 @@ process {
             -MinimumDifference $MailboxMinimumQuotaDifference `
             -MinimumQuota $MailboxMinimumQuota `
             -Step $MailboxQuotaStep
-        $mailboxDesiredQuotaBytes = Get-BytesFromGigaBytes -GigaBytes $mailboxDesiredQuotaGigaBytes
+        $mailboxDesiredQuotaBytes = Get-BytesFromGigaByte -GigaBytes $mailboxDesiredQuotaGigaBytes
 
         $movingProhibitSendQuota = $mailboxDesiredQuotaBytes
         $movingIssueWarningQuota = [Math]::Round($mailboxDesiredQuotaBytes * 0.9)
@@ -138,7 +138,7 @@ process {
             -MinimumDifference $ArchiveMinimumQuotaDifference `
             -MinimumQuota $ArchiveMinimumQuota `
             -Step $ArchiveQuotaStep
-        $archiveDesiredQuotaBytes = Get-BytesFromGigaBytes -GigaBytes $archiveDesiredQuotaGigaBytes
+        $archiveDesiredQuotaBytes = Get-BytesFromGigaByte -GigaBytes $archiveDesiredQuotaGigaBytes
 
         $movingArchiveQuota = $archiveDesiredQuotaBytes
         $movingArchiveWarningQuota = [Math]::Round($archiveDesiredQuotaBytes * 0.9)
